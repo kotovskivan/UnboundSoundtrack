@@ -1,0 +1,60 @@
+UNBOUND SOUNDTRACK — what is inside, who made it, licenses
+
+Made by Kitivski + Claude (Claude — AI by Anthropic).
+Not affiliated with Electronic Arts or Criterion Games. Need for Speed is a trademark of Electronic Arts Inc.
+
+---------------------------------------------------------------------
+SHIPPED IN THIS FOLDER
+---------------------------------------------------------------------
+Frosty Toolsuite — app\frosty\ (FrostySdk, FrostyCore, FrostyHash, FrostyModSupport, FrostyControls,
+  Profiles\NFSUnboundSDK.dll) — libraries to read the game and write .fbmod mods.
+  License: GNU GPL v3 — https://www.gnu.org/licenses/gpl-3.0.html
+  Original: https://github.com/CadeEvs/FrostyToolsuite
+  NFS Unbound fork by HarGabt (the version these files come from, 1.0.7 v26.10.12):
+  https://github.com/HarGabt/FrostyToolsuite
+
+Frosty third-party libraries — app\frosty\ThirdParty\ (as shipped with Frosty Mod Manager):
+  Newtonsoft.Json, zstd, LZ4, zlib, LZMA, UnRAR and others — under their own licenses.
+
+EA audio encoder — app\encoder\Tool.exe + eaxmaenc.dll — from the Sound Editor plugin of Frosty Editor
+  (HarGabt fork, same link as above). Turns your song into the game's audio format.
+  With its libraries: LAME (libmp3lame.dll) — https://lame.sourceforge.io ;
+  LibAtrac9 (libatrac9.dll) — https://github.com/Thealexbarney/LibAtrac9 ;
+  Microsoft Visual C++ runtime (msvcr120.dll).
+
+This program — Unbound Soundtrack.exe, source code in source\ — GNU GPL v3 (it uses Frosty libraries).
+
+---------------------------------------------------------------------
+PREVIEWS (online, nothing stored)
+---------------------------------------------------------------------
+The ▶ button plays a 30-second preview of a game track from Deezer (https://www.deezer.com, public API api.deezer.com)
+or, for 2 tracks, from iTunes (https://www.apple.com/itunes/). The program keeps only the track numbers/links
+(app\web\previews.json); the sound streams from their servers when you press ▶. BOIH and BOOTY have no preview
+(not on Deezer/iTunes) — use the YouTube button.
+
+---------------------------------------------------------------------
+YOU WILL NEED (not shipped)
+---------------------------------------------------------------------
+Frosty Mod Manager (HarGabt fork) — https://github.com/HarGabt/FrostyToolsuite/releases
+Microsoft Edge — built into Windows 10/11, used for the program window.
+
+---------------------------------------------------------------------
+WE LEARNED FROM
+---------------------------------------------------------------------
+Alternate Waves — https://www.nexusmods.com/needforspeedunbound/mods/340 · https://nfsmods.xyz/mod?id=6532
+The Lakeshore Sound — https://nfsmods.xyz/mod/7400
+vgmstream — https://github.com/vgmstream/vgmstream
+
+---------------------------------------------------------------------
+USED WHILE BUILDING (not shipped)
+---------------------------------------------------------------------
+Python — https://www.python.org · PyAV — https://github.com/PyAV-Org/PyAV ·
+NumPy — https://numpy.org · Pillow — https://python-pillow.org (research scripts; the BC7 tables were checked against Pillow)
+
+---------------------------------------------------------------------
+NOT SHIPPED
+---------------------------------------------------------------------
+No game files and no EA audio or pictures are in this archive. Covers and backgrounds in the window
+are read from YOUR installed game on the first start and stay in data\ui on your PC.
+
+Special thanks — the picture in the "Credits" window: Kitivski.

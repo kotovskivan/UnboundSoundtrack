@@ -1,0 +1,514 @@
+// Рабочий процесс: "Unbound Soundtrack.exe --worker job.json". Пишет в stdout строки для окна:
+//   STEP <ключ> [текст]   — шаг (ключ переводится в окне)
+//   PCT <0..100>          — прогресс шага
+//   ERR <ключ> [текст]    — ошибка, понятная человеку
+//   OK <json>             — готово
+// Задачи: extract — список треков, обложки и фоны из игры игрока (в zip нет файлов EA); build — собрать мод.
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
+using FrostySdk;
+using FrostySdk.Ebx;
+using FrostySdk.IO;
+using FrostySdk.Interfaces;
+using FrostySdk.Managers;
+using FrostySdk.Managers.Entries;
+using FrostySdk.Resources;
+
+class WLog : ILogger
+{
+    int lastPct = -1;
+    public void Log(string t, params object[] v)
+    {
+        string s = Fmt(t, v);
+        if (s.StartsWith("progress:"))
+        {
+            double d; if (double.TryParse(s.Substring(9).Trim(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out d))
+            { int p = (int)d; if (p != lastPct) { lastPct = p; Worker.Say("PCT " + p); } }
+            return;
+        }
+        App.Log("frosty: " + s);
+    }
+    public void LogWarning(string t, params object[] v) { App.Log("frosty WARN " + Fmt(t, v)); }
+    public void LogError(string t, params object[] v) { App.Log("frosty ERR " + Fmt(t, v)); }
+    static string Fmt(string t, object[] v) { try { return v == null || v.Length == 0 ? t : string.Format(t, v); } catch { return t; } }
+}
+
+static class Worker
+{
+    const string BANK = "audio/music/event/exc_music_event_02", BANK1 = "audio/music/event/exc_music_event_01";
+    const string LOGIC = "audio/music/logic/pf_music_logic";
+    static readonly string[] RACE = { "IsMeetupTrack", "IsEventTrack", "IsTrialEscalationTrack", "IsTakeoverTrack", "IsGarageTrack" };
+    const string FREE = "IsFreedriveTrack";
+    // фоны окна: имя в игре -> файл
+    static readonly string[][] BG = {
+        new[] { "ui/textures/fullscreenbackgrounds/safehouses/exc_safehouse_garage_01", "photo.jpg", "1920" },
+        new[] { "ui/textures/fullscreenbackgrounds/t_lightleak_01_bg", "leak.jpg", "1920" },
+        new[] { "ui/textures/fullscreenbackgrounds/unbound/t_background_unbound_cmn_logo1", "logo.png", "0" },
+        new[] { "ui/textures/fullscreenbackgrounds/t_halftone_01_bg", "halftone.png", "0" },
+        new[] { "ui/textures/fullscreenbackgrounds/t_paintgrunge_bg", "grunge.png", "0" },
+        new[] { "ui/textures/generic/dialog/dialog_dotoverlay", "dots.png", "0" },
+        new[] { "ui/textures/generic/dialog/dialog_noiseoverlay", "noise.png", "2048" } };
+
+    static AssetManager am;
+    static Dictionary<string, object> job;
+
+    public static void Say(string s) { Console.WriteLine(s); Console.Out.Flush(); App.Log("worker> " + s); }
+
+    public static int Run(string jobPath)
+    {
+        try { Console.SetOut(new StreamWriter(Console.OpenStandardOutput(), new UTF8Encoding(false)) { AutoFlush = true }); } catch { }
+        try
+        {
+            job = App.Json.Deserialize<Dictionary<string, object>>(File.ReadAllText(jobPath, Encoding.UTF8));
+            string task = (string)job["task"];
+            App.Log("worker start: " + task);
+            if (task == "extract") Extract();
+            else if (task == "build") Build();
+            else if (task == "bc7test")   // проверка декодера: raw BC7 -> png (сверка с Pillow)
+                foreach (string f in Directory.GetFiles((string)job["dir"], "*.raw"))
+                {
+                    var m = App.Json.Deserialize<Dictionary<string, object>>(File.ReadAllText(Path.ChangeExtension(f, ".json")));
+                    if (!((string)m["format"]).StartsWith("BC7")) continue;
+                    int w = Convert.ToInt32(m["w"]), h = Convert.ToInt32(m["h"]);
+                    Img.Save(Bc7.Decode(File.ReadAllBytes(f), w, h), w, h, Path.Combine((string)job["out"], Path.GetFileNameWithoutExtension(f) + ".png"), 0, true);
+                }
+            else throw new Exception("unknown task " + task);
+            return 0;
+        }
+        catch (UserError e) { App.Log("worker user error: " + e); Say("ERR " + e.Key + (e.Arg != null ? " " + e.Arg.Replace("\n", " ") : "")); return 2; }
+        catch (Exception e) { App.Log("worker crash: " + e); Say("ERR crash " + e.GetType().Name + ": " + e.Message.Replace("\n", " ")); return 1; }
+    }
+
+    // ---------- загрузка игры через Frosty ----------
+    static void Load()
+    {
+        string game = (string)job["game"], fmm = (string)job["fmm"];
+        if (!Find.IsGame(game)) throw new UserError("noGame");
+        if (!Find.IsFmm(fmm)) throw new UserError("noFmm");
+        string keyPath = Find.KeyPath(fmm);
+        if (!File.Exists(keyPath)) throw new UserError("noKey", fmm);
+        Directory.SetCurrentDirectory(App.FrostyDir);
+        string caches = Path.Combine(App.FrostyDir, "Caches"); Directory.CreateDirectory(caches);
+        string myCache = Path.Combine(caches, "nfsunbound.cache"), fmmCache = Path.Combine(fmm, "Caches", "nfsunbound.cache");
+        bool fresh = false;
+        if (!File.Exists(myCache) && File.Exists(fmmCache))
+        {
+            Say("STEP copyCache");
+            try { File.Copy(fmmCache, myCache + ".tmp", true); File.Move(myCache + ".tmp", myCache); } catch (Exception e) { App.Log("copy cache: " + e.Message); }
+        }
+        if (!File.Exists(myCache)) fresh = true;
+        Say(fresh ? "STEP firstLoad" : "STEP loadGame");
+
+        File.WriteAllText(Path.Combine(App.FrostyDir, "config.json"),
+            App.Json.Serialize(new Dictionary<string, object> {
+                { "Games", new Dictionary<string, object> { { App.Profile, new Dictionary<string, object> { { "GamePath", game }, { "Options", new Dictionary<string, object>() }, { "Packs", new Dictionary<string, object>() } } } } },
+                { "GlobalOptions", new Dictionary<string, object>() } }), new UTF8Encoding(false));
+
+        var lg = new WLog();
+        ProfilesLibrary.Initialize(new List<Profile>());
+        if (!ProfilesLibrary.SelectProfile(App.Profile)) throw new Exception("profile " + App.Profile + " not selected");
+        byte[] key = File.ReadAllBytes(keyPath);
+        KeyManager.Instance.AddKey("Key1", key); KeyManager.Instance.AddKey("Key2", key); KeyManager.Instance.AddKey("Key3", key);
+        TypeLibrary.Initialize();
+        var fs = new FileSystemManager(game.TrimEnd('\\') + "\\");
+        foreach (FileSystemSource s in ProfilesLibrary.Sources) fs.AddSource(s.Path, s.SubDirs);
+        fs.Initialize(key);
+        var rm = new ResourceManager(fs); rm.SetLogger(lg); rm.Initialize();
+        am = new AssetManager(fs, rm); am.SetLogger(lg);
+        am.Initialize(false, null);
+        Frosty.Core.App.FileSystemManager = fs; Frosty.Core.App.ResourceManager = rm; Frosty.Core.App.AssetManager = am;
+        Frosty.Core.App.Logger = new Lg();
+        App.Log("игра загружена: ebx " + am.GetEbxCount());
+        if (am.GetEbxEntry(LOGIC) == null || am.GetResEntry(BANK) == null) throw new UserError("gameChanged", "no " + LOGIC);
+    }
+
+    // ---------- extract ----------
+    static void Extract()
+    {
+        Load();
+        Say("STEP readTracks");
+        EbxAsset logic = am.GetEbx(am.GetEbxEntry(LOGIC));
+        var list = TrackList(logic);
+        var tracks = new List<object>();
+        var arts = new List<Tuple<string, string>>();
+        foreach (object t in list)
+        {
+            if (!Str(t, "TitleId").StartsWith("ID_MUSICTRACK_")) continue;   // сюжетные и титры не трогаем
+            string slot = Str(t, "TrackEnumName");
+            string art = ArtName(t);
+            tracks.Add(new Dictionary<string, object> {
+                { "slot", slot }, { "num", Convert.ToInt32(t.GetType().GetProperty("TrackEnumInt").GetValue(t)) },
+                { "race", RACE.Select(f => EnumVal(t, f)).ToArray() }, { "free", EnumVal(t, FREE) }, { "art", art } });
+            if (art != null) arts.Add(Tuple.Create(slot, art));
+        }
+        string ui = App.UiDir; Directory.CreateDirectory(Path.Combine(ui, "covers")); Directory.CreateDirectory(Path.Combine(ui, "bg"));
+        Say("STEP covers");
+        int i = 0;
+        foreach (var a in arts)
+        {
+            Say("PCT " + (100 * i++ / Math.Max(1, arts.Count)));
+            try { SaveTexture(a.Item2, Path.Combine(ui, "covers", a.Item1 + ".jpg"), 0, false); }
+            catch (Exception e) { App.Log("обложка " + a.Item1 + ": " + e.Message); }
+        }
+        Say("STEP backgrounds");
+        i = 0;
+        foreach (var b in BG)
+        {
+            Say("PCT " + (100 * i++ / BG.Length));
+            try { SaveTexture(b[0], Path.Combine(ui, "bg", b[1]), int.Parse(b[2]), b[1].EndsWith(".png")); }
+            catch (Exception e) { App.Log("фон " + b[0] + ": " + e.Message); }
+        }
+        App.WriteJson(Path.Combine(ui, "tracks.json"), new Dictionary<string, object> {
+            { "fingerprint", (string)job["fingerprint"] }, { "app", App.Version }, { "tracks", tracks }, { "when", DateTime.Now.ToString("s") } });
+        Say("OK {\"tracks\":" + tracks.Count + "}");
+    }
+
+    static void SaveTexture(string ebxName, string path, int maxW, bool alpha)
+    {
+        EbxAssetEntry e = am.GetEbxEntry(ebxName);
+        if (e == null) throw new Exception("нет " + ebxName);
+        dynamic root = am.GetEbx(e).RootObject;
+        ResAssetEntry re = am.GetResEntry((ulong)root.Resource);
+        Texture t = am.GetResAs<Texture>(re);
+        string fmt = t.PixelFormat.ToString();
+        if (!fmt.StartsWith("BC7")) throw new Exception("формат " + fmt);
+        byte[] data; using (var ms = new MemoryStream()) { t.Data.Position = 0; t.Data.CopyTo(ms); data = ms.ToArray(); }
+        int w = t.Width, h = t.Height;
+        int mip0 = ((w + 3) / 4) * ((h + 3) / 4) * 16;
+        if (data.Length < mip0) throw new Exception("мало данных " + data.Length + " < " + mip0);
+        Img.Save(Bc7.Decode(data, w, h), w, h, path, maxW, alpha);
+    }
+
+    // ---------- build ----------
+    static void Build()
+    {
+        var songs = ((ArrayList)job["songs"]).Cast<Dictionary<string, object>>().Select(d => App.Json.ConvertToType<Song>(d)).ToList();
+        var choiceRaw = (Dictionary<string, object>)job["choice"];
+        var choice = choiceRaw.ToDictionary(k => k.Key, k => ((ArrayList)k.Value).Cast<object>().Select(Convert.ToBoolean).ToArray());
+        string outPath = (string)job["out"];
+
+        // 1) звук своих песен
+        var encDirs = new List<string>();
+        int n = 0;
+        foreach (var s in songs)
+        {
+            n++;
+            encDirs.Add(Audio.Prepare(s, piece => Say("STEP encode " + n + "/" + songs.Count + " · " + Clean(s.title) + " · " + piece)));
+        }
+
+        // 2) игра
+        Load();
+        if (songs.Count > 0) AddBanks(songs, encDirs, GiveAway(choice));
+
+        // 3) логика: галочки треков игры + свои треки с обложками
+        Say("STEP logic");
+        EbxAsset logic = am.GetEbx(am.GetEbxEntry(LOGIC));
+        var list = TrackList(logic);
+        int nr = 0, nf = 0;
+        foreach (object t in list)
+        {
+            if (!Str(t, "TitleId").StartsWith("ID_MUSICTRACK_")) continue;
+            bool[] c; if (!choice.TryGetValue(Str(t, "TrackEnumName"), out c) || c.Length < 2) c = new[] { true, true };
+            // включено = High (все включенные треки и свои песни на равных), выключено = Never.
+            // Раньше было «как в игре, Never -> Low»: тест Вани — из Siri (Low) и Palace (High) в игре звучал только Palace.
+            foreach (string f in RACE) SetEnumInt(t, f, c[0] ? 2 : 0);
+            SetEnumInt(t, FREE, c[1] ? 2 : 0);
+            // у 38 из 72 треков игры IsDirectlySelectable = False (Siri среди них). Тест Вани: из Siri + Palace звучал только Palace (True).
+            // Мод перебивает игру: включенный трек — «выбираемый».
+            if (c[0] || c[1]) t.GetType().GetProperty("IsDirectlySelectable").SetValue(t, true);
+            if (c[0]) nr++; if (c[1]) nf++;
+        }
+        for (int i = 0; i < songs.Count; i++)
+        {
+            var s = songs[i];
+            Say("STEP cover " + (i + 1) + "/" + songs.Count + " · " + Clean(s.title));
+            object nt = AppendTrack(list, "Siri", s.trackName, s.num, Clean(s.title), Clean(s.artist));
+            foreach (string f in RACE) SetEnumInt(nt, f, s.race ? 2 : 0);
+            SetEnumInt(nt, FREE, s.city ? 2 : 0);
+            if (s.race) nr++; if (s.city) nf++;
+            var art = Cover("ui/textures/albumart/t_albumart_oki", "ui/textures/albumart/t_albumart_" + s.trackName.ToLowerInvariant(), CoverPixels(s));
+            nt.GetType().GetProperty("AlbumArt").SetValue(nt, new PointerRef(new EbxImportReference { FileGuid = art.Item1, ClassGuid = art.Item2 }));
+            logic.AddDependency(art.Item1);
+        }
+        // правила повтора движка (MinTracksBetween=5, HighSuitabilityMinTracksBetween=20) рассчитаны на 72 трека.
+        // Тест Вани: из 2 включенных (Siri + Palace) везде играл один Palace. Подгоняем под свой плейлист: не больше N-1.
+        int nOn = Math.Min(nr > 0 ? nr : int.MaxValue, nf > 0 ? nf : int.MaxValue);
+        if (nOn != int.MaxValue)
+            foreach (object o in logic.Objects)
+                foreach (string f in new[] { "MinTracksBetween", "HighSuitabilityMinTracksBetween" })
+                {
+                    var pi = o.GetType().GetProperty(f); if (pi == null) continue;
+                    long cur = Convert.ToInt64(pi.GetValue(o)), lim = Math.Max(0, nOn - 1);
+                    if (cur > lim) { pi.SetValue(o, Convert.ChangeType(lim, pi.PropertyType)); App.Log("логика: " + f + " " + cur + " -> " + lim + " (включено треков: " + nOn + ")"); }
+                }
+        am.ModifyEbx(LOGIC, logic);
+
+        // 4) мод
+        Say("STEP writeMod");
+        var ms = new Frosty.Core.Mod.ModSettings();
+        ms.Title = "Unbound Soundtrack"; ms.Author = "Kitivski + Claude"; ms.Category = "Audio"; ms.Version = App.Version;
+        ms.Description = (job.ContainsKey("preset") ? "Profile: " + Clean((string)job["preset"]) + ". " : "") + (songs.Count > 0 ? "Own songs: " + string.Join(", ", songs.Select(s => Clean(s.artist) + " - " + Clean(s.title))) + ". " : "")
+            + "Game tracks in races: " + nr + ", in the city: " + nf + ". Made with Unbound Soundtrack (fan-made, not affiliated with EA).";
+        ms.Icon = ModIcon();
+        Frosty.Core.Config.Load(Path.Combine(App.FrostyDir, "config.json"));
+        Frosty.Core.App.SelectedProfile = App.Profile;
+        if (Frosty.Core.App.PluginManager == null) Frosty.Core.App.PluginManager = new Frosty.Core.PluginManager(new Lg(), (Frosty.Core.PluginManagerType)0);
+        string tmp = Path.Combine(App.DataDir, "build.fbmod");
+        if (File.Exists(tmp)) File.Delete(tmp);
+        new Frosty.Core.FrostyProject().WriteToMod(tmp, ms);
+        if (!File.Exists(tmp) || new FileInfo(tmp).Length < 1000) throw new Exception("мод не записался");
+        Directory.CreateDirectory(Path.GetDirectoryName(outPath));
+        try { File.Copy(tmp, outPath, true); }
+        catch (IOException e) { App.Log("copy mod: " + e.Message); throw new UserError("modLocked", outPath); }
+        File.Delete(tmp);
+        Say("OK " + App.Json.Serialize(new Dictionary<string, object> { { "path", outPath }, { "size", new FileInfo(outPath).Length }, { "race", nr }, { "city", nf }, { "songs", songs.Count } }));
+    }
+
+    static string Clean(string s) { s = (s ?? "").Replace('\r', ' ').Replace('\n', ' ').Trim(); return s.Length > 80 ? s.Substring(0, 80) : s; }
+
+    // ---------- банки музыки ----------
+    // Сетка Selection банка — на байтах: ≤ 255 строк. Песня = 3 строки (B старт, C финиш, A полная).
+    // Сначала ev02 (проверено в игре), потом ev01 (у него своя сетка). Не хватает — забираем строки ВЫКЛЮЧЕННЫХ треков игры
+    // из списка «можно отдавать» (их никто не вызывает напрямую — разбор FrostyReader trackscan), по одному, сколько нужно.
+    class BankWork { public string Name; public ResAssetEntry Re; public byte[] Orig; public SbleBank Bank; public Func<byte[], Guid> NewChunk; public bool Changed; public int Songs; }
+
+    static BankWork OpenBank(string name)
+    {
+        var w = new BankWork { Name = name, Re = am.GetResEntry(name) };
+        if (w.Re == null) throw new UserError("gameChanged", "no " + name);
+        using (Stream s = am.GetRes(w.Re)) using (var ms = new MemoryStream()) { s.CopyTo(ms); w.Orig = ms.ToArray(); }
+        w.Bank = SbleBank.Read(w.Orig);
+        if (!w.Bank.Write().SequenceEqual(w.Orig)) throw new UserError("gameChanged", "bank round-trip " + name);
+        var guids = w.Bank.F(SbleBank.DS_CHK, 0xF4369173).Vals;
+        ChunkAssetEntry tc = am.GetChunkEntry(new Guid(w.Bank.Data.Skip((int)guids[0] - 1).Take(16).ToArray()));
+        w.NewChunk = data =>
+        {
+            Guid g = am.AddChunk(data, null, null, tc.Bundles.ToArray());
+            ChunkAssetEntry ce = am.GetChunkEntry(g);
+            ce.AddedSuperBundles.AddRange(tc.SuperBundles);
+            ce.H32 = tc.H32; ce.FirstMip = tc.FirstMip;
+            return g;
+        };
+        return w;
+    }
+    static int Free(BankWork w) { return (255 - w.Bank.SelRows()) / 3; }
+
+    static void SaveBank(BankWork w)
+    {
+        byte[] nb = w.Bank.Write();
+        var check = SbleBank.Read(nb);
+        if (!check.Write().SequenceEqual(nb)) throw new Exception("банк " + w.Name + " не перечитывается байт в байт");
+        am.ModifyRes(w.Name, nb, w.Re.ResMeta);
+        EbxAsset be = am.GetEbx(am.GetEbxEntry(w.Name));
+        var chunks = (IList)be.RootObject.GetType().GetProperty("Chunks").GetValue(be.RootObject);
+        Type ct = chunks[0].GetType();
+        var gl = check.F(SbleBank.DS_CHK, 0xF4369173).Vals; var sl = check.F(SbleBank.DS_CHK, 0xDC19107B).Vals;
+        for (int i = chunks.Count; i < check[SbleBank.DS_CHK].Count; i++)
+        {
+            object c = Activator.CreateInstance(ct);
+            ct.GetProperty("ChunkId").SetValue(c, new Guid(check.Data.Skip((int)gl[i] - 1).Take(16).ToArray()));
+            var psz = ct.GetProperty("ChunkSize"); psz.SetValue(c, Convert.ChangeType(sl[i], psz.PropertyType));
+            chunks.Add(c);
+        }
+        am.ModifyEbx(w.Name, be);
+        App.Log("банк " + w.Name + ": " + w.Orig.Length + " -> " + nb.Length + " Б, строк Selection " + check.SelRows() + ", своих песен " + w.Songs);
+    }
+
+    // выключенные треки игры (обе галочки сняты), чьи строки можно отдать своим песням.
+    // Отдаем только тот, кого игра не может вызвать ничем: во всех режимах Never (выключен) и в ОРИГИНАЛЕ IsDirectlySelectable = False
+    // (прямой вызов запрещен самой игрой; у сюжетных он True). Разбор 10.11 (FrostyReader trackscan, 254 876 EBX): имена и хэши треков
+    // вне pf_music_logic не встречаются; логику подключает только audio/gameplay/prefabs/pf_gameplay_audio_hooks.
+    // Сюжетные и титры (TitleId не ID_MUSICTRACK_) не трогаем никогда. Логика читается до правок сборки — флаг оригинальный.
+    static List<long> GiveAway(Dictionary<string, bool[]> choice)
+    {
+        var res = new List<long>();
+        foreach (object t in TrackList(am.GetEbx(am.GetEbxEntry(LOGIC))))
+        {
+            string name = Str(t, "TrackEnumName");
+            if (!Str(t, "TitleId").StartsWith("ID_MUSICTRACK_")) continue;
+            if (Convert.ToBoolean(t.GetType().GetProperty("IsDirectlySelectable").GetValue(t))) continue;
+            bool[] c; if (!choice.TryGetValue(name, out c) || c.Length < 2 || c[0] || c[1]) continue;
+            res.Add(Convert.ToInt64(t.GetType().GetProperty("TrackEnumInt").GetValue(t)));
+        }
+        return res;
+    }
+
+    // giveAway — номера выключенных треков игры, чьи строки можно забрать (по порядку: кого отдавать первым)
+    static void AddBanks(List<Song> songs, List<string> encDirs, List<long> giveAway)
+    {
+        Say("STEP bank");
+        var banks = new List<BankWork> { OpenBank(BANK), OpenBank(BANK1) };
+        if (job.ContainsKey("ev01first") && Convert.ToBoolean(job["ev01first"])) banks.Reverse();   // только для теста ev01 в игре (задание вручную)
+        foreach (long t in giveAway)
+        {
+            if (banks.Sum(x => Free(x)) >= songs.Count) break;
+            foreach (var w in banks)
+            {
+                if (!w.Bank.Tracks().Contains(t)) continue;
+                int n = w.Bank.RemoveTrack(t);
+                if (n > 0) { w.Changed = true; App.Log("банк " + w.Name + ": выключенный трек игры " + t + " отдал строк " + n); }
+            }
+        }
+        int cap = banks.Sum(x => Free(x));
+        if (songs.Count > cap) throw new UserError("tooManySongs", cap.ToString());
+        int num = (int)Math.Max(140, banks.Max(w => w.Bank.MaxTrack()) + 1);   // номер растет на оба банка — не повторяется
+        for (int i = 0; i < songs.Count; i++)
+        {
+            var s = songs[i];
+            var w = banks.First(x => Free(x) > 0);
+            s.num = num++;
+            s.trackName = TrackName(s);
+            var stream = new MemoryStream(); var pieces = new List<SbleBank.Piece>();
+            foreach (var k in new[] { Tuple.Create("B", 0, true), Tuple.Create("C", 1, false), Tuple.Create("A", 3, false) })
+            {
+                byte[] a = File.ReadAllBytes(Path.Combine(encDirs[i], k.Item1 + ".sps")), m = File.ReadAllBytes(Path.Combine(encDirs[i], k.Item1 + ".sek"));
+                if (a[0] != 0x48) throw new Exception(k.Item1 + ".sps: не SPS");
+                uint rate = BE32(a, 4) & 0x3FFFF, samples = BE32(a, 8) & 0x1FFFFFFF;
+                if (rate != Audio.SR) throw new Exception("частота " + rate);
+                while (stream.Length % 16 != 0) stream.WriteByte(0);
+                long off = stream.Length; stream.Write(a, 0, a.Length);
+                pieces.Add(new SbleBank.Piece { Value = k.Item2, Intro = k.Item3, Offset = off, Length = samples / (float)rate, MemGuid = w.NewChunk(m), MemSize = (uint)m.Length });
+            }
+            byte[] sd = stream.ToArray();
+            w.Bank.AddSong(s.num, pieces, w.NewChunk(sd), (uint)sd.Length);
+            w.Changed = true; w.Songs++;
+            App.Log("песня " + s.trackName + " номер " + s.num + " -> " + w.Name + ", звук " + sd.Length + " Б");
+        }
+        foreach (var w in banks) if (w.Changed) SaveBank(w);
+    }
+
+    static string TrackName(Song s)
+    {
+        var sb = new StringBuilder();
+        bool up = true;
+        foreach (char ch in (s.title ?? ""))
+        {
+            if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9')) { sb.Append(up ? char.ToUpperInvariant(ch) : ch); up = false; }
+            else up = true;
+            if (sb.Length >= 24) break;
+        }
+        return "US" + s.num + (sb.Length > 0 ? "_" + sb : "");
+    }
+
+    static uint BE32(byte[] b, int o) { return (uint)(b[o] << 24 | b[o + 1] << 16 | b[o + 2] << 8 | b[o + 3]); }
+
+    static byte[] CoverPixels(Song s)
+    {
+        string p = Path.Combine(App.SongsDir, s.id, "cover.png");
+        byte[] rgba;
+        if (File.Exists(p)) using (var bmp = new Bitmap(p)) rgba = Img.ToRgba(bmp, 256, 256);
+        else
+        {
+            rgba = new byte[256 * 256 * 4];
+            for (int i = 0; i < rgba.Length; i += 4) { rgba[i] = 20; rgba[i + 1] = 21; rgba[i + 2] = 24; rgba[i + 3] = 255; }
+        }
+        return Bc7.Encode(rgba, 256, 256);
+    }
+
+    static byte[] ModIcon()
+    {
+        string p = Path.Combine(App.WebDir, "img", "modicon.png");
+        if (File.Exists(p)) return File.ReadAllBytes(p);
+        using (var bmp = new Bitmap(64, 64))
+        using (var g = Graphics.FromImage(bmp))
+        using (var ms = new MemoryStream())
+        {
+            g.Clear(Color.FromArgb(182, 255, 26));
+            bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            return ms.ToArray();
+        }
+    }
+
+    // ---------- pf_music_logic ----------
+    static IList TrackList(EbxAsset a)
+    {
+        object ctl = a.Objects.First(o => o.GetType().GetProperty("MusicTrackInfoArray") != null);
+        return (IList)ctl.GetType().GetProperty("MusicTrackInfoArray").GetValue(ctl);
+    }
+
+    static object AppendTrack(IList list, string template, string name, int num, string title, string artist)
+    {
+        object src = null;
+        foreach (object t in list) if (Str(t, "TrackEnumName") == template) src = t;
+        if (src == null) throw new UserError("gameChanged", "no track " + template);
+        Type ty = src.GetType();
+        object nt = Activator.CreateInstance(ty);
+        foreach (var pi in ty.GetProperties()) if (pi.CanWrite && pi.GetIndexParameters().Length == 0) pi.SetValue(nt, pi.GetValue(src));
+        SetStr(nt, "TrackEnumName", name); SetStr(nt, "TitleId", title); SetStr(nt, "ArtistId", artist);
+        ty.GetProperty("TrackEnumInt").SetValue(nt, num);
+        ty.GetProperty("IsDirectlySelectable").SetValue(nt, true);
+        list.Add(nt);
+        return nt;
+    }
+
+    static Dictionary<Guid, string> artByGuid;
+    static string ArtName(object t)
+    {
+        try
+        {
+            object o = t.GetType().GetProperty("AlbumArt").GetValue(t);
+            if (!(o is PointerRef)) return null;
+            var p = (PointerRef)o;
+            if (p.Type != PointerRefType.External) return null;
+            if (artByGuid == null)
+            {
+                artByGuid = new Dictionary<Guid, string>();
+                foreach (EbxAssetEntry ae in am.EnumerateEbx().Where(x => x.Name.ToLowerInvariant().StartsWith("ui/textures/albumart/")).ToList())
+                    try { artByGuid[am.GetEbx(ae).FileGuid] = ae.Name; } catch { }
+            }
+            string n; return artByGuid.TryGetValue(p.External.FileGuid, out n) ? n : null;
+        }
+        catch (Exception ex) { App.Log("обложка трека: " + ex.Message); return null; }
+    }
+
+    static string Str(object o, string prop) { object v = o.GetType().GetProperty(prop).GetValue(o); return v == null ? "" : v.ToString(); }
+    static void SetStr(object o, string prop, string val)
+    {
+        var pi = o.GetType().GetProperty(prop);
+        pi.SetValue(o, pi.PropertyType == typeof(string) ? (object)val : Activator.CreateInstance(pi.PropertyType, new object[] { val }));
+    }
+    static int EnumVal(object o, string prop) { return Convert.ToInt32(o.GetType().GetProperty(prop).GetValue(o)); }
+    static void SetEnumInt(object o, string prop, int v) { var pi = o.GetType().GetProperty(prop); pi.SetValue(o, Enum.ToObject(pi.PropertyType, v)); }
+
+    // дубль ассета обложки (EBX + RES + чанк) со своими пикселями — проверено в игре (songlogic / addsong)
+    static Tuple<Guid, Guid> Cover(string srcArt, string newArt, byte[] pix)
+    {
+        EbxAssetEntry srcE = am.GetEbxEntry(srcArt);
+        if (srcE == null) throw new UserError("gameChanged", "no " + srcArt);
+        EbxAsset tex = am.GetEbx(srcE);
+        tex.SetFileGuid(Guid.NewGuid());
+        dynamic troot = tex.RootObject;
+        troot.Name = newArt;
+        AssetClassGuid cg = new AssetClassGuid(Utils.GenerateDeterministicGuid(tex.Objects, (Type)troot.GetType(), tex.FileGuid), -1);
+        troot.SetInstanceGuid(cg);
+        ResAssetEntry srcR = am.GetResEntry((ulong)troot.Resource);
+        Texture t = am.GetResAs<Texture>(srcR);
+        ChunkAssetEntry srcC = am.GetChunkEntry(t.ChunkId);
+        if (pix.Length != t.MipSizes[0]) throw new Exception("обложка: " + pix.Length + " != " + t.MipSizes[0]);
+        EbxAssetEntry newE = am.AddEbx(newArt, tex, srcE.Bundles.ToArray());
+        t.AssetNameHash = (uint)Utils.HashString(newArt, true);
+        Guid newChunk = am.AddChunk(pix, null, t, srcC.Bundles.ToArray());
+        ChunkAssetEntry newC = am.GetChunkEntry(newChunk);
+        newC.AddedSuperBundles.AddRange(srcC.SuperBundles);
+        t.ChunkId = newChunk;
+        ResAssetEntry newR = am.AddRes(newArt, ResourceType.Texture, srcR.ResMeta, t.SaveBytes(), srcR.Bundles.ToArray());
+        troot.Resource = newR.ResRid;
+        newR.LinkAsset(newC); newE.LinkAsset(newR);
+        foreach (var lst in new[] { newE.AddedBundles, newR.AddedBundles, newC.AddedSuperBundles })
+        { var u = lst.Distinct().ToList(); lst.Clear(); lst.AddRange(u); }
+        am.ModifyEbx(newArt, tex);
+        return Tuple.Create(tex.FileGuid, cg.ExportedGuid);
+    }
+}
+
+class Lg : ILogger
+{
+    public void Log(string t, params object[] v) { }
+    public void LogWarning(string t, params object[] v) { App.Log("frosty WARN " + t); }
+    public void LogError(string t, params object[] v) { App.Log("frosty ERR " + t); }
+}
