@@ -13,7 +13,7 @@ using System.Web.Script.Serialization;
 
 static class App
 {
-    public const string Version = "1.0";
+    public const string Version = "1.0.0a";
     public const string Profile = "NeedForSpeedUnbound";
     public static string Root, AppDir, WebDir, FrostyDir, EncDir, DataDir, SongsDir, UiDir, LogPath, MusicDir;
     public static readonly JavaScriptSerializer Json = new JavaScriptSerializer { MaxJsonLength = int.MaxValue, RecursionLimit = 64 };
@@ -56,7 +56,7 @@ static class App
         string[] tries = n == "EbxClasses"
             ? new[] { Path.Combine(FrostyDir, "Profiles", "NFSUnboundSDK.dll") }
             : new[] { Path.Combine(FrostyDir, n + ".dll"), Path.Combine(FrostyDir, "ThirdParty", n + ".dll"), Path.Combine(FrostyDir, "Profiles", n + ".dll") };
-        foreach (string p in tries) if (File.Exists(p)) return Assembly.LoadFrom(p);
+        foreach (string p in tries) if (File.Exists(p)) return Assembly.UnsafeLoadFrom(p);
         return null;
     }
 

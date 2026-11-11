@@ -53,6 +53,13 @@ Output: `out\Unbound Soundtrack\` — the same layout as the release zip.
 | `app\encoder\Tool.exe` | EA audio encoder from Frosty Editor's Sound Editor plugin (HarGabt's fork), unmodified |
 | `app\frosty\ThirdParty\fifaconfig.exe` | part of Frosty Mod Manager's `ThirdParty` folder, unmodified |
 
+## Changelog
+
+- **1.0.0a** — fix: "Build mod" failed with `FileLoadException: Could not load file or assembly 'FrostySdk' ... (0x80131515)`
+  when the zip was downloaded and unpacked with Windows Explorer (Windows marks every unpacked file as "from the internet",
+  and .NET refused to load the Frosty libraries). Nothing else changed.
+- **1.0** — first release.
+
 ## License
 
 GNU GPL v3 (the program uses Frosty Toolsuite libraries, which are GPL v3). Use it, share it, change it, include it anywhere —
