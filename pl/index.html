@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pl">
+<html lang="pl" class="">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,9 +9,16 @@
 <link rel="alternate" hreflang="uk" href="https://kotovskivan.github.io/UnboundSoundtrack/">
 <link rel="alternate" hreflang="en" href="https://kotovskivan.github.io/UnboundSoundtrack/en/">
 <link rel="alternate" hreflang="de" href="https://kotovskivan.github.io/UnboundSoundtrack/de/">
+<link rel="alternate" hreflang="es" href="https://kotovskivan.github.io/UnboundSoundtrack/es/">
+<link rel="alternate" hreflang="fr" href="https://kotovskivan.github.io/UnboundSoundtrack/fr/">
+<link rel="alternate" hreflang="it" href="https://kotovskivan.github.io/UnboundSoundtrack/it/">
 <link rel="alternate" hreflang="pl" href="https://kotovskivan.github.io/UnboundSoundtrack/pl/">
 <link rel="alternate" hreflang="pt" href="https://kotovskivan.github.io/UnboundSoundtrack/pt/">
+<link rel="alternate" hreflang="tr" href="https://kotovskivan.github.io/UnboundSoundtrack/tr/">
 <link rel="alternate" hreflang="ru" href="https://kotovskivan.github.io/UnboundSoundtrack/ru/">
+<link rel="alternate" hreflang="zh" href="https://kotovskivan.github.io/UnboundSoundtrack/zh/">
+<link rel="alternate" hreflang="ja" href="https://kotovskivan.github.io/UnboundSoundtrack/ja/">
+<link rel="alternate" hreflang="ko" href="https://kotovskivan.github.io/UnboundSoundtrack/ko/">
 <link rel="alternate" hreflang="x-default" href="https://kotovskivan.github.io/UnboundSoundtrack/en/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Unbound Soundtrack">
@@ -25,8 +32,15 @@
 <meta property="og:locale:alternate" content="uk_UA">
 <meta property="og:locale:alternate" content="en_US">
 <meta property="og:locale:alternate" content="de_DE">
+<meta property="og:locale:alternate" content="es_ES">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta property="og:locale:alternate" content="it_IT">
 <meta property="og:locale:alternate" content="pt_BR">
+<meta property="og:locale:alternate" content="tr_TR">
 <meta property="og:locale:alternate" content="ru_RU">
+<meta property="og:locale:alternate" content="zh_CN">
+<meta property="og:locale:alternate" content="ja_JP">
+<meta property="og:locale:alternate" content="ko_KR">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Unbound Soundtrack — własna muzyka w NFS Unbound (mod na PC)">
 <meta name="twitter:description" content="Dodaj własne piosenki do Need for Speed Unbound jako nowe utwory z własnymi okładkami. Darmowe narzędzie, jeden mod do Frosty Mod Manager, pliki gry bez zmian.">
@@ -116,8 +130,9 @@ img { max-width: 100%; height: auto; display: block; }
 .langs summary:hover, .langs[open] summary { border-color: var(--acid); }
 .langs summary .ar { color: var(--acid); font-size: 10px; transition: transform .15s; }
 .langs[open] summary .ar { transform: rotate(180deg); }
-.langs .menu { position: absolute; right: 0; top: calc(100% + 6px); z-index: 30; min-width: 210px; max-height: 70vh; overflow: auto; display: grid; gap: 2px; padding: 6px; background: var(--panel); border: 1px solid var(--acid); box-shadow: 6px 6px 0 rgba(182,255,26,.18); }
-.langs .menu a { display: flex; align-items: center; gap: 12px; padding: 9px 10px; color: var(--soft); text-decoration: none; font-size: 15px; }
+.langs .menu { position: absolute; right: 0; top: calc(100% + 6px); z-index: 30; width: min(360px, calc(100vw - 32px)); max-height: 75vh; overflow: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 2px; padding: 6px; background: var(--panel); border: 1px solid var(--acid); box-shadow: 6px 6px 0 rgba(182,255,26,.18); }
+.langs .menu a { display: flex; align-items: center; gap: 10px; padding: 9px 10px; color: var(--soft); text-decoration: none; font-size: 15px; white-space: nowrap; }
+.langs .menu .ai { grid-column: 1 / -1; margin: 6px 4px 2px; padding-top: 8px; border-top: 1px solid var(--line); font-size: 12px; line-height: 1.4; color: var(--mute); }
 .langs .menu a b { min-width: 24px; font-size: 11px; letter-spacing: .1em; color: var(--mute); }
 .langs .menu a:hover { background: rgba(255,255,255,.06); color: var(--paper); }
 .langs .menu a[aria-current="page"] { background: var(--acid); color: var(--ink); }
@@ -209,6 +224,11 @@ footer { margin-top: 96px; border-top: 1px solid var(--line); background: rgba(2
 .foot p { margin: 0 0 12px; color: var(--soft); font-size: 15px; }
 .legal { margin-top: 36px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--mute); font-size: 13px; }
 
+/* ---------- китайский, японский, корейский: шрифт Windows по lang, без курсива ---------- */
+.cjk body { line-height: 1.75; }
+.cjk .tag, .cjk .btn, .cjk .h2, .cjk .card h3, .cjk .alert h2, .cjk .suggest a, .cjk .dl-mini, .cjk .foot h2 { font-style: normal; letter-spacing: .03em; }
+html[lang="ko"] body { word-break: keep-all; }
+
 /* ---------- скрин на весь экран ---------- */
 dialog#lb { padding: 0; border: 1px solid var(--acid); background: #000; max-width: min(96vw, 1600px); max-height: 94vh; }
 dialog#lb::backdrop { background: rgba(0,0,0,.86); }
@@ -232,7 +252,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
     <a class="brand" href="../pl/"><img src="../favicon.png" alt="" width="30" height="30"><span>Unbound Soundtrack</span></a>
     <details class="langs" id="langs">
       <summary title="Język"><span>PL · Polski</span><span class="ar" aria-hidden="true">▼</span></summary>
-      <nav class="menu" aria-label="Język"><a href="../" hreflang="uk" lang="uk"><b>UA</b>Українська</a><a href="../en/" hreflang="en" lang="en"><b>EN</b>English</a><a href="../de/" hreflang="de" lang="de"><b>DE</b>Deutsch</a><a href="../pl/" hreflang="pl" lang="pl" aria-current="page"><b>PL</b>Polski</a><a href="../pt/" hreflang="pt" lang="pt"><b>PT</b>Português</a><a href="../ru/" hreflang="ru" lang="ru"><b>RU</b>Русский</a></nav>
+      <nav class="menu" aria-label="Język"><a href="../" hreflang="uk" lang="uk"><b>UA</b>Українська</a><a href="../en/" hreflang="en" lang="en"><b>EN</b>English</a><a href="../de/" hreflang="de" lang="de"><b>DE</b>Deutsch</a><a href="../es/" hreflang="es" lang="es"><b>ES</b>Español</a><a href="../fr/" hreflang="fr" lang="fr"><b>FR</b>Français</a><a href="../it/" hreflang="it" lang="it"><b>IT</b>Italiano</a><a href="../pl/" hreflang="pl" lang="pl" aria-current="page"><b>PL</b>Polski</a><a href="../pt/" hreflang="pt" lang="pt"><b>PT</b>Português</a><a href="../tr/" hreflang="tr" lang="tr"><b>TR</b>Türkçe</a><a href="../ru/" hreflang="ru" lang="ru"><b>RU</b>Русский</a><a href="../zh/" hreflang="zh" lang="zh-Hans"><b>ZH</b>简体中文</a><a href="../ja/" hreflang="ja" lang="ja"><b>JA</b>日本語</a><a href="../ko/" hreflang="ko" lang="ko"><b>KO</b>한국어</a><p class="ai">Tłumaczenia wykonane przez AI (Claude)</p></nav>
     </details>
     <a class="dl-mini" href="https://drive.google.com/drive/folders/1xj2YBqJ-sqB53Azt__dZNrsfP8iMbS_a?usp=sharing" target="_blank" rel="noopener">Pobierz</a>
   </div>
@@ -392,7 +412,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
   lb.addEventListener("click", function (e) { if (e.target === lb) lb.close(); });
 
   /* «эта страница есть на твоем языке» — только подсказка, без автоперехода (так правильно для SEO) */
-  var CUR = "pl", PAGES = {"uk": {"t": "Ця сторінка є українською", "n": "Українська", "href": "../"}, "en": {"t": "This page is also in English", "n": "English", "href": "../en/"}, "de": {"t": "Diese Seite gibt es auch auf Deutsch", "n": "Deutsch", "href": "../de/"}, "pl": {"t": "Ta strona jest też po polsku", "n": "Polski", "href": "../pl/"}, "pt": {"t": "Esta página também está em português", "n": "Português", "href": "../pt/"}, "ru": {"t": "Эта страница есть на русском", "n": "Русский", "href": "../ru/"}};
+  var CUR = "pl", PAGES = {"uk": {"t": "Ця сторінка є українською", "n": "Українська", "href": "../"}, "en": {"t": "This page is also in English", "n": "English", "href": "../en/"}, "de": {"t": "Diese Seite gibt es auch auf Deutsch", "n": "Deutsch", "href": "../de/"}, "es": {"t": "Esta página también está en español", "n": "Español", "href": "../es/"}, "fr": {"t": "Cette page existe aussi en français", "n": "Français", "href": "../fr/"}, "it": {"t": "Questa pagina è disponibile anche in italiano", "n": "Italiano", "href": "../it/"}, "pl": {"t": "Ta strona jest też po polsku", "n": "Polski", "href": "../pl/"}, "pt": {"t": "Esta página também está em português", "n": "Português", "href": "../pt/"}, "tr": {"t": "Bu sayfa Türkçe olarak da var", "n": "Türkçe", "href": "../tr/"}, "ru": {"t": "Эта страница есть на русском", "n": "Русский", "href": "../ru/"}, "zh": {"t": "本页面也有简体中文版", "n": "简体中文", "href": "../zh/"}, "ja": {"t": "このページは日本語でもご覧いただけます", "n": "日本語", "href": "../ja/"}, "ko": {"t": "이 페이지는 한국어로도 볼 수 있습니다", "n": "한국어", "href": "../ko/"}};
   var KEY = "us-lang-hint-off";
   try { if (localStorage.getItem(KEY)) return; } catch (e) {}
   var list = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ""];
