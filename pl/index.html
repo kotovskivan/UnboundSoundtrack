@@ -121,11 +121,12 @@ img { max-width: 100%; height: auto; display: block; }
 /* ---------- шапка ---------- */
 .top { position: sticky; top: 0; z-index: 10; background: rgba(10,10,10,.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
 .top .wrap { display: flex; align-items: center; gap: 16px; min-height: 60px; }
-.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--paper); font-weight: 700; font-style: italic; letter-spacing: .12em; font-size: 14px; text-transform: uppercase; white-space: nowrap; }
+/* 13.11 (Ваня: «обнови как у Heat»): белое UNBOUND + граффити «Soundtrack» — как лого в программе; значок убран */
+.brand { display: flex; align-items: baseline; text-decoration: none; color: var(--paper); white-space: nowrap; }
 .brand:hover { color: var(--paper); }
-.brand img { width: 30px; height: 30px; }
-.brand span { display: none; }
-@media (min-width: 520px) { .brand span { display: inline; } }
+.brand b { font: italic 700 22px/1 var(--font); letter-spacing: .02em; text-transform: uppercase; }
+.brand .sig { display: inline-block; font: 400 30px/1 "Sedgwick UB", var(--font); margin-left: 3px; transform: translateY(7px) rotate(-6deg);
+  color: var(--acid); -webkit-text-stroke: .09em #000; paint-order: stroke fill; text-shadow: .05em .05em 0 #000, .1em .1em 0 var(--paper); }
 .langs { position: relative; margin-left: auto; }
 .langs summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; font: 600 13px/1 var(--font); letter-spacing: .08em; color: var(--paper); border: 1px solid var(--line); padding: 9px 12px; user-select: none; }
 .langs summary::-webkit-details-marker { display: none; }
@@ -151,9 +152,7 @@ h1 { font-style: italic; text-transform: uppercase; font-weight: 700; font-size:
 h1 span { display: block; color: var(--acid); }
 .lead { font-size: clamp(18px, 2.1vw, 22px); line-height: 1.45; color: var(--soft); max-width: 36ch; margin: 0; }
 .lead b { white-space: nowrap; } /* название игры не рвать на две строки */
-/* 13.11 «Unbound» граффити (вариант 1f): только в lead, обертку ставит sobrat.py */
-.lead .ub { display: inline-block; font: 400 1.45em/.9 "Sedgwick UB", var(--font); vertical-align: -.04em; transform: rotate(-4deg); margin: 0 .12em 0 .04em;
-  color: var(--acid); -webkit-text-stroke: .09em #000; paint-order: stroke fill; text-shadow: .05em .05em 0 #000, .1em .1em 0 var(--paper); }
+/* 13.11 вечер: граффити «Unbound» из lead убрано (Ваня) — граффити теперь в шапке (.brand .sig) */
 .cta { display: flex; flex-wrap: wrap; gap: 14px 12px; margin: 30px 0 18px; align-items: stretch; }
 .btn { display: inline-flex; flex-direction: column; justify-content: center; gap: 4px; padding: 12px 18px; border: 1px solid var(--line); background: rgba(255,255,255,.02); color: var(--paper); text-decoration: none; text-transform: uppercase; font-style: italic; font-weight: 700; letter-spacing: .12em; font-size: 13px; line-height: 1.2; transition: transform .15s, box-shadow .15s, border-color .15s; }
 .btn:hover { color: var(--paper); border-color: var(--acid); }
@@ -286,7 +285,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
 
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="../pl/"><img src="../favicon.png" alt="" width="30" height="30"><span>Unbound Soundtrack</span></a>
+    <a class="brand" href="../pl/" aria-label="Unbound Soundtrack" translate="no"><b>UNBOUND</b><span class="sig">Soundtrack</span></a>
     <details class="langs" id="langs">
       <summary title="Język"><span>PL · Polski</span><span class="ar" aria-hidden="true">▼</span></summary>
       <nav class="menu" aria-label="Język"><a href="../" hreflang="uk" lang="uk"><b>UA</b>Українська</a><a href="../en/" hreflang="en" lang="en"><b>EN</b>English</a><a href="../de/" hreflang="de" lang="de"><b>DE</b>Deutsch</a><a href="../es/" hreflang="es" lang="es"><b>ES</b>Español</a><a href="../fr/" hreflang="fr" lang="fr"><b>FR</b>Français</a><a href="../it/" hreflang="it" lang="it"><b>IT</b>Italiano</a><a href="../pl/" hreflang="pl" lang="pl" aria-current="page"><b>PL</b>Polski</a><a href="../pt/" hreflang="pt" lang="pt"><b>PT</b>Português</a><a href="../tr/" hreflang="tr" lang="tr"><b>TR</b>Türkçe</a><a href="../ru/" hreflang="ru" lang="ru"><b>RU</b>Русский</a><a href="../zh/" hreflang="zh" lang="zh-Hans"><b>ZH</b>简体中文</a><a href="../ja/" hreflang="ja" lang="ja"><b>JA</b>日本語</a><a href="../ko/" hreflang="ko" lang="ko"><b>KO</b>한국어</a><p class="ai">Tłumaczenia wykonane przez AI (Claude)</p></nav>
@@ -303,7 +302,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
       <div>
         <p class="tag">Mod na własną muzykę · NFS Unbound · PC</p>
         <h1>Unbound <span>Soundtrack</span></h1>
-        <p class="lead">Pełna personalizacja muzyki w <b>Need for Speed <span class="ub">Unbound</span></b>: dodaj swoje piosenki z okładkami, a utwory gry zostaw lub wyłącz — wybór należy do ciebie.</p>
+        <p class="lead">Pełna personalizacja muzyki w <b>Need for Speed Unbound</b>: dodaj swoje piosenki z okładkami, a utwory gry zostaw lub wyłącz — wybór należy do ciebie.</p>
         <div class="cta">
           <a class="btn primary" href="https://drive.google.com/drive/folders/1xj2YBqJ-sqB53Azt__dZNrsfP8iMbS_a?usp=sharing" target="_blank" rel="noopener">
             <span>Pobierz</span><small>v1.0.1 · zip 63,6 MB · Google Drive</small>
