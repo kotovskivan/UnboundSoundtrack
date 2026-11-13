@@ -124,8 +124,8 @@ img { max-width: 100%; height: auto; display: block; }
 /* 13.11 (Ваня: «обнови как у Heat»): белое UNBOUND + граффити «Soundtrack» — как лого в программе; значок убран */
 .brand { display: flex; align-items: baseline; text-decoration: none; color: var(--paper); white-space: nowrap; }
 .brand:hover { color: var(--paper); }
-.brand b { font: italic 700 22px/1 var(--font); letter-spacing: .02em; text-transform: uppercase; }
-.brand .sig { display: inline-block; font: 400 30px/1 "Sedgwick UB", var(--font); margin-left: 3px; transform: translateY(7px) rotate(-6deg);
+.brand b { font: italic 700 clamp(16px, 4.6vw, 22px)/1 var(--font); letter-spacing: .02em; text-transform: uppercase; }
+.brand .sig { display: inline-block; font: 400 clamp(21px, 6.2vw, 30px)/1 "Sedgwick UB", var(--font); margin-left: 3px; transform: translateY(7px) rotate(-6deg);
   color: var(--acid); -webkit-text-stroke: .09em #000; paint-order: stroke fill; text-shadow: .05em .05em 0 #000, .1em .1em 0 var(--paper); }
 .langs { position: relative; margin-left: auto; }
 .langs summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; font: 600 13px/1 var(--font); letter-spacing: .08em; color: var(--paper); border: 1px solid var(--line); padding: 9px 12px; user-select: none; }
@@ -148,8 +148,11 @@ img { max-width: 100%; height: auto; display: block; }
 .hero { display: grid; gap: 44px; padding: 56px 0 72px; align-items: center; }
 @media (min-width: 980px) { .hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); padding: 80px 0 96px; } }
 .tag { display: inline-block; background: var(--acid); color: var(--ink); font-weight: 700; font-style: italic; letter-spacing: .14em; font-size: 12px; text-transform: uppercase; padding: 6px 12px; transform: rotate(-3deg); box-shadow: 4px 4px 0 var(--sun); }
-h1 { font-style: italic; text-transform: uppercase; font-weight: 700; font-size: clamp(44px, 5.2vw, 76px); line-height: .9; letter-spacing: -.01em; margin: 26px 0 22px; }
-h1 span { display: block; color: var(--acid); }
+/* 13.11 вечер (Ваня: «да» — как у Heat): белое UNBOUND + граффити «Soundtrack» под ним, как лого в программе и в шапке */
+h1 { line-height: .9; margin: 26px 0 30px; }
+h1 b { display: block; font: italic 700 clamp(56px, 6.6vw, 92px)/.9 var(--font); text-transform: uppercase; letter-spacing: -.01em; }
+h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", var(--font); margin: -.3em 0 0 .4em; transform: rotate(-6deg); transform-origin: left;
+  color: var(--acid); -webkit-text-stroke: .09em #000; paint-order: stroke fill; text-shadow: .05em .05em 0 #000, .1em .1em 0 var(--paper); }
 .lead { font-size: clamp(18px, 2.1vw, 22px); line-height: 1.45; color: var(--soft); max-width: 36ch; margin: 0; }
 .lead b { white-space: nowrap; } /* название игры не рвать на две строки */
 /* 13.11 вечер: граффити «Unbound» из lead убрано (Ваня) — граффити теперь в шапке (.brand .sig) */
@@ -301,7 +304,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
     <section class="hero">
       <div>
         <p class="tag">Mod na własną muzykę · NFS Unbound · PC</p>
-        <h1>Unbound <span>Soundtrack</span></h1>
+        <h1 translate="no"><b>Unbound</b> <span class="sig">Soundtrack</span></h1>
         <p class="lead">Pełna personalizacja muzyki w <b>Need for Speed Unbound</b>: dodaj swoje piosenki z okładkami, a utwory gry zostaw lub wyłącz — wybór należy do ciebie.</p>
         <div class="cta">
           <a class="btn primary" href="https://drive.google.com/drive/folders/1xj2YBqJ-sqB53Azt__dZNrsfP8iMbS_a?usp=sharing" target="_blank" rel="noopener">
