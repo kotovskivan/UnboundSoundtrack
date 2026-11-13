@@ -171,9 +171,15 @@ h1 span { display: block; color: var(--acid); }
 .h2 { display: flex; align-items: center; gap: 14px; margin: 0 0 30px; font-style: italic; text-transform: uppercase; font-weight: 700; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.05; }
 .h2 .n { font-size: 12px; font-style: normal; letter-spacing: .08em; background: var(--acid); color: var(--ink); padding: 3px 7px; flex: none; }
 .h2::after { content: ""; flex: 1; min-width: 24px; height: 1px; background: linear-gradient(90deg, var(--acid), transparent); }
-.features { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-.card { background: var(--panel); border: 1px solid var(--line); padding: 22px 20px 20px; transition: border-color .15s; }
+/* 13.11 (Ваня: «сплюснутые»): 6 карточек сеткой 3×2 (планшет 2, телефон 1), полоса слева как у кусков в панели песни, номер в углу */
+.features { display: grid; gap: 16px; grid-template-columns: 1fr; counter-reset: feat; }
+@media (min-width: 640px) { .features { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1000px) { .features { grid-template-columns: repeat(3, 1fr); } }
+.card { position: relative; overflow: hidden; counter-increment: feat; background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--acid); padding: 24px 26px 26px; transition: border-color .15s; }
+.card:nth-child(even) { border-left-color: var(--sun); }
+.card::after { content: counter(feat, decimal-leading-zero); position: absolute; top: 8px; right: 16px; font-weight: 700; font-style: italic; font-size: 64px; line-height: 1; color: rgba(255,255,255,.05); pointer-events: none; }
 .card:hover { border-color: var(--acid); }
+.card:nth-child(even):hover { border-color: var(--sun); }
 .card h3 { display: inline-block; margin: 0 0 14px; background: var(--acid); color: var(--ink); font-weight: 700; font-style: italic; font-size: 13px; line-height: 1.3; letter-spacing: .1em; text-transform: uppercase; padding: 3px 9px; transform: rotate(-2deg); }
 .card:nth-child(even) h3 { background: var(--sun); }
 .card p { margin: 0; color: var(--soft); font-size: 16px; }
@@ -193,6 +199,7 @@ h1 span { display: block; color: var(--acid); }
 .steps li::before { content: counter(s); position: absolute; left: 0; top: -12px; font-style: italic; font-weight: 700; font-size: 46px; line-height: 1; color: var(--acid); }
 .steps li:nth-child(even)::before { color: var(--sun); }
 .steps .sub { display: block; color: var(--mute); font-size: 15px; margin-top: 6px; }
+.steps .or { display: block; margin-top: 12px; }   /* 13.11: второй путь шага 3 — ▶ З YT MUSIC */
 .alerts { display: grid; gap: 18px; }
 @media (min-width: 860px) { .alerts { grid-template-columns: 1fr 1fr; } }
 .alert { border: 1px solid; border-left-width: 6px; padding: 22px 22px 20px; }
@@ -287,9 +294,10 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
     <section class="block" id="what">
       <h2 class="h2"><span class="n">01</span><span>Qué hace</span></h2>
       <div class="features">
-        <div class="card"><h3>Tus canciones</h3><p>mp3, flac, wav, ogg, m4a — como pistas <b>nuevas</b> con tu propio título y portada. Las pistas del juego se quedan como están.</p></div>
-        <div class="card"><h3>Drop en el GO</h3><p>Para cada canción: la salida de la carrera (el drop entra en el GO) y un fragmento corto para la meta.</p></div>
-        <div class="card"><h3>Carreras · Ciudad</h3><p>Activa y desactiva las pistas del juego por separado para carreras y para la ciudad, el garaje y el menú. Perfiles para distintos conjuntos de música.</p></div>
+        <div class="card"><h3>Tus canciones</h3><p>mp3, flac, wav, ogg, m4a — como pistas <b>nuevas</b> con tu propio título y portada. Las pistas del juego se quedan como están. Cientos de canciones en un mod.</p></div>
+        <div class="card"><h3>YouTube · YT Music</h3><p>Pega el enlace de una canción, playlist o álbum — o muchos enlaces, o una lista .txt. El programa descarga solo; un enlace de videoclip toma la misma canción de YT Music, sin intros ni escenas.</p></div>
+        <div class="card"><h3>Drop en el GO</h3><p>Salida: 17 s de cinemática + 3,45 s de cuenta atrás — el drop entra en el GO. El programa encuentra el GO solo por el golpe de bajo y lo ajustas con el ratón. Y un fragmento corto para la meta.</p></div>
+        <div class="card"><h3>Carreras · Ciudad</h3><p>Activa y desactiva las pistas del juego por separado para carreras y para la ciudad, el garaje y el menú. Perfiles para distintos conjuntos de música. HIGH / LOW — con qué frecuencia suena una pista.</p></div>
         <div class="card"><h3>Un solo mod</h3><p>Crea un solo mod para Frosty Mod Manager. Los archivos del juego no cambian: desactivas el mod y el juego queda como antes.</p></div>
         <div class="card"><h3>Zip limpio</h3><p>Sin música ni archivos del juego en el zip: las canciones son tuyas, las portadas y fondos se leen de tu propio juego. ▶ — vista previa de 30 segundos de cualquier pista del juego (necesita internet).</p></div>
       </div>
@@ -330,6 +338,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
         <h2 class="h2"><span class="n">03</span><span>Necesitas</span></h2>
         <ul class="plus">
           <li><b>Windows 10 u 11</b> — Microsoft Edge ya viene incluido, la ventana lo usa.</li>
+          <li><b>Microsoft Visual C++ Redistributable</b> (x64) — los archivos necesarios ya vienen en el zip; si el programa avisa de un error de DLL, instálalo desde la <a href="https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist" target="_blank" rel="noopener">web oficial de Microsoft</a>.</li>
           <li><b>Need for Speed Unbound</b> — Steam o EA app.</li>
           <li><b>Frosty Mod Manager</b>, versión de HarGabt para NFS Unbound — <a href="https://github.com/HarGabt/FrostyToolsuite/releases" target="_blank" rel="noopener">descargas</a>. Ábrelo una vez y elige el juego. En el primer Launch pide permisos de administrador — es normal.</li>
         </ul>
@@ -339,7 +348,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
         <ol class="steps">
           <li>Descomprime el zip <b>entero</b> en una carpeta normal — Escritorio, Documentos, D:\Mods… No en Program Files.</li>
           <li>Abre <b>Unbound Soundtrack.exe</b> y acepta las condiciones. El primer inicio lee el juego — unos minutos, solo una vez.</li>
-          <li><b>+ AÑADIR CANCIÓN</b> → elige un archivo → ajusta el GO y la meta → <b>Guardar</b>.<span class="sub">Las canciones están en la carpeta <b>Music</b> junto al programa, cada una en una carpeta numerada: Music\1\, Music\2\… También a mano: una carpeta nueva con número, con el archivo de la canción y una imagen.</span></li>
+          <li><b>+ AÑADIR CANCIÓN</b> → elige un archivo → ajusta el GO y la meta → <b>Guardar</b>.<span class="or">O <b>▶ DESDE YT MUSIC</b> → pega un enlace (canción, playlist, álbum), muchos enlaces o una lista .txt → <b>Descargar</b>.</span><span class="sub">Enlace de videoclip — el programa toma la misma canción de YT Music, sin intros ni escenas. Antes de una playlist muestra cuántas canciones hay, cuántas ya tienes, el tiempo y el espacio; las que ya tienes se saltan. Lista .txt: Título,Artista,Enlace; (letras latinas) — el programa muestra un archivo de ejemplo.</span><span class="sub">Las canciones están en la carpeta <b>Music</b> junto al programa, cada una en una carpeta numerada: Music\1\, Music\2\… También a mano: una carpeta nueva con número, con el archivo de la canción y una imagen.</span></li>
           <li><b>CREAR MOD</b>. El mod aparece en la lista de Frosty Mod Manager.</li>
           <li>En Frosty Mod Manager: marca <b>Unbound Soundtrack</b>, desactiva otros mods de música y pulsa <b>Launch</b>.</li>
         </ol>
@@ -370,7 +379,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
 
     <section class="block" id="changelog">
       <h2 class="h2"><span class="n">06</span><span>Novedades</span></h2>
-      <dl class="log"><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>Gran actualización.</b><br><b>Nuevo:</b> canciones de YouTube / YT Music — una canción, playlist, álbum, muchos enlaces o una lista .txt; un enlace de videoclip toma la misma canción de YT Music.<br>13 idiomas (traducido con IA).<br>Cientos de canciones en un mod (probado con 277).<br>Salida: el drop entra en el GO (17 s de cinemática + 3,45 s de cuenta atrás); el GO se busca por el golpe de bajo; las canciones con drop temprano llevan silencio delante.<br>HIGH / LOW para cada pista; orden, filtros, vista de lista; arrastrar y soltar y tu propio orden.<br>▶ para tus canciones; portadas: subir, generar o borrar.<br>Progreso de la creación por canción y botón «Parar»; elección de navegador; ayuda «Cómo funciona»; Visual C++ incluido.<br><b>Corregido:</b> crear el mod en una carpeta con letras no latinas (pasaba también en 1.0.0a); error «FrostyHash.dll» sin Visual C++; canciones «solo Carreras» sonaban en el garaje; títulos no latinos salían vacíos en la placa del juego; nombres muy largos rompían el guardado; volver a crear tras cerrar la ventana a mitad; elección de carpeta, idioma en las primeras pantallas, tamaño de ventana en pantallas pequeñas.<br><b>Actualizar:</b> descomprime 1.0.1 en una carpeta nueva, copia <b>data</b> y <b>Music</b> de la antigua y pulsa <b>CREAR MOD</b> otra vez.</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>Arreglo: «Crear mod» fallaba con FileLoadException (FrostySdk, 0x80131515) si el zip se descomprimía con el Explorador de Windows. Nada más cambió.</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>Primera versión.</dd></div></dl>
+      <dl class="log"><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>Gran actualización.</b><br><b>Nuevo:</b> canciones de YouTube / YT Music — una canción, playlist, álbum, muchos enlaces o una lista .txt; un enlace de videoclip toma la misma canción de YT Music.<br>13 idiomas (traducido con IA).<br>Cientos de canciones en un mod (probado con 277).<br>Salida: el drop entra en el GO (17 s de cinemática + 3,45 s de cuenta atrás); el GO se busca por el golpe de bajo; las canciones con drop temprano llevan silencio delante.<br>HIGH / LOW para cada pista; orden, filtros, vista de lista; arrastrar y soltar y tu propio orden.<br>▶ para tus canciones; portadas: subir, generar o borrar.<br>Progreso de la creación por canción y botón «Parar»; elección de navegador; ayuda «Cómo funciona»; Visual C++ incluido.<br><b>Corregido:</b> crear el mod en una carpeta con letras no latinas (pasaba también en 1.0.0a); error «FrostyHash.dll» sin Visual C++; canciones «solo Carreras» sonaban en el garaje; títulos no latinos salían vacíos en la placa del juego; nombres muy largos rompían el guardado; volver a crear tras cerrar la ventana a mitad; elección de carpeta, idioma en las primeras pantallas, tamaño de ventana en pantallas pequeñas.<br><b>Actualizar:</b> descomprime 1.0.1 en una carpeta nueva, copia <b>data</b> y <b>Music</b> de la antigua y pulsa <b>CREAR MOD</b> otra vez.</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>Arreglo: «Crear mod» fallaba con FileLoadException (FrostySdk, 0x80131515) si el zip se descomprimía con el Explorador de Windows. Nada más cambió.</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>Primera versión.</dd></div></dl>
     </section>
   </div>
 </main>

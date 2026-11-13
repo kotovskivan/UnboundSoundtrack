@@ -171,9 +171,15 @@ h1 span { display: block; color: var(--acid); }
 .h2 { display: flex; align-items: center; gap: 14px; margin: 0 0 30px; font-style: italic; text-transform: uppercase; font-weight: 700; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.05; }
 .h2 .n { font-size: 12px; font-style: normal; letter-spacing: .08em; background: var(--acid); color: var(--ink); padding: 3px 7px; flex: none; }
 .h2::after { content: ""; flex: 1; min-width: 24px; height: 1px; background: linear-gradient(90deg, var(--acid), transparent); }
-.features { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-.card { background: var(--panel); border: 1px solid var(--line); padding: 22px 20px 20px; transition: border-color .15s; }
+/* 13.11 (Ваня: «сплюснутые»): 6 карточек сеткой 3×2 (планшет 2, телефон 1), полоса слева как у кусков в панели песни, номер в углу */
+.features { display: grid; gap: 16px; grid-template-columns: 1fr; counter-reset: feat; }
+@media (min-width: 640px) { .features { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1000px) { .features { grid-template-columns: repeat(3, 1fr); } }
+.card { position: relative; overflow: hidden; counter-increment: feat; background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--acid); padding: 24px 26px 26px; transition: border-color .15s; }
+.card:nth-child(even) { border-left-color: var(--sun); }
+.card::after { content: counter(feat, decimal-leading-zero); position: absolute; top: 8px; right: 16px; font-weight: 700; font-style: italic; font-size: 64px; line-height: 1; color: rgba(255,255,255,.05); pointer-events: none; }
 .card:hover { border-color: var(--acid); }
+.card:nth-child(even):hover { border-color: var(--sun); }
 .card h3 { display: inline-block; margin: 0 0 14px; background: var(--acid); color: var(--ink); font-weight: 700; font-style: italic; font-size: 13px; line-height: 1.3; letter-spacing: .1em; text-transform: uppercase; padding: 3px 9px; transform: rotate(-2deg); }
 .card:nth-child(even) h3 { background: var(--sun); }
 .card p { margin: 0; color: var(--soft); font-size: 16px; }
@@ -193,6 +199,7 @@ h1 span { display: block; color: var(--acid); }
 .steps li::before { content: counter(s); position: absolute; left: 0; top: -12px; font-style: italic; font-weight: 700; font-size: 46px; line-height: 1; color: var(--acid); }
 .steps li:nth-child(even)::before { color: var(--sun); }
 .steps .sub { display: block; color: var(--mute); font-size: 15px; margin-top: 6px; }
+.steps .or { display: block; margin-top: 12px; }   /* 13.11: второй путь шага 3 — ▶ З YT MUSIC */
 .alerts { display: grid; gap: 18px; }
 @media (min-width: 860px) { .alerts { grid-template-columns: 1fr 1fr; } }
 .alert { border: 1px solid; border-left-width: 6px; padding: 22px 22px 20px; }
@@ -287,9 +294,10 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
     <section class="block" id="what">
       <h2 class="h2"><span class="n">01</span><span>功能</span></h2>
       <div class="features">
-        <div class="card"><h3>你的歌曲</h3><p>mp3、flac、wav、ogg、m4a —— 以你自己的名称和封面作为<b>新</b>曲目加入。游戏原有曲目保持不变。</p></div>
-        <div class="card"><h3>GO 时起 Drop</h3><p>每首歌都可以设置：比赛起步（Drop 正好落在 GO）以及冲线后的一小段。</p></div>
-        <div class="card"><h3>比赛 · 城市</h3><p>分别为比赛和城市、车库、菜单开启或关闭游戏曲目。可为不同的音乐组合建立配置。</p></div>
+        <div class="card"><h3>你的歌曲</h3><p>mp3、flac、wav、ogg、m4a —— 以你自己的名称和封面作为<b>新</b>曲目加入。游戏原有曲目保持不变。一个模组可放数百首歌。</p></div>
+        <div class="card"><h3>YouTube · YT Music</h3><p>粘贴单曲、播放列表或专辑链接，也可以一次多个链接或 .txt 列表。程序会自动下载；MV 链接会从 YT Music 取同一首歌，没有片头和小剧情。</p></div>
+        <div class="card"><h3>GO 时起 Drop</h3><p>比赛起步：17 秒过场动画 + 3.45 秒倒计时，Drop 正好落在 GO。程序按低音冲击自动找到 GO，也可以用鼠标调整。另有冲线后的一小段。</p></div>
+        <div class="card"><h3>比赛 · 城市</h3><p>分别为比赛和城市、车库、菜单开启或关闭游戏曲目。可为不同的音乐组合建立配置。HIGH / LOW 决定曲目的播放频率。</p></div>
         <div class="card"><h3>一个模组</h3><p>为 Frosty Mod Manager 生成一个模组。游戏文件不会被修改 —— 关闭模组，游戏就恢复原样。</p></div>
         <div class="card"><h3>干净的 zip</h3><p>zip 里没有音乐，也没有游戏文件：歌曲是你自己的，封面和背景从你自己的游戏中读取。▶ —— 任意游戏曲目的 30 秒试听（需要联网）。</p></div>
       </div>
@@ -330,6 +338,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
         <h2 class="h2"><span class="n">03</span><span>你需要</span></h2>
         <ul class="plus">
           <li><b>Windows 10 或 11</b> —— 系统自带 Microsoft Edge，程序窗口使用它。</li>
+          <li><b>Microsoft Visual C++ Redistributable</b> (x64) —— 所需文件已包含在 zip 中；如果程序提示 DLL 错误，请从 <a href="https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist" target="_blank" rel="noopener">Microsoft 官方网站</a>安装。</li>
           <li><b>Need for Speed Unbound</b> —— Steam 或 EA app 版。</li>
           <li><b>Frosty Mod Manager</b>，HarGabt 的 NFS Unbound 版本 —— <a href="https://github.com/HarGabt/FrostyToolsuite/releases" target="_blank" rel="noopener">下载</a>。先运行一次并选择游戏。第一次 Launch 时会请求管理员权限 —— 这是正常的。</li>
         </ul>
@@ -339,7 +348,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
         <ol class="steps">
           <li>把<b>整个</b> zip 解压到普通文件夹 —— 桌面、文档、D:\Mods… 不要放在 Program Files。</li>
           <li>运行 <b>Unbound Soundtrack.exe</b> 并接受条款。第一次启动会读取游戏 —— 几分钟，只需一次。</li>
-          <li><b>+ 添加歌曲</b> → 选择文件 → 设置 GO 和终点 → <b>保存</b>。<span class="sub">歌曲放在程序旁边的 <b>Music</b> 文件夹里，每首一个编号文件夹：Music\1\、Music\2\… 也可以手动：新建一个编号文件夹，放入歌曲文件和一张图片。</span></li>
+          <li><b>+ 添加歌曲</b> → 选择文件 → 设置 GO 和终点 → <b>保存</b>。<span class="or">或者 <b>▶ 从 YT Music 导入</b> → 粘贴链接（单曲、播放列表、专辑），也可以多个链接或 .txt 列表 → <b>下载</b>。</span><span class="sub">MV 链接会从 YT Music 取同一首歌，没有片头和小剧情。导入播放列表前会显示歌曲数、已有数量、所需时间和空间；已有的歌曲会跳过。.txt 列表：标题,艺术家,链接;（用拉丁字母）—— 程序里有示例文件。</span><span class="sub">歌曲放在程序旁边的 <b>Music</b> 文件夹里，每首一个编号文件夹：Music\1\、Music\2\… 也可以手动：新建一个编号文件夹，放入歌曲文件和一张图片。</span></li>
           <li><b>生成模组</b>。模组会出现在 Frosty Mod Manager 列表中。</li>
           <li>在 Frosty Mod Manager 中勾选 <b>Unbound Soundtrack</b>，关闭其他音乐模组，点击 <b>Launch</b>。</li>
         </ol>
@@ -370,7 +379,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
 
     <section class="block" id="changelog">
       <h2 class="h2"><span class="n">06</span><span>更新内容</span></h2>
-      <dl class="log"><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>大更新。</b><br><b>新增：</b>来自 YouTube / YT Music 的歌曲——单曲、播放列表、专辑、多个链接或 .txt 列表；MV 链接会从 YT Music 取同一首歌。<br>13 种语言（AI 翻译）。<br>一个模组可放数百首歌（已用 277 首测试）。<br>比赛起步：Drop 正好落在 GO（17 秒过场动画 + 3.45 秒倒计时）；GO 按低音冲击自动查找；Drop 来得早的歌曲前面会补上静音。<br>每首曲目都可设 HIGH / LOW；排序、筛选、列表视图；拖放和自定义歌曲顺序。<br>自己的歌曲可用 ▶ 试听；封面：上传、生成或删除。<br>生成时显示每首歌的进度，并有“停止”按钮；可选浏览器；“使用说明”帮助；已内置 Visual C++。<br><b>修复：</b>程序放在含非拉丁字母的文件夹中时无法生成模组（1.0.0a 也有）；没有 Visual C++ 时出现“FrostyHash.dll”错误；“仅比赛”的歌曲会在车库播放；非拉丁字母的歌名在游戏内标牌上显示为空；过长的歌名会导致保存失败；生成过程中关闭窗口后再次生成出错；文件夹选择、首屏语言切换、小屏幕上的窗口大小。<br><b>更新：</b>把 1.0.1 解压到新文件夹，从旧文件夹复制 <b>data</b> 和 <b>Music</b>，再点一次 <b>生成模组</b>。</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>修复：用 Windows 资源管理器解压 zip 后，“生成模组” 会报 FileLoadException（FrostySdk，0x80131515）错误。其他没有变化。</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>首个版本。</dd></div></dl>
+      <dl class="log"><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>大更新。</b><br><b>新增：</b>来自 YouTube / YT Music 的歌曲——单曲、播放列表、专辑、多个链接或 .txt 列表；MV 链接会从 YT Music 取同一首歌。<br>13 种语言（AI 翻译）。<br>一个模组可放数百首歌（已用 277 首测试）。<br>比赛起步：Drop 正好落在 GO（17 秒过场动画 + 3.45 秒倒计时）；GO 按低音冲击自动查找；Drop 来得早的歌曲前面会补上静音。<br>每首曲目都可设 HIGH / LOW；排序、筛选、列表视图；拖放和自定义歌曲顺序。<br>自己的歌曲可用 ▶ 试听；封面：上传、生成或删除。<br>生成时显示每首歌的进度，并有“停止”按钮；可选浏览器；“使用说明”帮助；已内置 Visual C++。<br><b>修复：</b>程序放在含非拉丁字母的文件夹中时无法生成模组（1.0.0a 也有）；没有 Visual C++ 时出现“FrostyHash.dll”错误；“仅比赛”的歌曲会在车库播放；非拉丁字母的歌名在游戏内标牌上显示为空；过长的歌名会导致保存失败；生成过程中关闭窗口后再次生成出错；文件夹选择、首屏语言切换、小屏幕上的窗口大小。<br><b>更新：</b>把 1.0.1 解压到新文件夹，从旧文件夹复制 <b>data</b> 和 <b>Music</b>，再点一次 <b>生成模组</b>。</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>修复：用 Windows 资源管理器解压 zip 后，“生成模组” 会报 FileLoadException（FrostySdk，0x80131515）错误。其他没有变化。</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>首个版本。</dd></div></dl>
     </section>
   </div>
 </main>

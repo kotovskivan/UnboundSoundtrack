@@ -171,9 +171,15 @@ h1 span { display: block; color: var(--acid); }
 .h2 { display: flex; align-items: center; gap: 14px; margin: 0 0 30px; font-style: italic; text-transform: uppercase; font-weight: 700; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.05; }
 .h2 .n { font-size: 12px; font-style: normal; letter-spacing: .08em; background: var(--acid); color: var(--ink); padding: 3px 7px; flex: none; }
 .h2::after { content: ""; flex: 1; min-width: 24px; height: 1px; background: linear-gradient(90deg, var(--acid), transparent); }
-.features { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-.card { background: var(--panel); border: 1px solid var(--line); padding: 22px 20px 20px; transition: border-color .15s; }
+/* 13.11 (Ваня: «сплюснутые»): 6 карточек сеткой 3×2 (планшет 2, телефон 1), полоса слева как у кусков в панели песни, номер в углу */
+.features { display: grid; gap: 16px; grid-template-columns: 1fr; counter-reset: feat; }
+@media (min-width: 640px) { .features { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1000px) { .features { grid-template-columns: repeat(3, 1fr); } }
+.card { position: relative; overflow: hidden; counter-increment: feat; background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--acid); padding: 24px 26px 26px; transition: border-color .15s; }
+.card:nth-child(even) { border-left-color: var(--sun); }
+.card::after { content: counter(feat, decimal-leading-zero); position: absolute; top: 8px; right: 16px; font-weight: 700; font-style: italic; font-size: 64px; line-height: 1; color: rgba(255,255,255,.05); pointer-events: none; }
 .card:hover { border-color: var(--acid); }
+.card:nth-child(even):hover { border-color: var(--sun); }
 .card h3 { display: inline-block; margin: 0 0 14px; background: var(--acid); color: var(--ink); font-weight: 700; font-style: italic; font-size: 13px; line-height: 1.3; letter-spacing: .1em; text-transform: uppercase; padding: 3px 9px; transform: rotate(-2deg); }
 .card:nth-child(even) h3 { background: var(--sun); }
 .card p { margin: 0; color: var(--soft); font-size: 16px; }
@@ -193,6 +199,7 @@ h1 span { display: block; color: var(--acid); }
 .steps li::before { content: counter(s); position: absolute; left: 0; top: -12px; font-style: italic; font-weight: 700; font-size: 46px; line-height: 1; color: var(--acid); }
 .steps li:nth-child(even)::before { color: var(--sun); }
 .steps .sub { display: block; color: var(--mute); font-size: 15px; margin-top: 6px; }
+.steps .or { display: block; margin-top: 12px; }   /* 13.11: второй путь шага 3 — ▶ З YT MUSIC */
 .alerts { display: grid; gap: 18px; }
 @media (min-width: 860px) { .alerts { grid-template-columns: 1fr 1fr; } }
 .alert { border: 1px solid; border-left-width: 6px; padding: 22px 22px 20px; }
@@ -287,9 +294,10 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
     <section class="block" id="what">
       <h2 class="h2"><span class="n">01</span><span>できること</span></h2>
       <div class="features">
-        <div class="card"><h3>自分の曲</h3><p>mp3、flac、wav、ogg、m4a を、自分のタイトルとジャケット付きの<b>新しい</b>トラックとして追加。ゲームの曲はそのままです。</p></div>
-        <div class="card"><h3>GO でドロップ</h3><p>曲ごとに、レースのスタート（GO の瞬間にドロップ）とフィニッシュ用の短いパートを設定できます。</p></div>
-        <div class="card"><h3>レース · 街</h3><p>ゲームの曲をレース用と、街・ガレージ・メニュー用で別々にオン／オフ。音楽セットごとにプロファイルも作れます。</p></div>
+        <div class="card"><h3>自分の曲</h3><p>mp3、flac、wav、ogg、m4a を、自分のタイトルとジャケット付きの<b>新しい</b>トラックとして追加。ゲームの曲はそのままです。1 つの MOD に数百曲。</p></div>
+        <div class="card"><h3>YouTube · YT Music</h3><p>曲・プレイリスト・アルバムのリンク、複数のリンク、.txt リストを貼るだけ。ダウンロードはプログラムが自動で行います。MV のリンクなら YT Music の同じ曲を、イントロや寸劇なしで取得します。</p></div>
+        <div class="card"><h3>GO でドロップ</h3><p>スタート：17 秒のカットシーン + 3.45 秒のカウントダウン、GO の瞬間にドロップ。GO はベースの入りからプログラムが自動で見つけ、マウスで調整もできます。フィニッシュ用の短いパートも。</p></div>
+        <div class="card"><h3>レース · 街</h3><p>ゲームの曲をレース用と、街・ガレージ・メニュー用で別々にオン／オフ。音楽セットごとにプロファイルも作れます。HIGH / LOW で再生頻度も設定できます。</p></div>
         <div class="card"><h3>MOD はひとつ</h3><p>Frosty Mod Manager 用の MOD をひとつ作ります。ゲームファイルは変更しません — MOD をオフにすれば元どおりです。</p></div>
         <div class="card"><h3>クリーンな zip</h3><p>zip に音楽やゲームファイルは入っていません。曲はあなたのもの、ジャケットや背景はあなたのゲームから読み込みます。▶ — ゲーム内の曲を 30 秒試聴（インターネットが必要）。</p></div>
       </div>
@@ -330,6 +338,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
         <h2 class="h2"><span class="n">03</span><span>必要なもの</span></h2>
         <ul class="plus">
           <li><b>Windows 10 または 11</b> — Microsoft Edge は標準搭載、ウィンドウに使います。</li>
+          <li><b>Microsoft Visual C++ Redistributable</b> (x64) — 必要なファイルは zip に同梱済み。DLL エラーが出たら <a href="https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist" target="_blank" rel="noopener">Microsoft 公式サイト</a>からインストールしてください。</li>
           <li><b>Need for Speed Unbound</b> — Steam または EA app。</li>
           <li><b>Frosty Mod Manager</b>（HarGabt による NFS Unbound 版）— <a href="https://github.com/HarGabt/FrostyToolsuite/releases" target="_blank" rel="noopener">リリース</a>。一度起動してゲームを選んでください。最初の Launch で管理者権限を求められますが、正常です。</li>
         </ul>
@@ -339,7 +348,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
         <ol class="steps">
           <li>zip を<b>まるごと</b>普通のフォルダーに展開 — デスクトップ、ドキュメント、D:\Mods… Program Files には入れないでください。</li>
           <li><b>Unbound Soundtrack.exe</b> を起動して規約に同意。初回起動時にゲームを読み込みます — 数分、最初の一回だけです。</li>
-          <li><b>+ 曲を追加</b> → ファイルを選ぶ → GO とフィニッシュを設定 → <b>保存</b>。<span class="sub">曲はプログラムの隣の <b>Music</b> フォルダーに、1 曲ずつ番号付きフォルダーで入っています：Music\1\、Music\2\… 手動でも OK：番号付きの新しいフォルダーに曲ファイルと画像を入れるだけ。</span></li>
+          <li><b>+ 曲を追加</b> → ファイルを選ぶ → GO とフィニッシュを設定 → <b>保存</b>。<span class="or">または <b>▶ YT Music から</b> → リンクを貼り付け（曲、プレイリスト、アルバム）。複数のリンクや .txt リストも可 → <b>ダウンロード</b>。</span><span class="sub">MV のリンクなら、YT Music の同じ曲をイントロや寸劇なしで取得します。プレイリストの前に、曲数・すでにある曲・時間・容量を表示し、すでにある曲はスキップします。.txt リスト：タイトル,アーティスト,リンク;（ラテン文字で）— サンプルファイルはプログラム内にあります。</span><span class="sub">曲はプログラムの隣の <b>Music</b> フォルダーに、1 曲ずつ番号付きフォルダーで入っています：Music\1\、Music\2\… 手動でも OK：番号付きの新しいフォルダーに曲ファイルと画像を入れるだけ。</span></li>
           <li><b>MOD を作成</b>。MOD が Frosty Mod Manager のリストに表示されます。</li>
           <li>Frosty Mod Manager で <b>Unbound Soundtrack</b> にチェック、ほかの音楽 MOD はオフにして <b>Launch</b>。</li>
         </ol>
@@ -370,7 +379,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
 
     <section class="block" id="changelog">
       <h2 class="h2"><span class="n">06</span><span>更新履歴</span></h2>
-      <dl class="log"><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>大型アップデート。</b><br><b>新機能：</b>YouTube / YT Music から曲を追加——1 曲、プレイリスト、アルバム、複数のリンク、.txt リスト。MV のリンクなら YT Music の同じ曲を取得します。<br>13 言語（AI 翻訳）。<br>1 つの MOD に数百曲（277 曲でテスト済み）。<br>スタート：GO の瞬間にドロップ（17 秒のカットシーン + 3.45 秒のカウントダウン）。GO はベースの入りで自動検出。ドロップが早い曲は前に無音を入れます。<br>すべての曲に HIGH / LOW。並べ替え、フィルター、リスト表示。ドラッグ＆ドロップと自分の曲順。<br>自分の曲も ▶ で試聴。ジャケット：アップロード、生成、削除。<br>曲ごとの作成の進行状況と「停止」ボタン。ブラウザーの選択。「使い方」ヘルプ。Visual C++ 同梱。<br><b>修正：</b>ラテン文字以外を含むフォルダーで MOD を作成できない問題（1.0.0a にもありました）。Visual C++ がない環境での「FrostyHash.dll」エラー。「レースのみ」の曲がガレージで流れる問題。ラテン文字以外の曲名がゲーム内の表示で空になる問題。長すぎる曲名で保存が壊れる問題。作成中にウィンドウを閉じて再作成するとエラーになる問題。フォルダー選択、最初の画面での言語切り替え、小さい画面でのウィンドウサイズ。<br><b>アップデート方法：</b>1.0.1 を新しいフォルダーに展開し、古いフォルダーから <b>data</b> と <b>Music</b> をコピーして、もう一度 <b>MOD を作成</b> を押してください。</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>修正：zip を Windows エクスプローラーで展開すると「MOD を作成」が FileLoadException（FrostySdk、0x80131515）で失敗していました。ほかの変更はありません。</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>最初のリリース。</dd></div></dl>
+      <dl class="log"><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>大型アップデート。</b><br><b>新機能：</b>YouTube / YT Music から曲を追加——1 曲、プレイリスト、アルバム、複数のリンク、.txt リスト。MV のリンクなら YT Music の同じ曲を取得します。<br>13 言語（AI 翻訳）。<br>1 つの MOD に数百曲（277 曲でテスト済み）。<br>スタート：GO の瞬間にドロップ（17 秒のカットシーン + 3.45 秒のカウントダウン）。GO はベースの入りで自動検出。ドロップが早い曲は前に無音を入れます。<br>すべての曲に HIGH / LOW。並べ替え、フィルター、リスト表示。ドラッグ＆ドロップと自分の曲順。<br>自分の曲も ▶ で試聴。ジャケット：アップロード、生成、削除。<br>曲ごとの作成の進行状況と「停止」ボタン。ブラウザーの選択。「使い方」ヘルプ。Visual C++ 同梱。<br><b>修正：</b>ラテン文字以外を含むフォルダーで MOD を作成できない問題（1.0.0a にもありました）。Visual C++ がない環境での「FrostyHash.dll」エラー。「レースのみ」の曲がガレージで流れる問題。ラテン文字以外の曲名がゲーム内の表示で空になる問題。長すぎる曲名で保存が壊れる問題。作成中にウィンドウを閉じて再作成するとエラーになる問題。フォルダー選択、最初の画面での言語切り替え、小さい画面でのウィンドウサイズ。<br><b>アップデート方法：</b>1.0.1 を新しいフォルダーに展開し、古いフォルダーから <b>data</b> と <b>Music</b> をコピーして、もう一度 <b>MOD を作成</b> を押してください。</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>修正：zip を Windows エクスプローラーで展開すると「MOD を作成」が FileLoadException（FrostySdk、0x80131515）で失敗していました。ほかの変更はありません。</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>最初のリリース。</dd></div></dl>
     </section>
   </div>
 </main>

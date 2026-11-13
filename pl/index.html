@@ -171,9 +171,15 @@ h1 span { display: block; color: var(--acid); }
 .h2 { display: flex; align-items: center; gap: 14px; margin: 0 0 30px; font-style: italic; text-transform: uppercase; font-weight: 700; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.05; }
 .h2 .n { font-size: 12px; font-style: normal; letter-spacing: .08em; background: var(--acid); color: var(--ink); padding: 3px 7px; flex: none; }
 .h2::after { content: ""; flex: 1; min-width: 24px; height: 1px; background: linear-gradient(90deg, var(--acid), transparent); }
-.features { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-.card { background: var(--panel); border: 1px solid var(--line); padding: 22px 20px 20px; transition: border-color .15s; }
+/* 13.11 (Ваня: «сплюснутые»): 6 карточек сеткой 3×2 (планшет 2, телефон 1), полоса слева как у кусков в панели песни, номер в углу */
+.features { display: grid; gap: 16px; grid-template-columns: 1fr; counter-reset: feat; }
+@media (min-width: 640px) { .features { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1000px) { .features { grid-template-columns: repeat(3, 1fr); } }
+.card { position: relative; overflow: hidden; counter-increment: feat; background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--acid); padding: 24px 26px 26px; transition: border-color .15s; }
+.card:nth-child(even) { border-left-color: var(--sun); }
+.card::after { content: counter(feat, decimal-leading-zero); position: absolute; top: 8px; right: 16px; font-weight: 700; font-style: italic; font-size: 64px; line-height: 1; color: rgba(255,255,255,.05); pointer-events: none; }
 .card:hover { border-color: var(--acid); }
+.card:nth-child(even):hover { border-color: var(--sun); }
 .card h3 { display: inline-block; margin: 0 0 14px; background: var(--acid); color: var(--ink); font-weight: 700; font-style: italic; font-size: 13px; line-height: 1.3; letter-spacing: .1em; text-transform: uppercase; padding: 3px 9px; transform: rotate(-2deg); }
 .card:nth-child(even) h3 { background: var(--sun); }
 .card p { margin: 0; color: var(--soft); font-size: 16px; }
@@ -193,6 +199,7 @@ h1 span { display: block; color: var(--acid); }
 .steps li::before { content: counter(s); position: absolute; left: 0; top: -12px; font-style: italic; font-weight: 700; font-size: 46px; line-height: 1; color: var(--acid); }
 .steps li:nth-child(even)::before { color: var(--sun); }
 .steps .sub { display: block; color: var(--mute); font-size: 15px; margin-top: 6px; }
+.steps .or { display: block; margin-top: 12px; }   /* 13.11: второй путь шага 3 — ▶ З YT MUSIC */
 .alerts { display: grid; gap: 18px; }
 @media (min-width: 860px) { .alerts { grid-template-columns: 1fr 1fr; } }
 .alert { border: 1px solid; border-left-width: 6px; padding: 22px 22px 20px; }
@@ -287,9 +294,10 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
     <section class="block" id="what">
       <h2 class="h2"><span class="n">01</span><span>Co robi</span></h2>
       <div class="features">
-        <div class="card"><h3>Twoje piosenki</h3><p>mp3, flac, wav, ogg, m4a — jako <b>nowe</b> utwory z własną nazwą i okładką. Utwory gry zostają bez zmian.</p></div>
-        <div class="card"><h3>Drop na GO</h3><p>Dla każdej piosenki: start wyścigu (drop na GO) i krótki fragment na metę.</p></div>
-        <div class="card"><h3>Wyścigi · Miasto</h3><p>Włączaj i wyłączaj utwory gry osobno w wyścigach oraz w mieście, garażu i menu. Profile dla różnych zestawów muzyki.</p></div>
+        <div class="card"><h3>Twoje piosenki</h3><p>mp3, flac, wav, ogg, m4a — jako <b>nowe</b> utwory z własną nazwą i okładką. Utwory gry zostają bez zmian. Setki piosenek w jednym modzie.</p></div>
+        <div class="card"><h3>YouTube · YT Music</h3><p>Wklej link do piosenki, playlisty albo albumu — albo wiele linków, albo listę .txt. Program sam pobierze; link do teledysku pobiera tę samą piosenkę z YT Music, bez intra i scenek.</p></div>
+        <div class="card"><h3>Drop na GO</h3><p>Start wyścigu: 17 s przerywnika + 3,45 s odliczania — drop wchodzi na GO. GO program znajduje sam po uderzeniu basu, poprawisz myszką. Plus krótki fragment na metę.</p></div>
+        <div class="card"><h3>Wyścigi · Miasto</h3><p>Włączaj i wyłączaj utwory gry osobno w wyścigach oraz w mieście, garażu i menu. Profile dla różnych zestawów muzyki. HIGH / LOW — jak często gra utwór.</p></div>
         <div class="card"><h3>Jeden mod</h3><p>Buduje jeden mod do Frosty Mod Manager. Pliki gry się nie zmieniają — wyłączysz mod i gra jest jak dawniej.</p></div>
         <div class="card"><h3>Czysty zip</h3><p>W zipie nie ma muzyki ani plików gry: piosenki są twoje, okładki i tła program czyta z twojej gry. ▶ — 30-sekundowy podgląd każdego utworu gry (potrzebny internet).</p></div>
       </div>
@@ -330,6 +338,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
         <h2 class="h2"><span class="n">03</span><span>Potrzebujesz</span></h2>
         <ul class="plus">
           <li><b>Windows 10 lub 11</b> — Microsoft Edge jest wbudowany, okno z niego korzysta.</li>
+          <li><b>Microsoft Visual C++ Redistributable</b> (x64) — potrzebne pliki są już w zipie; jeśli program zgłosi błąd DLL, zainstaluj go z <a href="https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist" target="_blank" rel="noopener">oficjalnej strony Microsoft</a>.</li>
           <li><b>Need for Speed Unbound</b> — Steam lub EA app.</li>
           <li><b>Frosty Mod Manager</b> w wersji HarGabt dla NFS Unbound — <a href="https://github.com/HarGabt/FrostyToolsuite/releases" target="_blank" rel="noopener">wydania</a>. Uruchom go raz i wybierz grę. Przy pierwszym Launch poprosi o prawa administratora — to normalne.</li>
         </ul>
@@ -339,7 +348,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
         <ol class="steps">
           <li>Rozpakuj <b>cały</b> zip do zwykłego folderu — Pulpit, Dokumenty, D:\Mods… Nie do Program Files.</li>
           <li>Uruchom <b>Unbound Soundtrack.exe</b> i zaakceptuj warunki. Pierwsze uruchomienie czyta grę — kilka minut, tylko raz.</li>
-          <li><b>+ DODAJ PIOSENKĘ</b> → plik → ustaw GO i metę → <b>Zapisz</b>.<span class="sub">Piosenki leżą w folderze <b>Music</b> obok programu, każda w folderze z numerem: Music\1\, Music\2\… Można też ręcznie: nowy folder z numerem, w nim plik piosenki i obrazek.</span></li>
+          <li><b>+ DODAJ PIOSENKĘ</b> → plik → ustaw GO i metę → <b>Zapisz</b>.<span class="or">Albo <b>▶ Z YT MUSIC</b> → wklej link (piosenka, playlista, album), wiele linków albo listę .txt → <b>Pobierz</b>.</span><span class="sub">Link do teledysku — program weźmie tę samą piosenkę z YT Music, bez intra i scenek. Przed playlistą pokaże, ile piosenek, ile już masz, ile czasu i miejsca; te, które już są, pominie. Lista .txt: Tytuł,Wykonawca,Link; (alfabetem łacińskim) — przykładowy plik jest w programie.</span><span class="sub">Piosenki leżą w folderze <b>Music</b> obok programu, każda w folderze z numerem: Music\1\, Music\2\… Można też ręcznie: nowy folder z numerem, w nim plik piosenki i obrazek.</span></li>
           <li><b>ZBUDUJ MODA</b>. Mod pojawi się na liście Frosty Mod Manager.</li>
           <li>We Frosty Mod Manager zaznacz <b>Unbound Soundtrack</b>, wyłącz inne mody muzyczne, <b>Launch</b>.</li>
         </ol>
@@ -370,7 +379,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
 
     <section class="block" id="changelog">
       <h2 class="h2"><span class="n">06</span><span>Lista zmian</span></h2>
-      <dl class="log"><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>Duża aktualizacja.</b><br><b>Nowe:</b> piosenki z YouTube / YT Music — piosenka, playlista, album, wiele linków lub lista .txt; link do teledysku pobiera tę samą piosenkę z YT Music.<br>13 języków (tłumaczenie AI).<br>Setki piosenek w jednym modzie (sprawdzone na 277).<br>Start wyścigu: drop wchodzi na GO (17 s przerywnika + 3,45 s odliczania); GO szukane po uderzeniu basu; piosenki z wczesnym dropem dostają ciszę przed sobą.<br>HIGH / LOW dla każdego utworu; sortowanie, filtry, widok listy; przeciąganie i własna kolejność piosenek.<br>▶ dla własnych piosenek; okładki: wgraj, wygeneruj albo usuń.<br>Postęp budowania dla każdej piosenki i przycisk „Stop”; wybór przeglądarki; pomoc „Jak to działa”; Visual C++ w środku.<br><b>Naprawione:</b> budowanie w folderze z nie-łacińskimi literami (było też w 1.0.0a); błąd „FrostyHash.dll” bez Visual C++; piosenki „tylko Wyścigi” grały w garażu; nie-łacińskie tytuły były puste na plakietce w grze; długie nazwy piosenek psuły zapis; ponowne budowanie po zamknięciu okna w trakcie budowania; wybór folderu, język na pierwszych ekranach, rozmiar okna na małych ekranach.<br><b>Aktualizacja:</b> rozpakuj 1.0.1 do nowego folderu, skopiuj <b>data</b> i <b>Music</b> ze starego, naciśnij jeszcze raz <b>ZBUDUJ MODA</b>.</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>Poprawka: „Zbuduj moda” kończył się błędem FileLoadException (FrostySdk, 0x80131515), jeśli zip rozpakowano Eksploratorem Windows. Nic więcej się nie zmieniło.</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>Pierwsze wydanie.</dd></div></dl>
+      <dl class="log"><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>Duża aktualizacja.</b><br><b>Nowe:</b> piosenki z YouTube / YT Music — piosenka, playlista, album, wiele linków lub lista .txt; link do teledysku pobiera tę samą piosenkę z YT Music.<br>13 języków (tłumaczenie AI).<br>Setki piosenek w jednym modzie (sprawdzone na 277).<br>Start wyścigu: drop wchodzi na GO (17 s przerywnika + 3,45 s odliczania); GO szukane po uderzeniu basu; piosenki z wczesnym dropem dostają ciszę przed sobą.<br>HIGH / LOW dla każdego utworu; sortowanie, filtry, widok listy; przeciąganie i własna kolejność piosenek.<br>▶ dla własnych piosenek; okładki: wgraj, wygeneruj albo usuń.<br>Postęp budowania dla każdej piosenki i przycisk „Stop”; wybór przeglądarki; pomoc „Jak to działa”; Visual C++ w środku.<br><b>Naprawione:</b> budowanie w folderze z nie-łacińskimi literami (było też w 1.0.0a); błąd „FrostyHash.dll” bez Visual C++; piosenki „tylko Wyścigi” grały w garażu; nie-łacińskie tytuły były puste na plakietce w grze; długie nazwy piosenek psuły zapis; ponowne budowanie po zamknięciu okna w trakcie budowania; wybór folderu, język na pierwszych ekranach, rozmiar okna na małych ekranach.<br><b>Aktualizacja:</b> rozpakuj 1.0.1 do nowego folderu, skopiuj <b>data</b> i <b>Music</b> ze starego, naciśnij jeszcze raz <b>ZBUDUJ MODA</b>.</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>Poprawka: „Zbuduj moda” kończył się błędem FileLoadException (FrostySdk, 0x80131515), jeśli zip rozpakowano Eksploratorem Windows. Nic więcej się nie zmieniło.</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>Pierwsze wydanie.</dd></div></dl>
     </section>
   </div>
 </main>

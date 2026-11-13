@@ -171,9 +171,15 @@ h1 span { display: block; color: var(--acid); }
 .h2 { display: flex; align-items: center; gap: 14px; margin: 0 0 30px; font-style: italic; text-transform: uppercase; font-weight: 700; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.05; }
 .h2 .n { font-size: 12px; font-style: normal; letter-spacing: .08em; background: var(--acid); color: var(--ink); padding: 3px 7px; flex: none; }
 .h2::after { content: ""; flex: 1; min-width: 24px; height: 1px; background: linear-gradient(90deg, var(--acid), transparent); }
-.features { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-.card { background: var(--panel); border: 1px solid var(--line); padding: 22px 20px 20px; transition: border-color .15s; }
+/* 13.11 (Ваня: «сплюснутые»): 6 карточек сеткой 3×2 (планшет 2, телефон 1), полоса слева как у кусков в панели песни, номер в углу */
+.features { display: grid; gap: 16px; grid-template-columns: 1fr; counter-reset: feat; }
+@media (min-width: 640px) { .features { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1000px) { .features { grid-template-columns: repeat(3, 1fr); } }
+.card { position: relative; overflow: hidden; counter-increment: feat; background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--acid); padding: 24px 26px 26px; transition: border-color .15s; }
+.card:nth-child(even) { border-left-color: var(--sun); }
+.card::after { content: counter(feat, decimal-leading-zero); position: absolute; top: 8px; right: 16px; font-weight: 700; font-style: italic; font-size: 64px; line-height: 1; color: rgba(255,255,255,.05); pointer-events: none; }
 .card:hover { border-color: var(--acid); }
+.card:nth-child(even):hover { border-color: var(--sun); }
 .card h3 { display: inline-block; margin: 0 0 14px; background: var(--acid); color: var(--ink); font-weight: 700; font-style: italic; font-size: 13px; line-height: 1.3; letter-spacing: .1em; text-transform: uppercase; padding: 3px 9px; transform: rotate(-2deg); }
 .card:nth-child(even) h3 { background: var(--sun); }
 .card p { margin: 0; color: var(--soft); font-size: 16px; }
@@ -193,6 +199,7 @@ h1 span { display: block; color: var(--acid); }
 .steps li::before { content: counter(s); position: absolute; left: 0; top: -12px; font-style: italic; font-weight: 700; font-size: 46px; line-height: 1; color: var(--acid); }
 .steps li:nth-child(even)::before { color: var(--sun); }
 .steps .sub { display: block; color: var(--mute); font-size: 15px; margin-top: 6px; }
+.steps .or { display: block; margin-top: 12px; }   /* 13.11: второй путь шага 3 — ▶ З YT MUSIC */
 .alerts { display: grid; gap: 18px; }
 @media (min-width: 860px) { .alerts { grid-template-columns: 1fr 1fr; } }
 .alert { border: 1px solid; border-left-width: 6px; padding: 22px 22px 20px; }
@@ -287,9 +294,10 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
     <section class="block" id="what">
       <h2 class="h2"><span class="n">01</span><span>Що вміє</span></h2>
       <div class="features">
-        <div class="card"><h3>Свої пісні</h3><p>mp3, flac, wav, ogg, m4a — як <b>нові</b> треки, зі своєю назвою й обкладинкою. Треки гри залишаються як є.</p></div>
-        <div class="card"><h3>Дроп на GO</h3><p>Для кожної пісні — старт гонки (дроп б'є на GO) і короткий шматок для фінішу.</p></div>
-        <div class="card"><h3>Гонки · Місто</h3><p>Вмикай і вимикай треки гри окремо для гонок і для міста, гаража та меню. Профілі для різних наборів музики.</p></div>
+        <div class="card"><h3>Свої пісні</h3><p>mp3, flac, wav, ogg, m4a — як <b>нові</b> треки, зі своєю назвою й обкладинкою. Треки гри залишаються як є. Сотні пісень в одному моді.</p></div>
+        <div class="card"><h3>YouTube · YT Music</h3><p>Встав посилання на пісню, плейлист чи альбом — або багато посилань, або список .txt. Програма скачає сама; якщо посилання на кліп — візьме ту саму пісню з YT Music, без вступів і сценок.</p></div>
+        <div class="card"><h3>Дроп на GO</h3><p>Старт гонки: 17 с катсцени + 3,45 с відліку — дроп б'є на GO. GO програма знаходить сама по удару басу, підправиш мишкою. Плюс короткий шматок для фінішу.</p></div>
+        <div class="card"><h3>Гонки · Місто</h3><p>Вмикай і вимикай треки гри окремо для гонок і для міста, гаража та меню. Профілі для різних наборів музики. HIGH / LOW — як часто грає трек.</p></div>
         <div class="card"><h3>Один мод</h3><p>Збирає один мод для Frosty Mod Manager. Файли гри не змінюються — вимкнув мод, і гра як була.</p></div>
         <div class="card"><h3>Чистий zip</h3><p>У zip немає ні музики, ні файлів гри: пісні — твої, обкладинки й фони програма читає з твоєї гри. ▶ — 30-секундне прев'ю будь-якого треку гри (потрібен інтернет).</p></div>
       </div>
@@ -330,6 +338,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
         <h2 class="h2"><span class="n">03</span><span>Що потрібно</span></h2>
         <ul class="plus">
           <li><b>Windows 10 або 11</b> — Microsoft Edge уже вбудований, вікно працює на ньому.</li>
+          <li><b>Microsoft Visual C++ Redistributable</b> (x64) — потрібні файли вже є в zip; якщо програма скаже про помилку DLL — встанови з <a href="https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist" target="_blank" rel="noopener">офіційного сайту Microsoft</a>.</li>
           <li><b>Need for Speed Unbound</b> — Steam або EA app.</li>
           <li><b>Frosty Mod Manager</b>, версія HarGabt для NFS Unbound — <a href="https://github.com/HarGabt/FrostyToolsuite/releases" target="_blank" rel="noopener">релізи</a>. Запусти його один раз і обери гру. Перший Launch попросить права адміністратора — це нормально.</li>
         </ul>
@@ -339,7 +348,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
         <ol class="steps">
           <li>Розпакуй <b>увесь</b> zip у звичайну папку — Робочий стіл, Документи, D:\Mods… Не в Program Files.</li>
           <li>Запусти <b>Unbound Soundtrack.exe</b> і прийми умови. Перший запуск читає гру — кілька хвилин, лише раз.</li>
-          <li><b>+ ДОДАТИ ПІСНЮ</b> → обери файл → постав GO і фініш → <b>Зберегти</b>.<span class="sub">Пісні лежать у папці <b>Music</b> поруч із програмою, кожна в папці з номером: Music\1\, Music\2\… Можна й вручну: нова папка з номером, у ній файл пісні та картинка.</span></li>
+          <li><b>+ ДОДАТИ ПІСНЮ</b> → обери файл → постав GO і фініш → <b>Зберегти</b>.<span class="or">Або <b>▶ З YT MUSIC</b> → встав посилання (пісня, плейлист, альбом), багато посилань або список .txt → <b>Завантажити</b>.</span><span class="sub">Посилання на кліп — програма візьме ту саму пісню з YT Music, без вступів і сценок. Перед плейлистом покаже, скільки пісень, скільки вже є, скільки часу й місця; ті, що вже є, пропустить. Список .txt: Назва,Виконавець,Посилання; (латиницею) — приклад файлу є в програмі.</span><span class="sub">Пісні лежать у папці <b>Music</b> поруч із програмою, кожна в папці з номером: Music\1\, Music\2\… Можна й вручну: нова папка з номером, у ній файл пісні та картинка.</span></li>
           <li><b>ЗІБРАТИ МОД</b>. Мод з'явиться у списку Frosty Mod Manager.</li>
           <li>У Frosty Mod Manager: галочка на <b>Unbound Soundtrack</b>, інші музичні моди вимкни, <b>Launch</b>.</li>
         </ol>
@@ -370,7 +379,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
 
     <section class="block" id="changelog">
       <h2 class="h2"><span class="n">06</span><span>Що нового</span></h2>
-      <dl class="log"><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>Велике оновлення.</b><br><b>Нове:</b> пісні з YouTube / YT Music — пісня, плейлист, альбом, багато посилань або список .txt; якщо посилання на кліп — програма бере ту саму пісню з YT Music.<br>13 мов (переклад ШІ).<br>Сотні пісень в одному моді (перевірено на 277).<br>Старт гонки: дроп б'є на GO (17 с катсцени + 3,45 с відліку); GO шукається по удару басу; якщо дроп у пісні ранній — перед нею ставиться тиша.<br>HIGH / LOW для кожного треку; сортування, фільтри, вигляд списком; перетягування й свій порядок пісень.<br>▶ для своїх пісень; обкладинки: завантажити, згенерувати або видалити.<br>Прогрес збірки по кожній пісні й кнопка «Стоп»; вибір браузера; довідка «Як це працює»; Visual C++ всередині.<br><b>Виправлено:</b> збірка в папці з не латинськими літерами (було й в 1.0.0a); помилка «FrostyHash.dll» без Visual C++; пісні «тільки Гонки» грали в гаражі; назви не латиницею були порожні на плашці в грі; довгі назви пісень ламали збереження; повторна збірка після закриття вікна під час збірки; вибір папки, мова на перших екранах, розмір вікна на малих екранах.<br><b>Оновлення:</b> розпакуй 1.0.1 у нову папку, скопіюй <b>data</b> і <b>Music</b> зі старої, натисни <b>ЗІБРАТИ МОД</b> ще раз.</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>Фікс: «Зібрати мод» падав з FileLoadException (FrostySdk, 0x80131515), якщо zip розпаковано Провідником. Більше нічого не змінено.</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>Перший реліз.</dd></div></dl>
+      <dl class="log"><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>Велике оновлення.</b><br><b>Нове:</b> пісні з YouTube / YT Music — пісня, плейлист, альбом, багато посилань або список .txt; якщо посилання на кліп — програма бере ту саму пісню з YT Music.<br>13 мов (переклад ШІ).<br>Сотні пісень в одному моді (перевірено на 277).<br>Старт гонки: дроп б'є на GO (17 с катсцени + 3,45 с відліку); GO шукається по удару басу; якщо дроп у пісні ранній — перед нею ставиться тиша.<br>HIGH / LOW для кожного треку; сортування, фільтри, вигляд списком; перетягування й свій порядок пісень.<br>▶ для своїх пісень; обкладинки: завантажити, згенерувати або видалити.<br>Прогрес збірки по кожній пісні й кнопка «Стоп»; вибір браузера; довідка «Як це працює»; Visual C++ всередині.<br><b>Виправлено:</b> збірка в папці з не латинськими літерами (було й в 1.0.0a); помилка «FrostyHash.dll» без Visual C++; пісні «тільки Гонки» грали в гаражі; назви не латиницею були порожні на плашці в грі; довгі назви пісень ламали збереження; повторна збірка після закриття вікна під час збірки; вибір папки, мова на перших екранах, розмір вікна на малих екранах.<br><b>Оновлення:</b> розпакуй 1.0.1 у нову папку, скопіюй <b>data</b> і <b>Music</b> зі старої, натисни <b>ЗІБРАТИ МОД</b> ще раз.</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>Фікс: «Зібрати мод» падав з FileLoadException (FrostySdk, 0x80131515), якщо zip розпаковано Провідником. Більше нічого не змінено.</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>Перший реліз.</dd></div></dl>
     </section>
   </div>
 </main>

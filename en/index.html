@@ -171,9 +171,15 @@ h1 span { display: block; color: var(--acid); }
 .h2 { display: flex; align-items: center; gap: 14px; margin: 0 0 30px; font-style: italic; text-transform: uppercase; font-weight: 700; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.05; }
 .h2 .n { font-size: 12px; font-style: normal; letter-spacing: .08em; background: var(--acid); color: var(--ink); padding: 3px 7px; flex: none; }
 .h2::after { content: ""; flex: 1; min-width: 24px; height: 1px; background: linear-gradient(90deg, var(--acid), transparent); }
-.features { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-.card { background: var(--panel); border: 1px solid var(--line); padding: 22px 20px 20px; transition: border-color .15s; }
+/* 13.11 (Ваня: «сплюснутые»): 6 карточек сеткой 3×2 (планшет 2, телефон 1), полоса слева как у кусков в панели песни, номер в углу */
+.features { display: grid; gap: 16px; grid-template-columns: 1fr; counter-reset: feat; }
+@media (min-width: 640px) { .features { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1000px) { .features { grid-template-columns: repeat(3, 1fr); } }
+.card { position: relative; overflow: hidden; counter-increment: feat; background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--acid); padding: 24px 26px 26px; transition: border-color .15s; }
+.card:nth-child(even) { border-left-color: var(--sun); }
+.card::after { content: counter(feat, decimal-leading-zero); position: absolute; top: 8px; right: 16px; font-weight: 700; font-style: italic; font-size: 64px; line-height: 1; color: rgba(255,255,255,.05); pointer-events: none; }
 .card:hover { border-color: var(--acid); }
+.card:nth-child(even):hover { border-color: var(--sun); }
 .card h3 { display: inline-block; margin: 0 0 14px; background: var(--acid); color: var(--ink); font-weight: 700; font-style: italic; font-size: 13px; line-height: 1.3; letter-spacing: .1em; text-transform: uppercase; padding: 3px 9px; transform: rotate(-2deg); }
 .card:nth-child(even) h3 { background: var(--sun); }
 .card p { margin: 0; color: var(--soft); font-size: 16px; }
@@ -193,6 +199,7 @@ h1 span { display: block; color: var(--acid); }
 .steps li::before { content: counter(s); position: absolute; left: 0; top: -12px; font-style: italic; font-weight: 700; font-size: 46px; line-height: 1; color: var(--acid); }
 .steps li:nth-child(even)::before { color: var(--sun); }
 .steps .sub { display: block; color: var(--mute); font-size: 15px; margin-top: 6px; }
+.steps .or { display: block; margin-top: 12px; }   /* 13.11: второй путь шага 3 — ▶ З YT MUSIC */
 .alerts { display: grid; gap: 18px; }
 @media (min-width: 860px) { .alerts { grid-template-columns: 1fr 1fr; } }
 .alert { border: 1px solid; border-left-width: 6px; padding: 22px 22px 20px; }
@@ -287,9 +294,10 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
     <section class="block" id="what">
       <h2 class="h2"><span class="n">01</span><span>What it does</span></h2>
       <div class="features">
-        <div class="card"><h3>Your songs</h3><p>mp3, flac, wav, ogg, m4a — as <b>new</b> tracks with your own title and cover. The game's tracks stay as they are.</p></div>
-        <div class="card"><h3>Drop on GO</h3><p>For each song: the race start (the drop hits at GO) and a short piece for the finish.</p></div>
-        <div class="card"><h3>Races · City</h3><p>Turn the game's tracks on and off separately for races and for the city, garage and menu. Profiles for different music sets.</p></div>
+        <div class="card"><h3>Your songs</h3><p>mp3, flac, wav, ogg, m4a — as <b>new</b> tracks with your own title and cover. The game's tracks stay as they are. Hundreds of songs in one mod.</p></div>
+        <div class="card"><h3>YouTube · YT Music</h3><p>Paste a link to a song, a playlist or an album — or many links, or a .txt list. The program downloads them itself; a music video link takes the same song from YT Music, without the intro and skits.</p></div>
+        <div class="card"><h3>Drop on GO</h3><p>Race start: 17 s cutscene + 3.45 s countdown — the drop hits at GO. The program finds GO by the bass drop, you can move it with the mouse. Plus a short piece for the finish.</p></div>
+        <div class="card"><h3>Races · City</h3><p>Turn the game's tracks on and off separately for races and for the city, garage and menu. Profiles for different music sets. HIGH / LOW — how often a track plays.</p></div>
         <div class="card"><h3>One mod</h3><p>Builds one mod for Frosty Mod Manager. Game files are not changed — turn the mod off and the game is as before.</p></div>
         <div class="card"><h3>Clean zip</h3><p>No music and no game files in the zip: the songs are yours, covers and backgrounds are read from your own game. ▶ — 30-second preview of any game track (needs internet).</p></div>
       </div>
@@ -330,6 +338,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
         <h2 class="h2"><span class="n">03</span><span>You need</span></h2>
         <ul class="plus">
           <li><b>Windows 10 or 11</b> — Microsoft Edge is built in, the window uses it.</li>
+          <li><b>Microsoft Visual C++ Redistributable</b> (x64) — the needed files are already in the zip; if the program reports a DLL error, install it from the <a href="https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist" target="_blank" rel="noopener">official Microsoft site</a>.</li>
           <li><b>Need for Speed Unbound</b> — Steam or EA app.</li>
           <li><b>Frosty Mod Manager</b>, HarGabt's version for NFS Unbound — <a href="https://github.com/HarGabt/FrostyToolsuite/releases" target="_blank" rel="noopener">releases</a>. Start it once and pick the game. On the first Launch it asks for administrator rights — that's normal.</li>
         </ul>
@@ -339,7 +348,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
         <ol class="steps">
           <li>Unpack the <b>whole</b> zip to a normal folder — Desktop, Documents, D:\Mods… Not into Program Files.</li>
           <li>Start <b>Unbound Soundtrack.exe</b> and accept the terms. The first start reads the game — a few minutes, only once.</li>
-          <li><b>+ ADD SONG</b> → choose a file → set GO and the finish → <b>Save</b>.<span class="sub">Songs live in the <b>Music</b> folder next to the program, one numbered folder per song: Music\1\, Music\2\… By hand works too: a new numbered folder with the song file and a picture.</span></li>
+          <li><b>+ ADD SONG</b> → choose a file → set GO and the finish → <b>Save</b>.<span class="or">Or <b>▶ FROM YT MUSIC</b> → paste a link (song, playlist, album), many links or a .txt list → <b>Download</b>.</span><span class="sub">A music video link — the program takes the same song from YT Music, without the intro and skits. Before a playlist it shows how many songs, how many you already have, the time and the size; songs you already have are skipped. .txt list: Title,Artist,Link; (Latin letters) — the program shows an example file.</span><span class="sub">Songs live in the <b>Music</b> folder next to the program, one numbered folder per song: Music\1\, Music\2\… By hand works too: a new numbered folder with the song file and a picture.</span></li>
           <li><b>BUILD MOD</b>. The mod appears in Frosty Mod Manager's list.</li>
           <li>In Frosty Mod Manager: tick <b>Unbound Soundtrack</b>, turn off other music mods, press <b>Launch</b>.</li>
         </ol>
@@ -370,7 +379,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
 
     <section class="block" id="changelog">
       <h2 class="h2"><span class="n">06</span><span>Changelog</span></h2>
-      <dl class="log"><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>Big update.</b><br><b>New:</b> songs from YouTube / YT Music — a song, playlist, album, many links or a .txt list; a music video link takes the same song from YT Music.<br>13 languages (translated with AI).<br>Hundreds of songs in one mod (tested with 277).<br>Race start: the drop hits at GO (17 s cutscene + 3.45 s countdown); GO is found by the bass drop; songs with an early drop get silence before them.<br>HIGH / LOW for every track; sorting, filters, list view; drag &amp; drop and your own song order.<br>▶ for your own songs; covers: upload, generate or delete.<br>Build progress for every song and a “Stop” button; browser choice; “How it works” help; Visual C++ included.<br><b>Fixed:</b> building in a folder with non-Latin letters (was in 1.0.0a too); “FrostyHash.dll” error without Visual C++; “Races only” songs played in the garage; non-Latin titles were empty on the in-game plate; long song names broke saving; building again after closing the window mid-build; folder picker, language on the first screens, window size on small screens.<br><b>Updating:</b> unpack 1.0.1 to a new folder, copy <b>data</b> and <b>Music</b> from the old one, press <b>BUILD MOD</b> again.</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>Fix: “Build mod” failed with FileLoadException (FrostySdk, 0x80131515) when the zip was unpacked with Windows Explorer. Nothing else changed.</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>First release.</dd></div></dl>
+      <dl class="log"><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>Big update.</b><br><b>New:</b> songs from YouTube / YT Music — a song, playlist, album, many links or a .txt list; a music video link takes the same song from YT Music.<br>13 languages (translated with AI).<br>Hundreds of songs in one mod (tested with 277).<br>Race start: the drop hits at GO (17 s cutscene + 3.45 s countdown); GO is found by the bass drop; songs with an early drop get silence before them.<br>HIGH / LOW for every track; sorting, filters, list view; drag &amp; drop and your own song order.<br>▶ for your own songs; covers: upload, generate or delete.<br>Build progress for every song and a “Stop” button; browser choice; “How it works” help; Visual C++ included.<br><b>Fixed:</b> building in a folder with non-Latin letters (was in 1.0.0a too); “FrostyHash.dll” error without Visual C++; “Races only” songs played in the garage; non-Latin titles were empty on the in-game plate; long song names broke saving; building again after closing the window mid-build; folder picker, language on the first screens, window size on small screens.<br><b>Updating:</b> unpack 1.0.1 to a new folder, copy <b>data</b> and <b>Music</b> from the old one, press <b>BUILD MOD</b> again.</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>Fix: “Build mod” failed with FileLoadException (FrostySdk, 0x80131515) when the zip was unpacked with Windows Explorer. Nothing else changed.</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>First release.</dd></div></dl>
     </section>
   </div>
 </main>
