@@ -89,7 +89,9 @@
 <meta name="theme-color" content="#0a0a0a">
 <link rel="icon" type="image/png" href="../favicon.png">
 <link rel="apple-touch-icon" href="../img/icon-180.png">
+<link rel="preload" href="../fonts/SedgwickAveDisplay-Regular.ttf" as="font" type="font/ttf" crossorigin>
 <style>
+@font-face { font-family: "Sedgwick UB"; src: url("../fonts/SedgwickAveDisplay-Regular.ttf") format("truetype"); font-display: block; } /* OFL, fonts/OFL-SedgwickAveDisplay.txt */
 :root {
   --ink: #0a0a0a; --panel: #121212; --paper: #f4f4f0; --soft: #d6d6cf; --mute: #8a8a85;
   --acid: #b6ff1a; --sun: #ffe600; --red: #ff3b5c; --line: rgba(255,255,255,.14);
@@ -148,6 +150,10 @@ img { max-width: 100%; height: auto; display: block; }
 h1 { font-style: italic; text-transform: uppercase; font-weight: 700; font-size: clamp(44px, 5.2vw, 76px); line-height: .9; letter-spacing: -.01em; margin: 26px 0 22px; }
 h1 span { display: block; color: var(--acid); }
 .lead { font-size: clamp(18px, 2.1vw, 22px); line-height: 1.45; color: var(--soft); max-width: 36ch; margin: 0; }
+.lead b { white-space: nowrap; } /* название игры не рвать на две строки */
+/* 13.11 «Unbound» граффити (вариант 1f): только в lead, обертку ставит sobrat.py */
+.lead .ub { display: inline-block; font: 400 1.45em/.9 "Sedgwick UB", var(--font); vertical-align: -.04em; transform: rotate(-4deg); margin: 0 .12em 0 .04em;
+  color: var(--acid); -webkit-text-stroke: .09em #000; paint-order: stroke fill; text-shadow: .05em .05em 0 #000, .1em .1em 0 var(--paper); }
 .cta { display: flex; flex-wrap: wrap; gap: 14px 12px; margin: 30px 0 18px; align-items: stretch; }
 .btn { display: inline-flex; flex-direction: column; justify-content: center; gap: 4px; padding: 12px 18px; border: 1px solid var(--line); background: rgba(255,255,255,.02); color: var(--paper); text-decoration: none; text-transform: uppercase; font-style: italic; font-weight: 700; letter-spacing: .12em; font-size: 13px; line-height: 1.2; transition: transform .15s, box-shadow .15s, border-color .15s; }
 .btn:hover { color: var(--paper); border-color: var(--acid); }
@@ -281,7 +287,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
       <div>
         <p class="tag">自分の音楽を入れる MOD · NFS Unbound · PC</p>
         <h1>Unbound <span>Soundtrack</span></h1>
-        <p class="lead"><b>Need for Speed Unbound</b> に自分の曲を — 自分のジャケット付きの新しいトラックとして。ゲームの曲はそのまま残ります。</p>
+        <p class="lead"><b>Need for Speed <span class="ub">Unbound</span></b> の音楽を自分好みに完全カスタマイズ：自分の曲をジャケット付きで追加し、ゲームの曲は残すもオフにするも自由。</p>
         <div class="cta">
           <a class="btn primary" href="https://drive.google.com/drive/folders/1xj2YBqJ-sqB53Azt__dZNrsfP8iMbS_a?usp=sharing" target="_blank" rel="noopener">
             <span>ダウンロード</span><small>v1.0.1 · zip 63.6 MB · Google Drive</small>
@@ -305,7 +311,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
     <section class="block" id="what">
       <h2 class="h2"><span class="n">01</span><span>できること</span></h2>
       <div class="features">
-        <div class="card"><h3>自分の曲</h3><p>mp3、flac、wav、ogg、m4a を、自分のタイトルとジャケット付きの<b>新しい</b>トラックとして追加。ゲームの曲はそのままです。1 つの MOD に数百曲。</p></div>
+        <div class="card"><h3>自分の曲</h3><p>mp3、flac、wav、ogg、m4a を、自分のタイトルとジャケット付きの<b>新しい</b>トラックとして追加。ゲームの曲を置き換えません。1 つの MOD に数百曲。</p></div>
         <div class="card"><h3>YouTube · YT Music</h3><p>曲・プレイリスト・アルバムのリンク、複数のリンク、.txt リストを貼るだけ。ダウンロードはプログラムが自動で行います。MV のリンクなら YT Music の同じ曲を、イントロや寸劇なしで取得します。</p></div>
         <div class="card"><h3>GO でドロップ</h3><p>スタート：17 秒のカットシーン + 3.45 秒のカウントダウン、GO の瞬間にドロップ。GO はベースの入りからプログラムが自動で見つけ、マウスで調整もできます。フィニッシュ用の短いパートも。</p></div>
         <div class="card"><h3>レース · 街</h3><p>ゲームの曲をレース用と、街・ガレージ・メニュー用で別々にオン／オフ。音楽セットごとにプロファイルも作れます。HIGH / LOW で再生頻度も設定できます。</p></div>

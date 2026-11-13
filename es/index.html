@@ -89,7 +89,9 @@
 <meta name="theme-color" content="#0a0a0a">
 <link rel="icon" type="image/png" href="../favicon.png">
 <link rel="apple-touch-icon" href="../img/icon-180.png">
+<link rel="preload" href="../fonts/SedgwickAveDisplay-Regular.ttf" as="font" type="font/ttf" crossorigin>
 <style>
+@font-face { font-family: "Sedgwick UB"; src: url("../fonts/SedgwickAveDisplay-Regular.ttf") format("truetype"); font-display: block; } /* OFL, fonts/OFL-SedgwickAveDisplay.txt */
 :root {
   --ink: #0a0a0a; --panel: #121212; --paper: #f4f4f0; --soft: #d6d6cf; --mute: #8a8a85;
   --acid: #b6ff1a; --sun: #ffe600; --red: #ff3b5c; --line: rgba(255,255,255,.14);
@@ -148,6 +150,10 @@ img { max-width: 100%; height: auto; display: block; }
 h1 { font-style: italic; text-transform: uppercase; font-weight: 700; font-size: clamp(44px, 5.2vw, 76px); line-height: .9; letter-spacing: -.01em; margin: 26px 0 22px; }
 h1 span { display: block; color: var(--acid); }
 .lead { font-size: clamp(18px, 2.1vw, 22px); line-height: 1.45; color: var(--soft); max-width: 36ch; margin: 0; }
+.lead b { white-space: nowrap; } /* название игры не рвать на две строки */
+/* 13.11 «Unbound» граффити (вариант 1f): только в lead, обертку ставит sobrat.py */
+.lead .ub { display: inline-block; font: 400 1.45em/.9 "Sedgwick UB", var(--font); vertical-align: -.04em; transform: rotate(-4deg); margin: 0 .12em 0 .04em;
+  color: var(--acid); -webkit-text-stroke: .09em #000; paint-order: stroke fill; text-shadow: .05em .05em 0 #000, .1em .1em 0 var(--paper); }
 .cta { display: flex; flex-wrap: wrap; gap: 14px 12px; margin: 30px 0 18px; align-items: stretch; }
 .btn { display: inline-flex; flex-direction: column; justify-content: center; gap: 4px; padding: 12px 18px; border: 1px solid var(--line); background: rgba(255,255,255,.02); color: var(--paper); text-decoration: none; text-transform: uppercase; font-style: italic; font-weight: 700; letter-spacing: .12em; font-size: 13px; line-height: 1.2; transition: transform .15s, box-shadow .15s, border-color .15s; }
 .btn:hover { color: var(--paper); border-color: var(--acid); }
@@ -281,7 +287,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
       <div>
         <p class="tag">Mod de música propia · NFS Unbound · PC</p>
         <h1>Unbound <span>Soundtrack</span></h1>
-        <p class="lead">Tus propias canciones en <b>Need for Speed Unbound</b> — como pistas nuevas con tus propias portadas. Las pistas del juego se quedan.</p>
+        <p class="lead">Personaliza por completo la música de <b>Need for Speed <span class="ub">Unbound</span></b> a tu gusto: añade tus canciones con portadas y deja o desactiva las pistas del juego — tú eliges.</p>
         <div class="cta">
           <a class="btn primary" href="https://drive.google.com/drive/folders/1xj2YBqJ-sqB53Azt__dZNrsfP8iMbS_a?usp=sharing" target="_blank" rel="noopener">
             <span>Descargar</span><small>v1.0.1 · zip 63,6 MB · Google Drive</small>
@@ -305,7 +311,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
     <section class="block" id="what">
       <h2 class="h2"><span class="n">01</span><span>Qué hace</span></h2>
       <div class="features">
-        <div class="card"><h3>Tus canciones</h3><p>mp3, flac, wav, ogg, m4a — como pistas <b>nuevas</b> con tu propio título y portada. Las pistas del juego se quedan como están. Cientos de canciones en un mod.</p></div>
+        <div class="card"><h3>Tus canciones</h3><p>mp3, flac, wav, ogg, m4a — como pistas <b>nuevas</b> con tu propio título y portada, sin reemplazar las pistas del juego. Cientos de canciones en un mod.</p></div>
         <div class="card"><h3>YouTube · YT Music</h3><p>Pega el enlace de una canción, playlist o álbum — o muchos enlaces, o una lista .txt. El programa descarga solo; un enlace de videoclip toma la misma canción de YT Music, sin intros ni escenas.</p></div>
         <div class="card"><h3>Drop en el GO</h3><p>Salida: 17 s de cinemática + 3,45 s de cuenta atrás — el drop entra en el GO. El programa encuentra el GO solo por el golpe de bajo y lo ajustas con el ratón. Y un fragmento corto para la meta.</p></div>
         <div class="card"><h3>Carreras · Ciudad</h3><p>Activa y desactiva las pistas del juego por separado para carreras y para la ciudad, el garaje y el menú. Perfiles para distintos conjuntos de música. HIGH / LOW — con qué frecuencia suena una pista.</p></div>
