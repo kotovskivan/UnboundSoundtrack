@@ -27,6 +27,10 @@ yt-dlp — app\yt-dlp.exe — downloads a song (sound, cover, artist and title) 
   Made by the yt-dlp team (contributors of the yt-dlp project). License: The Unlicense (public domain).
   https://github.com/yt-dlp/yt-dlp
 
+Sedgwick Ave Display font — app\web\fonts\SedgwickAveDisplay-Regular.ttf (the graffiti "Soundtrack" in the window logo). Unchanged.
+  Copyright 2017 The Sedgwick Ave Project Authors. License: SIL Open Font License 1.1 — app\web\fonts\OFL-SedgwickAveDisplay.txt.
+  https://github.com/googlefonts/sedgwickave
+
 This program — Unbound Soundtrack.exe, source code in source\ — GNU GPL v3 (it uses Frosty libraries).
 
 ---------------------------------------------------------------------

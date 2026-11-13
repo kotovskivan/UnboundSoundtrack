@@ -2554,8 +2554,9 @@ const I18N = {
     err_net: "与程序的连接中断。它还在运行吗？"
   }
 };
+// порядок (Ваня, 13.11): русский — последним
 const LANGS = [["uk", "UA"], ["en", "EN"], ["de", "DE"], ["es", "ES"], ["fr", "FR"], ["it", "IT"], ["pl", "PL"], ["pt", "PT"], ["tr", "TR"],
-  ["ru", "RU"], ["zh", "ZH"], ["ja", "JA"], ["ko", "KO"]].filter(([c]) => I18N[c]);
+  ["zh", "ZH"], ["ja", "JA"], ["ko", "KO"], ["ru", "RU"]].filter(([c]) => I18N[c]);
 const LANG_NAMES = { uk: "Українська", en: "English", de: "Deutsch", es: "Español", fr: "Français", it: "Italiano", pl: "Polski", pt: "Português (Brasil)",
   tr: "Türkçe", ru: "Русский", zh: "简体中文", ja: "日本語", ko: "한국어" };
 const HTML_LANG = { zh: "zh-Hans", pt: "pt-BR" };   // атрибут lang: по нему Edge берет шрифт для иероглифов (и :lang() в стилях)
@@ -2564,8 +2565,7 @@ const hl = c => HTML_LANG[c] || c;
 const dataLang = () => LANG === "tr" ? ' lang="en"' : "";
 let LANG = (() => {
   try { const s = localStorage.getItem("lang"); if (s && I18N[s]) return s; } catch (e) {}
-  const n = (navigator.language || "en").slice(0, 2).toLowerCase();
-  return I18N[n] ? n : "en";
+  return "en";   // до выбора — English, не язык Windows (Ваня 13.11: международный; у него Windows ru-UA давала русский)
 })();
 
 function t(k, p) {

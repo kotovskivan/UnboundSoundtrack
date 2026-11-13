@@ -50,10 +50,15 @@ body { font-variation-settings: "wdth" 85, "wght" 500; }
 /* ---------- раскладка ---------- */
 .app { position: relative; z-index: 2; display: grid; grid-template-columns: 340px 1fr; height: 100vh; }
 .side { padding: 34px 0 28px 38px; display: flex; flex-direction: column; min-height: 0; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.18) transparent; }
-.tag { align-self: flex-start; background: var(--acid); color: var(--ink); padding: 6px 16px 5px; font-size: 15px; letter-spacing: .14em; font-variation-settings: "wdth" 100, "wght" 700;
-  transform: skewX(-12deg) rotate(-3deg); box-shadow: 4px 4px 0 var(--sun); }
-.tag b { display: inline-block; transform: skewX(12deg); }
-.title { margin-top: 18px; font-size: 54px; line-height: .9; white-space: nowrap; text-transform: uppercase; font-variation-settings: "wdth" 75, "wght" 700; transform: skewX(-8deg); text-shadow: 3px 3px 0 rgba(0,0,0,.6); }
+/* лого 13.11 (Ваня: «как Heat, только Unbound и в стиле Unbound»): белое UNBOUND + граффити «Soundtrack», как «Unbound» на сайте; наклейка «UNBOUND · SOUNDTRACK» убрана */
+@font-face { font-family: "Sedgwick UB"; src: url("fonts/SedgwickAveDisplay-Regular.ttf") format("truetype"); font-display: block; }   /* граффити — SIL OFL 1.1 (fonts/OFL-SedgwickAveDisplay.txt), только латиница */
+.brand { position: relative; flex-shrink: 0; height: 94px; margin-top: 2px; }   /* flex-shrink: 0 — колонка не сжимает лого (граффити наезжало на строку ниже) */
+.brand b { display: block; font-size: 70px; line-height: .9; font-weight: 700; font-stretch: 75%; font-variation-settings: "wdth" 75, "wght" 700; color: var(--paper);
+  transform: skewX(-8deg); transform-origin: left bottom; text-shadow: 3px 3px 0 rgba(0,0,0,.6); }
+.brand i { position: absolute; left: 18px; top: 42px; font: normal 400 48px/1 "Sedgwick UB", var(--font); white-space: nowrap; color: var(--acid);
+  -webkit-text-stroke: .09em #000; paint-order: stroke fill; text-shadow: .05em .05em 0 #000, .1em .1em 0 var(--paper); transform: rotate(-6deg); transform-origin: left center; }
+.title { align-self: flex-start; margin-top: 10px; font-size: 15px; line-height: 1.2; white-space: nowrap; text-transform: uppercase; letter-spacing: .3em; font-variation-settings: "wdth" 100, "wght" 700;
+  transform: skewX(-8deg); color: rgba(244,244,240,.82); }
 .title em { font-style: normal; color: var(--acid); }
 
 .menu { margin-top: 30px; list-style: none; }
@@ -348,8 +353,8 @@ body.wv-drag, body.wv-drag * { cursor: grabbing !important; }   /* тянут GO
 <div class="lang" id="langBar"><a class="beta" href="https://forms.gle/StNa4GFZRHckFVpi8" data-i18n="betaNote"></a><span id="lang" style="display:contents"></span><button id="foldersBtn" data-i18n="folders"></button><button id="browserBtn" data-i18n="menuBrowser" style="margin-left:4px"></button><button id="aboutBtn" data-i18n="about" style="margin-left:4px"></button></div>
 <div class="app">
   <aside class="side">
-    <div class="tag"><b>UNBOUND · SOUNDTRACK</b></div>
-    <div class="title"><span data-i18n="titleA"></span><br><em data-i18n="titleB"></em></div>
+    <div class="brand" translate="no"><b>UNBOUND</b><i>Soundtrack</i></div>
+    <div class="title"><span data-i18n="titleA"></span> <em data-i18n="titleB"></em></div>
     <ul class="menu" id="menu">
       <li data-f="all" class="on"><span class="item"><span data-i18n="all"></span><span class="cnt" id="c-all"></span></span><div class="sub" data-i18n="allSub"></div></li>
       <li data-f="mine"><span class="item"><span data-i18n="mine"></span><span class="cnt" id="c-mine"></span></span><div class="sub" data-i18n="mineSub"></div></li>
@@ -502,9 +507,9 @@ const KEY_LINK = '<a href="https://www.nexusmods.com/needforspeedunbound/mods/97
 async function boot() {
   try { S = await api("/api/state"); } catch (e) { await showError(e); return; }
   if (I18N[S.lang]) setLang(S.lang);
-  else {   // первый запуск: язык Windows (если он есть среди наших, иначе English) — сверху крупно, остальные — сеткой;
+  else {   // первый запуск: сверху крупно ВСЕГДА English (международный, Ваня 13.11 — не язык Windows), остальные — сеткой в порядке LANGS;
            // заголовок, подсказка и строка «переводы сделаны ИИ» — на том языке, на котором стоит выбор (мышь / стрелки)
-    const win = LANG, codes = [win, ...LANGS.map(([c]) => c).filter(c => c !== win)];
+    const win = "en", codes = [win, ...LANGS.map(([c]) => c).filter(c => c !== win)];
     const L = (c, k) => (I18N[c] && I18N[c][k]) || I18N.en[k];
     const v = await askYesNo({ title: L(win, "langT"), cls: "dlg-lang", html: `<p data-lp>${L(win, "langPick")}</p>`,
       buttons: codes.map((c, i) => ({ label: i ? LANG_NAMES[c] : LANG_NAMES[c] + " — " + L(c, "langGo"), val: c })),
@@ -522,7 +527,7 @@ async function boot() {
           b.addEventListener("focus", show); b.addEventListener("mouseenter", show);   // стрелки / Tab — focus, мышь — mouseenter
         });
       } });
-    setLang(I18N[v] ? v : LANG);
+    setLang(I18N[v] ? v : win);
     await api("/api/lang", { lang: LANG }).catch(() => {});
   }
   if (S.view) { if (S.view.sort) vs.sort = S.view.sort; if (S.view.view) vs.view = S.view.view; }   // вид и сортировка — из settings.json (P2-07)
@@ -1754,7 +1759,7 @@ function fitSide() {
   const room = side.clientWidth - parseFloat(getComputedStyle(side).paddingLeft) - 20;
   const shrink = (els, base, width) => { let s = base; const set = () => els.forEach(e => e.style.fontSize = s + "px"); set(); while (s > 14 && els.some(e => width(e) > room)) { s--; set(); } };
   const title = document.querySelector(".title");
-  shrink([title], 54, e => Math.max(...[...e.children].filter(c => c.tagName !== "BR").map(c => c.offsetWidth)));
+  shrink([title], 15, e => e.offsetWidth);   // «Мой саундтрек» — одна строка под лого (13.11)
   shrink([...document.querySelectorAll("#menu .item")], 30, e => { const badge = e.parentElement.querySelector(".new"); return e.offsetWidth + (badge ? badge.offsetWidth + 6 : 0); });
 }
 addEventListener("resize", fitSide);
