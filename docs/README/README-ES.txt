@@ -19,7 +19,7 @@ QUÉ HACE
   - Perfiles: distintos conjuntos de pistas, se cambian con un clic.
   - Crea UN solo mod para Frosty Mod Manager. Los archivos del juego no se modifican.
   - ▶ en una pista del juego — vista previa de 30 segundos (Deezer, necesita internet); YouTube ↗ — la canción completa.
-  - La ventana habla 13 idiomas.
+  - La ventana habla 14 idiomas.
 
 NECESITAS
   - Windows 10 u 11 (Microsoft Edge viene integrado — la ventana lo usa).
@@ -57,7 +57,7 @@ SOLO SIN CONEXIÓN
 
 QUÉ HAY EN LA CARPETA
   Unbound Soundtrack.exe   el programa
-  app\web                  la ventana (páginas, textos en 13 idiomas)
+  app\web                  la ventana (páginas, textos en 14 idiomas)
   app\frosty               bibliotecas de Frosty Toolsuite — leen el juego, escriben el mod (GPL v3)
   app\encoder              codificador de audio de EA, del plugin Sound Editor de Frosty Editor
   app\yt-dlp.exe           descarga canciones de YouTube / YT Music (Unlicense)

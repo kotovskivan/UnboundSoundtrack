@@ -18,7 +18,7 @@ English — README.txt поруч із програмою.
   - Профілі: різні набори треків, перемикання в один клік.
   - Збирає ОДИН мод для Frosty Mod Manager. Файли гри не змінюються.
   - ▶ на треку гри — 30 секунд послухати (Deezer, потрібен інтернет); YouTube ↗ — пісня повністю.
-  - Вікно розмовляє 13 мовами.
+  - Вікно розмовляє 14 мовами.
 
 ЩО ПОТРІБНО
   - Windows 10 або 11 (Microsoft Edge вже вбудований — вікно працює на ньому).
@@ -56,7 +56,7 @@ English — README.txt поруч із програмою.
 
 ЩО В ПАПЦІ
   Unbound Soundtrack.exe   програма
-  app\web                  вікно (сторінки, тексти 13 мовами)
+  app\web                  вікно (сторінки, тексти 14 мовами)
   app\frosty               бібліотеки Frosty Toolsuite — читають гру, записують мод (GPL v3)
   app\encoder              аудіокодувальник EA з плагіна Sound Editor для Frosty Editor
   app\yt-dlp.exe           качає пісні з YouTube / YT Music (Unlicense)

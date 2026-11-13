@@ -6,8 +6,8 @@ Free fan-made tool by **Kitivski + Claude** (Claude — AI by Anthropic). Not af
 - Add your songs (mp3, flac, wav, ogg, m4a) as **new tracks** with your own title and cover — the game's tracks stay.
 - Songs from **YouTube / YT Music**: a link to a song, a playlist or an album, many links at once or a .txt list (via yt-dlp).
 - For each song: the **race start** (17 s cutscene + 3.45 s countdown, the drop hits at GO) and the **finish** piece.
-- Turn game tracks on/off separately for **races** and the **city**; profiles; HIGH / LOW; 30-second previews.
-- Builds **one mod** for Frosty Mod Manager. Game files are not changed. Interface in **13 languages**.
+- Turn tracks on/off separately for **races**, the **city** and the **garage**; profiles; HIGH / LOW; 30-second previews.
+- Builds **one mod** for Frosty Mod Manager. Game files are not changed. Interface in **14 languages**.
 - **Offline only** — mods are for single player.
 
 **Download:** [website](https://kotovskivan.github.io/UnboundSoundtrack/) · [Nexus Mods](https://www.nexusmods.com/needforspeedunbound/mods/671) · [NFSMods](https://nfsmods.xyz/mod/8161) ·
@@ -23,9 +23,9 @@ Frosty Toolsuite libraries, encodes your songs with the EA audio encoder and wri
 | Folder | What |
 |---|---|
 | `src/` | the program (C#) — server, game reading, audio cutting, BC7 cover encoder, sound bank writer, mod writer, YouTube / YT Music (`Yt.cs`) |
-| `web/` | the window: HTML/JS/CSS, texts in 13 languages |
+| `web/` | the window: HTML/JS/CSS, texts in 14 languages |
 | `res/` | icon |
-| `docs/` | README (13 languages) and THIRD-PARTY (shipped in the zip) |
+| `docs/` | README (14 languages) and THIRD-PARTY (shipped in the zip) |
 
 Internet use: the ▶ previews (`api.deezer.com`, the audio streams from Deezer / iTunes) and, only when you add songs by a link,
 YouTube / YT Music (`music.youtube.com` to find the song, `yt-dlp` to download it). Nothing about the user is sent anywhere.
@@ -63,6 +63,16 @@ Output: `out\Unbound Soundtrack\` — the same layout as the release zip.
 
 ## Changelog
 
+- **1.0.2**
+  - New: **Garage** — a third switch next to Races and City: a song (or a game track) can play only in the garage
+    (suggested by Low Rider). Songs and profiles from 1.0.1 keep playing in the garage as before.
+  - Finnish — 14 languages.
+  - New look: straight plates and white selection like the game menu, wide headings, a dark background (Kitivski's Lancer),
+    "where it plays" as icons (flag / city / garage).
+  - Credits: Low Rider — thanks for the feedback and suggestions.
+  - Fixed: a game track with only "Garage" on could be given away to your songs as "off"; LOW was lost when a song was
+    re-imported from the Music folder.
+
 - **1.0.1** — big update.
   - New: songs from YouTube / YT Music — a song, playlist, album, many links or a .txt list; a music video link takes the same song
     from YT Music; an unavailable video is replaced by the same song from YT Music. 13 languages (translated with AI), README in each.
@@ -95,5 +105,6 @@ Third-party parts keep their own licenses — see `docs/THIRD-PARTY.txt`.
   [NFS Unbound fork by HarGabt](https://github.com/HarGabt/FrostyToolsuite) — libraries and the EA audio encoder.
 - [Alternate Waves](https://www.nexusmods.com/needforspeedunbound/mods/340), [The Lakeshore Sound](https://nfsmods.xyz/mod/7400),
   [vgmstream](https://github.com/vgmstream/vgmstream) — we learned from them how the game's music works.
+- [Low Rider](https://steamcommunity.com/profiles/76561198421221810) — feedback and suggestions about the game.
 
 Need for Speed and NFS Unbound are trademarks of Electronic Arts Inc.

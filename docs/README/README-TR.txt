@@ -18,7 +18,7 @@ NE YAPAR
   - Profiller: farklı parça setleri, tek tıkla geçiş.
   - Frosty Mod Manager için TEK bir mod oluşturur. Oyun dosyaları değişmez.
   - Oyun parçasındaki ▶ — 30 saniyelik önizleme (Deezer, internet gerekir); YouTube ↗ — şarkının tamamı.
-  - Pencere 13 dil biliyor.
+  - Pencere 14 dil biliyor.
 
 GEREKENLER
   - Windows 10 ya da 11 (Microsoft Edge yerleşik gelir — pencere onu kullanır).
@@ -56,7 +56,7 @@ SADECE ÇEVRİMDIŞI
 
 KLASÖRDE NELER VAR
   Unbound Soundtrack.exe   program
-  app\web                  pencere (sayfalar, 13 dilde metinler)
+  app\web                  pencere (sayfalar, 14 dilde metinler)
   app\frosty               Frosty Toolsuite kütüphaneleri — oyunu okur, modu yazar (GPL v3)
   app\encoder              Frosty Editor'ün Sound Editor eklentisinden EA ses kodlayıcısı
   app\yt-dlp.exe           YouTube / YT Music'ten şarkı indirir (Unlicense)

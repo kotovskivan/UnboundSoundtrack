@@ -18,7 +18,7 @@ Kitivski + Claude가 만든 무료 팬 메이드 도구예요. Electronic Arts�
   - 프로필: 트랙 구성을 여러 개 만들고 클릭 한 번으로 바꿔요.
   - Frosty Mod Manager용 모드를 딱 하나 만들어요. 게임 파일은 바뀌지 않아요.
   - 게임 트랙의 ▶ — 30초 미리 듣기(Deezer, 인터넷 필요), YouTube ↗ — 노래 전체.
-  - 창은 13개 언어를 지원해요.
+  - 창은 14개 언어를 지원해요.
 
 필요한 것
   - Windows 10 또는 11(Microsoft Edge가 기본으로 들어 있어요 — 창이 Edge를 사용해요).
@@ -56,7 +56,7 @@ Kitivski + Claude가 만든 무료 팬 메이드 도구예요. Electronic Arts�
 
 폴더 안에 있는 것
   Unbound Soundtrack.exe   프로그램
-  app\web                  창(페이지, 13개 언어 텍스트)
+  app\web                  창(페이지, 14개 언어 텍스트)
   app\frosty               Frosty Toolsuite 라이브러리 — 게임을 읽고 모드를 만들어요(GPL v3)
   app\encoder              EA 오디오 인코더 — Frosty Editor의 Sound Editor 플러그인에서 가져왔어요
   app\yt-dlp.exe           YouTube / YT Music에서 노래를 내려받아요(Unlicense)

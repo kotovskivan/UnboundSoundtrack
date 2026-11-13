@@ -6,7 +6,7 @@ Website: https://kotovskivan.github.io/UnboundSoundtrack/
 Other languages — folder "README":
   README-UA.txt Українська · README-RU.txt Русский · README-DE.txt Deutsch · README-ES.txt Español
   README-FR.txt Français · README-IT.txt Italiano · README-PL.txt Polski · README-PT.txt Português (Brasil)
-  README-TR.txt Türkçe · README-ZH.txt 简体中文 · README-JA.txt 日本語 · README-KO.txt 한국어
+  README-TR.txt Türkçe · README-FI.txt Suomi · README-ZH.txt 简体中文 · README-JA.txt 日本語 · README-KO.txt 한국어
 Translations made with AI (Claude).
 
 =====================================================================
@@ -21,7 +21,7 @@ WHAT IT DOES
   - Profiles: different sets of tracks, switch in one click.
   - Builds ONE mod for Frosty Mod Manager. Game files are not changed.
   - ▶ on a game track — 30-second preview (Deezer, needs internet); YouTube ↗ — the full song.
-  - The window speaks 13 languages.
+  - The window speaks 14 languages.
 
 YOU NEED
   - Windows 10 or 11 (Microsoft Edge is built in — the window uses it).
@@ -59,7 +59,7 @@ OFFLINE ONLY
 
 WHAT IS IN THE FOLDER
   Unbound Soundtrack.exe   the program
-  app\web                  the window (pages, texts in 13 languages)
+  app\web                  the window (pages, texts in 14 languages)
   app\frosty               Frosty Toolsuite libraries — read the game, write the mod (GPL v3)
   app\encoder              EA audio encoder from Frosty Editor's Sound Editor plugin
   app\yt-dlp.exe           downloads songs from YouTube / YT Music (Unlicense)

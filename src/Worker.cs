@@ -43,10 +43,11 @@ static class Worker
     const string BANK = "audio/music/event/exc_music_event_02", BANK1 = "audio/music/event/exc_music_event_01";
     const string LOGIC = "audio/music/logic/pf_music_logic";
     const string CONTROL = "audio/music/logic/exc_music_control";   // звуковой граф музыки: список банков в WaveSwitcherNodeData
-    // ГОНКИ — заезды, митапы, тейковеры; МІСТО — свободная езда и гараж (так написано в окне). Гараж был в RACE —
-    // в гараже играли песни с галочкой «Гонки» (отзыв в Steam 12.11), теперь — «Місто»
+    // ГОНКИ — заезды, митапы, тейковеры; МІСТО — свободная езда; ГАРАЖ — гараж (своя галочка с 1.0.2, вопрос Low Rider в Steam 13.11:
+    // «чтоб какие-то песни играли только в гараже»). История: в 1.0.0a гараж был в RACE (в гараже играли «Гонки», отзыв 12.11), в 1.0.1 — в «Місто».
     static readonly string[] RACE = { "IsMeetupTrack", "IsEventTrack", "IsTrialEscalationTrack", "IsTakeoverTrack" };
-    static readonly string[] CITY = { "IsFreedriveTrack", "IsGarageTrack" };
+    static readonly string[] CITY = { "IsFreedriveTrack" };
+    static readonly string[] GARAGE = { "IsGarageTrack" };
     const string FREE = "IsFreedriveTrack";   // только для extract (tracks.json, справочно)
     // фоны окна: имя в игре -> файл
     static readonly string[][] BG = {
@@ -252,20 +253,22 @@ static class Worker
         Say("STEP logic");
         EbxAsset logic = am.GetEbx(am.GetEbxEntry(LOGIC));
         var list = TrackList(logic);
-        int nr = 0, nf = 0;
+        int nr = 0, nf = 0, ng = 0;
         foreach (object t in list)
         {
             if (!Str(t, "TitleId").StartsWith("ID_MUSICTRACK_")) continue;
             bool[] c; if (!choice.TryGetValue(Str(t, "TrackEnumName"), out c) || c.Length < 2) c = new[] { true, true };
+            bool g = c.Length > 3 ? c[3] : c[1];   // [гонки, город, low, гараж]; гаража нет (до 1.0.2) — как город
             // включено = High (все включенные треки и свои песни на равных), выключено = Never.
             // Раньше было «как в игре, Never -> Low»: тест Вани — из Siri (Low) и Palace (High) в игре звучал только Palace.
             int pv = c.Length > 2 && c[2] ? 1 : 2;   // приоритет: 2 High (по умолчанию) / 1 Low — Ваня 12.11 (Mid в игре нет: 0 Never, 1 Low, 2 High)
             foreach (string f in RACE) SetEnumInt(t, f, c[0] ? pv : 0);
             foreach (string f in CITY) SetEnumInt(t, f, c[1] ? pv : 0);
+            foreach (string f in GARAGE) SetEnumInt(t, f, g ? pv : 0);
             // у 38 из 72 треков игры IsDirectlySelectable = False (Siri среди них). Тест Вани: из Siri + Palace звучал только Palace (True).
             // Мод перебивает игру: включенный трек — «выбираемый».
-            if (c[0] || c[1]) t.GetType().GetProperty("IsDirectlySelectable").SetValue(t, true);
-            if (c[0]) nr++; if (c[1]) nf++;
+            if (c[0] || c[1] || g) t.GetType().GetProperty("IsDirectlySelectable").SetValue(t, true);
+            if (c[0]) nr++; if (c[1]) nf++; if (g) ng++;
         }
         for (int i = 0; i < songs.Count; i++)
         {
@@ -276,14 +279,15 @@ static class Worker
             int sv = s.low ? 1 : 2;
             foreach (string f in RACE) SetEnumInt(nt, f, s.race ? sv : 0);
             foreach (string f in CITY) SetEnumInt(nt, f, s.city ? sv : 0);
-            if (s.race) nr++; if (s.city) nf++;
+            foreach (string f in GARAGE) SetEnumInt(nt, f, s.Gar() ? sv : 0);
+            if (s.race) nr++; if (s.city) nf++; if (s.Gar()) ng++;
             var art = Cover("ui/textures/albumart/t_albumart_oki", "ui/textures/albumart/t_albumart_" + s.trackName.ToLowerInvariant(), CoverPixels(s));
             nt.GetType().GetProperty("AlbumArt").SetValue(nt, new PointerRef(new EbxImportReference { FileGuid = art.Item1, ClassGuid = art.Item2 }));
             logic.AddDependency(art.Item1);
         }
         // правила повтора движка (MinTracksBetween=5, HighSuitabilityMinTracksBetween=20) рассчитаны на 72 трека.
         // Тест Вани: из 2 включенных (Siri + Palace) везде играл один Palace. Подгоняем под свой плейлист: не больше N-1.
-        int nOn = Math.Min(nr > 0 ? nr : int.MaxValue, nf > 0 ? nf : int.MaxValue);
+        int nOn = new[] { nr, nf, ng }.Where(x => x > 0).DefaultIfEmpty(int.MaxValue).Min();   // самый короткий плейлист из трех
         if (nOn != int.MaxValue)
             foreach (object o in logic.Objects)
                 foreach (string f in new[] { "MinTracksBetween", "HighSuitabilityMinTracksBetween" })
@@ -299,7 +303,7 @@ static class Worker
         var ms = new Frosty.Core.Mod.ModSettings();
         ms.Title = "Unbound Soundtrack"; ms.Author = "Kitivski + Claude"; ms.Category = "Audio"; ms.Version = App.Version; ms.Link = "https://kotovskivan.github.io/UnboundSoundtrack/";   // Frosty Mod Manager показывает ссылку в описании мода
         ms.Description = (job.ContainsKey("preset") ? "Profile: " + Clean((string)job["preset"]) + ". " : "") + (songs.Count > 0 ? "Own songs: " + string.Join(", ", songs.Select(s => Clean(s.artist) + " - " + Clean(s.title))) + ". " : "")
-            + "Game tracks in races: " + nr + ", in the city: " + nf + ". Made with Unbound Soundtrack (fan-made, not affiliated with EA).";
+            + "Tracks in races: " + nr + ", in the city: " + nf + ", in the garage: " + ng + ". Made with Unbound Soundtrack (fan-made, not affiliated with EA).";
         ms.Icon = ModIcon();
         Frosty.Core.Config.Load(Path.Combine(App.FrostyDir, "config.json"));
         Frosty.Core.App.SelectedProfile = App.Profile;
@@ -314,7 +318,7 @@ static class Worker
         try { File.Copy(tmp, part, true); if (File.Exists(outPath)) File.Replace(part, outPath, null); else File.Move(part, outPath); }
         catch (IOException e) { App.Log("copy mod: " + e.Message); try { File.Delete(part); } catch { } throw new UserError("modLocked", outPath); }
         File.Delete(tmp);
-        Say("OK " + App.Json.Serialize(new Dictionary<string, object> { { "path", outPath }, { "size", new FileInfo(outPath).Length }, { "race", nr }, { "city", nf }, { "songs", songs.Count } }));
+        Say("OK " + App.Json.Serialize(new Dictionary<string, object> { { "path", outPath }, { "size", new FileInfo(outPath).Length }, { "race", nr }, { "city", nf }, { "garage", ng }, { "songs", songs.Count } }));
     }
 
     static string Clean(string s) { s = (s ?? "").Replace('\r', ' ').Replace('\n', ' ').Trim(); return s.Length > 80 ? s.Substring(0, 80) : s; }
@@ -479,7 +483,7 @@ static class Worker
         App.Log("graph " + CONTROL + ": banks in WaveSwitcherNodeData " + waves.Count + ", ReferencedData " + rd.Count);
     }
 
-    // выключенные треки игры (обе галочки сняты), чьи строки можно отдать своим песням.
+    // выключенные треки игры (все галочки сняты: гонки, город и гараж), чьи строки можно отдать своим песням.
     // Отдаем только тот, кого игра не может вызвать ничем: во всех режимах Never (выключен) и в ОРИГИНАЛЕ IsDirectlySelectable = False
     // (прямой вызов запрещен самой игрой; у сюжетных он True). Разбор 10.11 (FrostyReader trackscan, 254 876 EBX): имена и хэши треков
     // вне pf_music_logic не встречаются; логику подключает только audio/gameplay/prefabs/pf_gameplay_audio_hooks.
@@ -492,7 +496,7 @@ static class Worker
             string name = Str(t, "TrackEnumName");
             if (!Str(t, "TitleId").StartsWith("ID_MUSICTRACK_")) continue;
             if (Convert.ToBoolean(t.GetType().GetProperty("IsDirectlySelectable").GetValue(t))) continue;
-            bool[] c; if (!choice.TryGetValue(name, out c) || c.Length < 2 || c[0] || c[1]) continue;
+            bool[] c; if (!choice.TryGetValue(name, out c) || c.Length < 2 || c[0] || c[1] || (c.Length > 3 && c[3])) continue;   // «только Гараж» — включен, не отдаем
             res.Add(Convert.ToInt64(t.GetType().GetProperty("TrackEnumInt").GetValue(t)));
         }
         return res;

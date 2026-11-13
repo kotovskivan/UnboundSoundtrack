@@ -18,7 +18,7 @@
   - 配置：不同的曲目组合，一键切换。
   - 只为 Frosty Mod Manager 生成一个模组。不修改游戏文件。
   - 游戏曲目上的 ▶ —— 30 秒试听（Deezer，需要联网）；YouTube ↗ —— 完整歌曲。
-  - 程序窗口支持 13 种语言。
+  - 程序窗口支持 14 种语言。
 
 需要准备
   - Windows 10 或 11（系统自带 Microsoft Edge —— 程序窗口要用到它）。
@@ -56,7 +56,7 @@
 
 文件夹里有什么
   Unbound Soundtrack.exe   程序本体
-  app\web                  程序窗口（页面、13 种语言的文本）
+  app\web                  程序窗口（页面、14 种语言的文本）
   app\frosty               Frosty Toolsuite 库 —— 读取游戏、写入模组（GPL v3）
   app\encoder              EA 音频编码器，来自 Frosty Editor 的 Sound Editor 插件
   app\yt-dlp.exe           从 YouTube / YT Music 下载歌曲（Unlicense）

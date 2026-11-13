@@ -13,7 +13,7 @@ using System.Web.Script.Serialization;
 
 static class App
 {
-    public const string Version = "1.0.1";
+    public const string Version = "1.0.2";
     public const string Profile = "NeedForSpeedUnbound";
     public static string Root, AppDir, WebDir, FrostyDir, EncDir, DataDir, SongsDir, UiDir, LogPath, MusicDir;
     public static readonly JavaScriptSerializer Json = new JavaScriptSerializer { MaxJsonLength = int.MaxValue, RecursionLimit = 64 };
@@ -117,6 +117,8 @@ class Song
     public double dur, drop, outro, cDur = 25;
     public bool race = true, city = true, draft = true, cover;
     public bool low;             // приоритет в игре: false — High (по умолчанию), true — Low (играет редко: движок сначала ищет High)
+    public bool? garage;         // гараж (IsGarageTrack) — своя галочка с 1.0.2; null = песня сохранена до 1.0.2 → как city (тогда «Місто» = город + гараж)
+    public bool Gar() { return garage ?? city; }   // метод, не свойство: JavaScriptSerializer не пишет его в settings.json
     public string src, asig, isig;   // песня из папки Music: путь звука относительно Music, подписи звука и картинки (размер:время)
     public long added;
     public int num;              // номер трека в игре (ставит сборка: 140, 141…)
@@ -127,14 +129,15 @@ class Song
 class Preset
 {
     public string id, name;
-    public Dictionary<string, bool[]> choice = new Dictionary<string, bool[]>();   // слот игры -> [гонки, город, low] (low нет = High)
-    public Dictionary<string, bool[]> songs = new Dictionary<string, bool[]>();    // id своей песни -> [гонки, город, low]; нет в списке = выключена
+    // [гонки, город, low, гараж]: low нет = High; гаража нет (сохранено до 1.0.2) = как город
+    public Dictionary<string, bool[]> choice = new Dictionary<string, bool[]>();   // слот игры -> [гонки, город, low, гараж]
+    public Dictionary<string, bool[]> songs = new Dictionary<string, bool[]>();    // id своей песни -> [гонки, город, low, гараж]; нет в списке = выключена
 }
 
 class Settings
 {
     public bool agreed, pathsOk;   // pathsOk — человек подтвердил папки игры и Mod Manager
-    public string lang;            // язык окна (13 кодов — Ui.Langs); null — первый запуск, окно спросит
+    public string lang;            // язык окна (14 кодов — Ui.Langs); null — первый запуск, окно спросит
     public bool musicTold;         // окно «Пісні з папки» уже показали
     public List<string> skipped = new List<string>();   // песни из Music, удаленные в программе (папка осталась) — не подтягивать снова
     public string gamePath, fmmPath;
@@ -170,13 +173,13 @@ class Settings
     public void Snapshot(Preset p)
     {
         p.choice = choice.ToDictionary(k => k.Key, k => (bool[])k.Value.Clone());
-        p.songs = songs.Where(s => !s.draft).ToDictionary(s => s.id, s => new[] { s.race, s.city, s.low });
+        p.songs = songs.Where(s => !s.draft).ToDictionary(s => s.id, s => new[] { s.race, s.city, s.low, s.Gar() });
     }
     // профиль -> рабочее состояние (песни, которых в профиле нет, — выключены, но остаются в библиотеке)
     public void Load(Preset p)
     {
         choice = p.choice.ToDictionary(k => k.Key, k => (bool[])k.Value.Clone());
-        foreach (var s in songs) { bool[] f; if (p.songs.TryGetValue(s.id, out f) && f.Length >= 2) { s.race = f[0]; s.city = f[1]; s.low = f.Length > 2 && f[2]; } else { s.race = false; s.city = false; s.low = false; } }
+        foreach (var s in songs) { bool[] f; if (p.songs.TryGetValue(s.id, out f) && f.Length >= 2) { s.race = f[0]; s.city = f[1]; s.low = f.Length > 2 && f[2]; s.garage = f.Length > 3 ? f[3] : f[1]; } else { s.race = false; s.city = false; s.low = false; s.garage = false; } }
         activePreset = p.id;
     }
 

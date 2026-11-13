@@ -125,7 +125,7 @@ static class Ui
     }
 
     // языки окна (те же коды, что в web/i18n.js LANGS)
-    static readonly string[] Langs = { "uk", "en", "de", "es", "fr", "it", "pl", "pt", "tr", "ru", "zh", "ja", "ko" };
+    static readonly string[] Langs = { "uk", "en", "de", "es", "fr", "it", "pl", "pt", "tr", "ru", "zh", "ja", "ko", "fi" };   // fi — 13.11, 1.0.2 (Ваня)
 
     // «распакуй zip» на языке Windows (окна еще нет — язык программы неизвестен)
     static string UnpackText()
@@ -144,6 +144,7 @@ static class Ui
             case "pl": return "Program uruchomiono prosto z archiwum.\n\nNajpierw rozpakuj CAŁY zip do zwykłego folderu (Pulpit, Dokumenty, D:\\Mods…), a potem uruchom stamtąd \"Unbound Soundtrack.exe\".\nInaczej ustawienia i piosenki przepadną.";
             case "de": return "Das Programm wurde direkt aus dem Archiv gestartet.\n\nEntpacke zuerst das GANZE Zip in einen normalen Ordner (Desktop, Dokumente, D:\\Mods…) und starte \"Unbound Soundtrack.exe\" von dort.\nSonst gehen Einstellungen und Songs verloren.";
             case "pt": return "O programa foi aberto direto do arquivo zip.\n\nPrimeiro descompacte o zip INTEIRO numa pasta comum (Área de Trabalho, Documentos, D:\\Mods…) e abra \"Unbound Soundtrack.exe\" de lá.\nSenão as configurações e músicas se perdem.";
+            case "fi": return "Ohjelma käynnistettiin suoraan arkistosta.\n\nPura ensin KOKO zip tavalliseen kansioon (Työpöytä, Tiedostot, D:\\Mods…) ja käynnistä \"Unbound Soundtrack.exe\" sieltä.\nMuuten asetukset ja biisit katoavat.";
             default: return "The program was started right from the archive.\n\nFirst unpack the WHOLE zip to a normal folder (Desktop, Documents, D:\\Mods…), then start \"Unbound Soundtrack.exe\" from there.\nOtherwise your settings and songs will be lost.";
         }
     }
@@ -300,6 +301,7 @@ static class Ui
                 string slot = (string)t["slot"];
                 string[] m; meta.TryGetValue(slot, out m);
                 bool[] on; if (!st.choice.TryGetValue(slot, out on) || on == null || on.Length < 2) on = new[] { true, true };
+                on = new[] { on[0], on[1], on.Length > 2 && on[2], on.Length > 3 ? on[3] : on[1] };   // окну всегда [гонки, город, low, гараж]
                 tracks.Add(new Dictionary<string, object> {
                     { "slot", slot }, { "artist", m != null ? m[0] : "" }, { "title", m != null ? m[1] : slot },
                     { "cover", File.Exists(Path.Combine(App.UiDir, "covers", slot + ".jpg")) ? "/ui/covers/" + slot + ".jpg" : null },
@@ -322,7 +324,7 @@ static class Ui
     {
         return new Dictionary<string, object> {
             { "id", s.id }, { "title", s.title }, { "artist", s.artist }, { "file", s.file }, { "dur", s.dur }, { "drop", s.drop }, { "outro", s.outro }, { "cDur", s.cDur },
-            { "race", s.race }, { "city", s.city }, { "low", s.low }, { "added", s.added }, { "audio", "/songs/" + s.id + "/song.wav" }, { "src", s.src },
+            { "race", s.race }, { "city", s.city }, { "garage", s.Gar() }, { "low", s.low }, { "added", s.added }, { "audio", "/songs/" + s.id + "/song.wav" }, { "src", s.src },
             { "cover", s.cover ? "/songs/" + s.id + "/cover.png?v=" + s.added : null } };
     }
 
@@ -666,6 +668,7 @@ static class Ui
                     s.drop = Convert.ToDouble(b["drop"]); s.outro = Convert.ToDouble(b["outro"]); s.cDur = Convert.ToDouble(b["cDur"]);
                     if (b.ContainsKey("race")) s.race = Convert.ToBoolean(b["race"]);
                     if (b.ContainsKey("city")) s.city = Convert.ToBoolean(b["city"]);
+                    if (b.ContainsKey("garage")) s.garage = Convert.ToBoolean(b["garage"]);
                     if (s.title == "") s.title = Music.Cut(Path.GetFileNameWithoutExtension(s.file), Music.MaxTitle);
                     s.draft = false;
                 });
@@ -676,6 +679,7 @@ static class Ui
             {
                 var b = r.JsonBody(); string id = (string)b["id"];
                 Settings.Edit(x => { var s = x.songs.FirstOrDefault(y => y.id == id); if (s != null) { s.race = Convert.ToBoolean(b["race"]); s.city = Convert.ToBoolean(b["city"]);
+                    if (b.ContainsKey("garage")) s.garage = Convert.ToBoolean(b["garage"]);
                     if (b.ContainsKey("low")) s.low = Convert.ToBoolean(b["low"]); } });
                 w.Json(OK); return;
             }
@@ -709,7 +713,7 @@ static class Ui
                     s.src = (string)b["src"]; s.asig = (string)b["asig"]; s.isig = (string)b["isig"];
                     var o = old == null || old == id ? null : x.songs.FirstOrDefault(y => y.id == old);
                     if (o == null) return;
-                    s.race = o.race; s.city = o.city; s.added = o.added;
+                    s.race = o.race; s.city = o.city; s.garage = o.garage; s.low = o.low; s.added = o.added;
                     foreach (var p in x.presets) { bool[] f; if (p.songs.TryGetValue(o.id, out f)) { p.songs.Remove(o.id); p.songs[s.id] = f; } }
                     x.songs.Remove(o);
                 });
@@ -787,7 +791,7 @@ static class Ui
                 var st = Settings.Get();
                 if (!Find.IsGame(st.gamePath)) throw new UserError("noGame");
                 if (!Find.IsFmm(st.fmmPath)) throw new UserError("noFmm");
-                var songs = Music.Ordered(st.songs.Where(s => !s.draft && (s.race || s.city)));   // в мод — только включенные; выключенные в игре и так не играют
+                var songs = Music.Ordered(st.songs.Where(s => !s.draft && (s.race || s.city || s.Gar())));   // в мод — только включенные; выключенные в игре и так не играют
                 w.Json(StartJob("build", new Dictionary<string, object> {
                     { "game", st.gamePath }, { "fmm", st.fmmPath }, { "fingerprint", Find.Fingerprint(st.gamePath) },
                     { "songs", songs }, { "choice", st.choice }, { "preset", st.Active.name }, { "out", Path.Combine(Find.ModsDir(st.fmmPath), "UnboundSoundtrack.fbmod") } }).View());

@@ -18,7 +18,7 @@ WAS ES MACHT
   - Profile: verschiedene Track-Sets, Umschalten mit einem Klick.
   - Baut EINEN Mod für den Frosty Mod Manager. Spieldateien bleiben unverändert.
   - ▶ bei einem Spiel-Track — 30 Sekunden reinhören (Deezer, braucht Internet); YouTube ↗ — der ganze Song.
-  - Das Fenster spricht 13 Sprachen.
+  - Das Fenster spricht 14 Sprachen.
 
 DU BRAUCHST
   - Windows 10 oder 11 (Microsoft Edge ist schon eingebaut — das Fenster läuft darauf).
@@ -57,7 +57,7 @@ NUR OFFLINE
 
 WAS IM ORDNER IST
   Unbound Soundtrack.exe   das Programm
-  app\web                  das Fenster (Seiten, Texte in 13 Sprachen)
+  app\web                  das Fenster (Seiten, Texte in 14 Sprachen)
   app\frosty               Bibliotheken von Frosty Toolsuite — lesen das Spiel, schreiben den Mod (GPL v3)
   app\encoder              EA-Audio-Encoder aus dem Plugin Sound Editor von Frosty Editor
   app\yt-dlp.exe           lädt Songs von YouTube / YT Music herunter (Unlicense)

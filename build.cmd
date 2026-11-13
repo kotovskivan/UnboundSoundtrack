@@ -32,7 +32,7 @@ rem Frosty Toolsuite libraries (GPL v3) - to read the game and write the mod
 for %%f in (FrostySdk.dll FrostyCore.dll FrostyHash.dll FrostyModSupport.dll FrostyControls.dll) do copy /y "%FMM%\%%f" "%OUT%\app\frosty\" >nul
 copy /y "%FMM%\Profiles\NFSUnboundSDK.dll" "%OUT%\app\frosty\Profiles\" >nul
 xcopy /y /e /q "%FMM%\ThirdParty" "%OUT%\app\frosty\ThirdParty\" >nul
-rem the window (HTML/JS/CSS) and docs (README.txt + README\ in 12 more languages + THIRD-PARTY.txt)
+rem the window (HTML/JS/CSS) and docs (README.txt + README\ in 13 more languages + THIRD-PARTY.txt)
 xcopy /y /e /q "%HERE%web" "%OUT%\app\web\" >nul
 xcopy /y /e /q "%HERE%docs" "%OUT%\" >nul
 rem EA audio encoder (optional here): Tool.exe + eaxmaenc.dll + libatrac9.dll + libmp3lame.dll + msvcr120.dll

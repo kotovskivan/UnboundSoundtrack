@@ -14,6 +14,7 @@
 <style>
 :root {
   --acid: #b6ff1a; --acid-dim: #7fb30f; --sun: #ffe600; --ink: #0a0a0a; --paper: #f4f4f0; --mute: #8a8a85;
+  --garage: #9f4cff;   /* гараж — тот же фиолетовый, что в Heat Soundtrack (1.0.2) */
   --line: rgba(255,255,255,.14);
   --font: "Bahnschrift", "DIN Alternate", "Arial Narrow", sans-serif;
   color-scheme: dark;
@@ -77,8 +78,8 @@ body { font-variation-settings: "wdth" 85, "wght" 500; }
 .stats { margin-top: 28px; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--mute); line-height: 1.9; }
 .stats b { color: var(--paper); font-size: 22px; font-variation-settings: "wdth" 80, "wght" 700; letter-spacing: 0; margin-right: 4px; }
 .stats .bar { height: 4px; background: rgba(255,255,255,.12); margin: 2px 0 10px; width: 240px; transform: skewX(-20deg); }
-.stats .bar i { display: block; height: 100%; background: var(--acid); transition: width .25s; }
-.stats .bar.sun i { background: var(--sun); }
+.stats .bar i { display: block; height: 100%; background: var(--cc, var(--acid)); transition: width .25s; }
+.stats [data-ic] svg { height: 14px; width: auto; fill: var(--cc); margin-right: 9px; vertical-align: -1px; }
 
 /* ---------- профили (левая колонка) ---------- */
 .prof { margin-top: 26px; width: 270px; }
@@ -165,8 +166,17 @@ body { font-variation-settings: "wdth" 85, "wght" 500; }
 .pill { flex: 1; text-align: center; font-size: 11px; letter-spacing: .12em; padding: 5px 0 4px; border: 1px solid rgba(255,255,255,.25); color: var(--mute);
   transform: skewX(-12deg); font-variation-settings: "wdth" 100, "wght" 700; user-select: none; cursor: pointer; }
 .pill.on { background: var(--acid); border-color: var(--acid); color: var(--ink); }
-.pill.f.on { background: var(--sun); border-color: var(--sun); }
 .pill:hover { border-color: var(--paper); }
+/* где играет (1.0.2): ГОНКИ (флаг) · МІСТО (дома) · ГАРАЖ (ворота) — значки как в Heat Soundtrack, форма (косая плашка) и цвета Unbound.
+   Вкл — залита цветом места, выкл — серый контур. На плитке — только значок (подпись в title), в списке и в панели песни — значок + слово */
+.c-race { --cc: var(--acid); } .c-city { --cc: var(--sun); } .c-garage { --cc: var(--garage); }
+.cx { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 25px; padding: 0 6px; border: 1px solid rgba(255,255,255,.25); color: var(--mute);
+  transform: skewX(-12deg); user-select: none; cursor: pointer; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-variation-settings: "wdth" 100, "wght" 700; white-space: nowrap; }
+.cx svg { height: 14px; width: auto; flex: none; fill: currentColor; transform: skewX(12deg); }
+.cx b { font-weight: normal; }
+.cx.on { background: var(--cc); border-color: var(--cc); color: var(--ink); }
+.cx:hover { border-color: var(--paper); }
+.card .sw .cx b { display: none; }
 .card.off { opacity: .45; }
 .card.off .art img { filter: grayscale(1) brightness(.6); }
 .card.off .art::before { content: attr(data-off); position: absolute; z-index: 2; left: 50%; top: 50%; transform: translate(-50%,-50%) rotate(-12deg); font-size: 34px; letter-spacing: .1em;
@@ -218,7 +228,8 @@ body { font-variation-settings: "wdth" 85, "wght" 500; }
 .grid.list .card .t { font-size: 16px; flex: 0 1 auto; min-width: 0; }
 .grid.list .card .a { margin-top: 0; flex: 1 1 auto; min-width: 0; }
 .grid.list .card .sw { padding: 0; }
-.grid.list .card .sw .pill { flex: 0 0 auto; min-width: 88px; }
+.grid.list .card .sw .cx { flex: 0 0 auto; min-width: 100px; padding: 0 10px; }
+.grid.list .card .sw .cx b { display: inline; }
 .grid.list .card .sw .pill.pr { min-width: 52px; }
 .grid.list .mine-tag, .grid.list .yt, .grid.list .pbar, .grid.list .card.off .art::before, .grid.list .card.half .art::before { display: none; }
 .grid.list .ed { width: 26px; height: 26px; right: 13px; top: 13px; opacity: 0; }
@@ -311,7 +322,7 @@ body.booting .lang > :not(#lang) { visibility: hidden; }
 .rp-f input:focus { border-color: var(--acid); }
 .rp-where { display: flex; gap: 8px; align-items: center; margin-top: 2px; }
 .rp-where small { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin-right: 4px; }
-.rp-where .pill { flex: 0 0 auto; padding: 6px 14px 5px; }
+.rp-where .cx { flex: 0 0 auto; height: 29px; padding: 0 14px; }
 .wave { position: relative; margin-top: 22px; height: 130px; background: rgba(255,255,255,.03); border: 1px solid var(--line); cursor: crosshair; user-select: none; }
 .wave canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .wv-b { position: absolute; top: 0; bottom: 0; background: rgba(182,255,26,.16); border-left: 1px dashed rgba(182,255,26,.6); pointer-events: none; }
@@ -344,12 +355,56 @@ body.wv-drag, body.wv-drag * { cursor: grabbing !important; }   /* тянут GO
 .rp-row .go { margin-left: auto; }
 
 @media (max-width: 900px) { .app { grid-template-columns: 1fr; } .side { display: none; } .main { padding-left: 16px; padding-right: 16px; } }
+
+/* ==================== Айдентика Unbound 1.0.2 (13.11) — по файлам игры и скринам Вани (outputs/nfs-unbound/dizajn/aidentika-unbound.md).
+   Тест с переключателями (outputs/nfs-unbound/test-dizajn), Ваня выбрал: 2 прямые плашки + выбранное белое, 3 широкий шрифт заголовков,
+   4 фоновая надпись строками, 6 бегущая строка; 1 (цвета игры) и 5 (наклейки) — нет. Блок перекрывает правила выше (стоит последним). ==================== */
+/* задник — скрин Вани из игры (img/bg.jpg: его Lancer на фоне стены CUSTOMIZE, 13.11), как в Heat; картинка гаража из игры (--photo) больше не фон */
+/* .62 — сливалось с плитками; потом .38 — машина все равно «перетягивала внимание» красным (Ваня 13.11) → меньше цвета + легкое размытие: фон, а не картинка */
+.bg .photo { background: url("img/bg.jpg") center/cover; filter: brightness(.32) contrast(1.05) saturate(.5) blur(2px); }
+/* машина — по центру области плиток (Ваня: «центруй тачку»): картинка обрезана так, что машина в середине, слой начинается от левой колонки (340px) */
+.bg .photo { left: 340px; }
+@media (max-width: 900px) { .bg .photo { left: 0; } }
+/* плитки непрозрачные: задник просвечивал сквозь фон плитки (.72) и сквозь выключенные целиком (opacity .45) — «все сливается» (Ваня 13.11).
+   Выключенная — темнеет внутри (обложка серая, текст и галочки тусклые), а не прозрачная. Пробовали вернуть как в 1.0.1 — Ваня: «верни как было» */
+.card { background: #111113; }
+.card.add { background: rgba(17,17,19,.94); }
+.card.off { opacity: 1; }
+.card.off .art img { filter: grayscale(1) brightness(.4); }
+.card.off .meta, .card.off .sw, .card.off .mine-tag, .card.off .ed, .card.off .noart { opacity: .45; }
+.card.off .art::before { opacity: .45; }   /* наклейка OFF — не белая, а серая, как в 1.0.1 (Ваня: «не таким броским») */
+/* 2. Плашки прямые, как в меню игры (скоса там нет); выбранное — белая плашка, черный текст */
+.ghost, .brand b, .title, .menu .item, .menu .sub, .stats .bar, .pf, .pf-new, .sep b, .sep i, .sep .mbtn, .cr, .cr .ic svg, .search, .btn, .pill, .cx, .cx svg,
+.pv, .ed, .yt, .lang .beta, .rp-h, .foot-l, .frosty, .wv-cd, .part .pp { transform: none; }
+.cr:hover { transform: translate(-2px, -2px); }
+.mine-tag { transform: rotate(-4deg); }
+.wv-go b { transform: translateX(-50%); }
+.note { transform: translateY(30px); } .note.show { transform: none; }
+.menu li.on .item { background: #fff; color: #000; box-shadow: 5px 5px 0 rgba(0,0,0,.5); }
+.menu .sub { background: #fff; color: #000; }
+.pf.on { background: #fff; border-color: #fff; color: #000; box-shadow: none; }
+.vbar .vt button.on { background: #fff; border-color: #fff; color: #000; }
+.btn:hover, .sep .mbtn:hover { background: #fff; color: #000; border-color: #fff; }
+.btn.go { background: #fff; color: #000; border-color: #fff; box-shadow: none; }
+.sep i { background: #fff; color: #000; }
+/* 3. Широкий жирный шрифт заголовков (в игре Eurostile Extended / Versus Ultra — платные, EA; тут Arial Black из Windows) */
+.menu .item { font-family: "Arial Black", var(--font); font-size: 23px; letter-spacing: -.01em; font-variation-settings: normal; padding-top: 5px; padding-bottom: 3px; }
+.menu .sub { font-family: "Arial Black", var(--font); font-size: 9px; letter-spacing: .08em; font-variation-settings: normal; }
+.sep b { font-family: "Arial Black", var(--font); font-size: 19px; letter-spacing: 0; font-variation-settings: normal; }
+.btn { font-family: "Arial Black", var(--font); font-size: 11px; letter-spacing: .06em; font-variation-settings: normal; }
+.rp-h { font-family: "Arial Black", var(--font); font-size: 34px; font-variation-settings: normal; }
+.card.add b { font-family: "Arial Black", var(--font); font-size: 17px; font-variation-settings: normal; }
+/* 4. Фоновая надпись как стена CUSTOMIZE в игре: строки со сдвигом, через одну — точками (halftone) и контуром */
+.ghost { top: 1vh; left: -6vw; font-family: "Arial Black", var(--font); font-size: 15vh; line-height: .98; font-variation-settings: normal; -webkit-text-stroke: 0; }
+.ghost span { display: block; margin-left: 0; color: transparent; -webkit-text-stroke: 2px rgba(234,237,246,.075); }
+.ghost span:nth-child(2n) { margin-left: -22vw; }
+.ghost span.f { -webkit-text-stroke: 0; background: radial-gradient(circle, rgba(234,237,246,.17) 1.2px, transparent 1.6px) 0 0 / 6px 6px; -webkit-background-clip: text; background-clip: text; }
+.ghost { display: none; }   /* Ваня 13.11: «убери задние буквы пока с фона» — спрятано, не удалено (вернуть — убрать эту строку) */
 </style>
 </head>
 <body>
 <div class="bg" id="bg"><div class="photo"></div><div class="leak"></div><div class="shade"></div><div class="logo"></div><div class="halftone"></div><div class="grunge"></div><div class="dots"></div><div class="noise"></div><div class="vig"></div></div>
-<div class="ghost"><span>Soundtrack</span><span>Soundtrack</span></div>
-
+<div class="ghost"><span class="f">Soundtrack Soundtrack Soundtrack</span><span class="o">Soundtrack Soundtrack Soundtrack</span><span class="f">Soundtrack Soundtrack Soundtrack</span><span class="o">Soundtrack Soundtrack Soundtrack</span><span class="f">Soundtrack Soundtrack Soundtrack</span><span class="o">Soundtrack Soundtrack Soundtrack</span><span class="f">Soundtrack Soundtrack Soundtrack</span></div>
 <div class="lang" id="langBar"><a class="beta" href="https://forms.gle/StNa4GFZRHckFVpi8" data-i18n="betaNote"></a><span id="lang" style="display:contents"></span><button id="foldersBtn" data-i18n="folders"></button><button id="browserBtn" data-i18n="menuBrowser" style="margin-left:4px"></button><button id="aboutBtn" data-i18n="about" style="margin-left:4px"></button></div>
 <div class="app">
   <aside class="side">
@@ -363,8 +418,9 @@ body.wv-drag, body.wv-drag * { cursor: grabbing !important; }   /* тянут GO
       <li data-f="build"><span class="item" data-i18n="build"></span><span class="new">MOD</span><div class="sub" data-i18n="buildSub"></div></li>
     </ul>
     <div class="stats">
-      <div><b id="s-race">0</b><span data-i18n="inRaces"></span></div><div class="bar"><i id="b-race"></i></div>
-      <div><b id="s-free">0</b><span data-i18n="inCity"></span></div><div class="bar sun"><i id="b-free"></i></div>
+      <div class="c-race"><span data-ic="race"></span><b id="s-race">0</b><span data-i18n="inRaces"></span></div><div class="bar c-race"><i id="b-race"></i></div>
+      <div class="c-city"><span data-ic="city"></span><b id="s-free">0</b><span data-i18n="inCity"></span></div><div class="bar c-city"><i id="b-free"></i></div>
+      <div class="c-garage"><span data-ic="garage"></span><b id="s-gar">0</b><span data-i18n="inGarage"></span></div><div class="bar c-garage"><i id="b-gar"></i></div>
     </div>
     <div class="prof"><div class="cr-h" data-i18n="profiles"></div><div class="prof-list" id="profList"></div>
       <button class="pf-new" id="pfNew" data-i18n="newProfile"></button></div>
@@ -446,7 +502,7 @@ body.wv-drag, body.wv-drag * { cursor: grabbing !important; }   /* тянут GO
           <!-- длина как в программе (Music.MaxArtist / MaxTitle): длинные в игре все равно не видно (Ваня 13.11) -->
           <label><span data-i18n="artistF"></span><input id="rpArtist" autocomplete="off" maxlength="60"></label>
           <label><span data-i18n="titleF"></span><input id="rpTitle" autocomplete="off" maxlength="40"></label>
-          <div class="rp-where"><small data-i18n="playsIn"></small><span class="pill r" id="rpRace" data-i18n="races"></span><span class="pill f" id="rpCity" data-i18n="city"></span></div>
+          <div class="rp-where" id="rpWhere"><small data-i18n="playsIn"></small><span class="cx c-race" data-p="0"></span><span class="cx c-city" data-p="1"></span><span class="cx c-garage" data-p="2"></span></div>
         </div>
       </div>
       <div class="wave" id="wave"><canvas id="wc"></canvas><div class="wv-b" id="wvB"><i>17 s</i></div><div class="wv-n" id="wvN"><i>3·2·1</i></div><div class="wv-c" id="wvC"></div>
@@ -690,7 +746,18 @@ const saveVs = () => api("/api/view", { sort: vs.sort, view: vs.view }).catch(()
 // «A & B, C feat. D» -> [A, B, C, D]
 const splitArt = a => String(a || "").split(/\s*(?:,|&|\bx\b|\bfeat\.?|\bft\.?|\bwith\b)\s*/i).map(s => s.trim()).filter(Boolean);
 const isLow = x => x.mine ? !!x.low : !!(x.on && x.on[2]);
-let orderOk = false;   // можно ли таскать свои песни: «мой порядок», без фильтров и поиска
+// ---------- где играет (1.0.2): гонки · город · гараж. Своя песня — x.race / x.city / x.garage; трек игры — x.on = [гонки, город, low, гараж] ----------
+const CTX = ["race", "city", "garage"];
+const CX_ICON = (() => {   // значки из Heat Soundtrack: флаг (гонка), дома (город), ворота (гараж)
+  const w = b => `<svg viewBox="0 0 16 16" aria-hidden="true">${b}</svg>`;
+  return { race: w('<path d="M2.5 1h1.6v14H2.5zM5 2.2c2.8-1.4 4.8 1.4 9.5 0v6.6c-4.7 1.4-6.7-1.4-9.5 0z"/>'),
+    city: w('<path fill-rule="evenodd" d="M1 15V7h4V3h5v4.5h5V15zM6.5 4.5h2v2h-2zm0 3.5h2v2h-2zm0 3.5h2v2h-2zM2.5 9H4v1.5H2.5zm0 3H4v1.5H2.5zM11.5 9.5h2V11h-2zm0 3h2V14h-2z"/>'),
+    garage: w('<path fill-rule="evenodd" d="M8 1.5 1 6.2V15h14V6.2zM3.5 8h9v7h-9zM4.6 9.2h6.8v1.2H4.6zm0 2.3h6.8v1.2H4.6z"/>') };
+})();
+const ctxName = c => t({ race: "races", city: "city", garage: "garage" }[c]);
+// значок места: data-p — номер в [гонки, город, гараж]; подпись <b> на плитке спрятана (CSS), в списке и панели видна
+const cxChip = (i, on) => `<span class="cx c-${CTX[i]}${on ? " on" : ""}" data-p="${i}" title="${esc(ctxName(CTX[i]) + " · " + t("ctxTip"))}">${CX_ICON[CTX[i]]}<b>${esc(ctxName(CTX[i]))}</b></span>`;
+document.querySelectorAll("[data-ic]").forEach(e => e.innerHTML = CX_ICON[e.dataset.ic]);let orderOk = false;   // можно ли таскать свои песни: «мой порядок», без фильтров и поиска
 function fillBars() {
   const opt = (v, txt, cur) => `<option value="${esc(v)}"${v === cur ? " selected" : ""}>${esc(txt)}</option>`;
   $("sortSel").innerHTML = [["order", "sortOrder"], ["artist", "sortArtist"], ["title", "sortTitle"], ["new", "sortNew"]].map(([v, k]) => opt(v, t(k), vs.sort)).join("");
@@ -699,7 +766,7 @@ function fillBars() {
   if (vs.art && !cnt.has(vs.art)) vs.art = "";
   const arts = [...cnt.entries()].sort((a, b) => a[1].name.localeCompare(b[1].name));
   $("artSel").innerHTML = opt("", t("artAll"), vs.art) + arts.map(([k, c]) => opt(k, c.name + " · " + c.n, vs.art)).join("");
-  $("whereSel").innerHTML = [["", "whereAll"], ["race", "whereRace"], ["city", "whereCity"], ["low", "whereLow"]].map(([v, k]) => opt(v, t(k), vs.where)).join("");
+  $("whereSel").innerHTML = [["", "whereAll"], ["race", "whereRace"], ["city", "whereCity"], ["garage", "whereGarage"], ["low", "whereLow"]].map(([v, k]) => opt(v, t(k), vs.where)).join("");
   $("vTiles").classList.toggle("on", vs.view !== "list"); $("vList").classList.toggle("on", vs.view === "list");
   $("grid").classList.toggle("list", vs.view === "list");
 }
@@ -707,7 +774,6 @@ function fillBars() {
 function visible() {
   const q = $("q").value.trim().toLowerCase();
   const m = x => !q || (x.title + " " + x.artist + " " + (x.slot || "")).toLowerCase().includes(q);
-  const onOf = x => x.mine ? [x.race, x.city] : x.on;
   const all = songs.map(s => Object.assign(s, { mine: true })).concat(tracks);
   return all.filter(x => {
     if (!m(x)) return false;
@@ -715,15 +781,18 @@ function visible() {
     if (vs.art && !splitArt(x.artist).some(a => a.toLowerCase() === vs.art)) return false;
     if (vs.where === "race" && !o[0]) return false;
     if (vs.where === "city" && !o[1]) return false;
+    if (vs.where === "garage" && !o[2]) return false;
     if (vs.where === "low" && !isLow(x)) return false;
     if (filter === "mine") return x.mine;
-    if (filter === "on") return o[0] || o[1];
-    if (filter === "off") return !o[0] && !o[1];
+    if (filter === "on") return anyOn(x);
+    if (filter === "off") return !anyOn(x);
     return true;
   });
 }
-const onOf = x => x.mine ? [x.race, x.city] : x.on;
-function cardClass(x) { const o = onOf(x); return "card" + (!o[0] && !o[1] ? " off" : (o[0] !== o[1] ? " half" : "")) + (x.mine ? " mine" : ""); }
+// [гонки, город, гараж]; у трека игры гаража может не быть (старое состояние окна) — как город
+const onOf = x => x.mine ? [!!x.race, !!x.city, !!x.garage] : [!!x.on[0], !!x.on[1], !!(x.on.length > 3 ? x.on[3] : x.on[1])];
+const anyOn = x => onOf(x).some(Boolean);
+function cardClass(x) { const o = onOf(x); return "card" + (!anyOn(x) ? " off" : (!o.every(Boolean) ? " half" : "")) + (x.mine ? " mine" : ""); }
 
 function card(x) {
   const o = onOf(x), key = x.mine ? "s:" + x.id : "t:" + x.slot;
@@ -732,7 +801,7 @@ function card(x) {
     <div class="art" data-off="${esc(t("offStamp"))}">${art}
       ${x.mine ? `<span class="mine-tag">${t("yours")}</span><button class="pv ${playing === x.id ? "on" : ""}" data-pv="1" title="${esc(t("listenTip"))}">${playing === x.id ? "❚❚" : "▶"}</button><div class="pbar"><i id="pb-${esc(x.id)}"></i></div><button class="ed" data-ed="1" title="${esc(t("editTip"))}"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm17.71-10.21a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>` : (x.preview ? `<button class="pv ${playing === x.slot ? "on" : ""}" data-pv="1" title="${esc(t("pvTip"))}">${playing === x.slot ? "❚❚" : "▶"}</button><div class="pbar"><i id="pb-${esc(x.slot)}"></i></div>` : "") + `<button class="yt" data-yt="1" title="${esc(t("ytTip"))}">YouTube ↗</button>`}</div>
     <div class="meta"${dataLang()}><div class="t" title="${esc(x.title)}">${esc(x.title)}</div><div class="a" title="${esc(x.artist)}">${esc(x.artist)}</div></div>
-    <div class="sw"><span class="pill r ${o[0] ? "on" : ""}" data-p="0">${t("races")}</span><span class="pill f ${o[1] ? "on" : ""}" data-p="1">${t("city")}</span><span class="pill pr ${isLow(x) ? "low" : ""}" data-pr="1" title="${esc(t("prioTip"))}">${isLow(x) ? "LOW" : "HIGH"}</span></div>
+    <div class="sw">${o.map((v, i) => cxChip(i, v)).join("")}<span class="pill pr ${isLow(x) ? "low" : ""}" data-pr="1" title="${esc(t("prioTip"))}">${isLow(x) ? "LOW" : "HIGH"}</span></div>
   </div>`;
 }
 function render() {
@@ -823,9 +892,8 @@ $("pfNew").onclick = async () => { const n = await askName(t("newProfileT"), "")
 
 function stats() {
   const all = songs.concat(tracks), n = all.length;
-  const r = all.filter(x => onOf(x)[0]).length, f = all.filter(x => onOf(x)[1]).length, on = all.filter(x => onOf(x)[0] || onOf(x)[1]).length;
-  $("s-race").textContent = r + "/" + n; $("s-free").textContent = f + "/" + n;
-  $("b-race").style.width = (n ? 100 * r / n : 0) + "%"; $("b-free").style.width = (n ? 100 * f / n : 0) + "%";
+  const cnt = i => all.filter(x => onOf(x)[i]).length, on = all.filter(anyOn).length;
+  [["race", 0], ["free", 1], ["gar", 2]].forEach(([k, i]) => { const c = cnt(i); $("s-" + k).textContent = c + "/" + n; $("b-" + k).style.width = (n ? 100 * c / n : 0) + "%"; });
   $("c-all").textContent = n; $("c-on").textContent = on; $("c-off").textContent = n - on; $("c-mine").textContent = songs.length;
   fitSide();
 }
@@ -835,14 +903,15 @@ function saveChoice() {
   clearTimeout(saveT);
   saveT = setTimeout(() => api("/api/choice", { choice: Object.fromEntries(tracks.map(x => [x.slot, x.on])) }).catch(showError), 400);
 }
+// o = [гонки, город, гараж]
 function setOn(x, o) {
-  if (x.mine) { x.race = o[0]; x.city = o[1]; api("/api/song/flags", { id: x.id, race: o[0], city: o[1] }).catch(showError); }
-  else { x.on = isLow(x) ? [o[0], o[1], true] : [o[0], o[1]]; saveChoice(); }   // [гонки, город, low]
+  if (x.mine) { x.race = o[0]; x.city = o[1]; x.garage = o[2]; api("/api/song/flags", { id: x.id, race: o[0], city: o[1], garage: o[2] }).catch(showError); }
+  else { x.on = [o[0], o[1], isLow(x), o[2]]; saveChoice(); }   // трек игры: [гонки, город, low, гараж]
 }
 // приоритет в игре: HIGH (по умолчанию) / LOW
 function setLow(x, v) {
-  if (x.mine) { x.low = v; api("/api/song/flags", { id: x.id, race: x.race, city: x.city, low: v }).catch(showError); }
-  else { const o = (x.on || [true, true]).slice(0, 2); x.on = v ? [o[0], o[1], true] : o; saveChoice(); }
+  if (x.mine) { x.low = v; api("/api/song/flags", { id: x.id, race: x.race, city: x.city, garage: x.garage, low: v }).catch(showError); }
+  else { const o = onOf(x); x.on = [o[0], o[1], v, o[2]]; saveChoice(); }
 }
 function changed() { render(); stats(); }
 
@@ -857,16 +926,16 @@ $("grid").addEventListener("click", e => {
     if (vs.where === "low") render();
     return;
   }
-  const pill = e.target.closest(".pill[data-p]");
+  const pill = e.target.closest(".cx[data-p]");
   const o = onOf(x).slice();
   if (pill) { o[+pill.dataset.p] = !o[+pill.dataset.p]; setOn(x, o); }
-  else { const v = !(o[0] || o[1]); setOn(x, [v, v]); }   // клик по обложке — вкл/выкл и у своих песен; редактор — только карандаш (Ваня 13.11)
-  const el = card; el.className = cardClass(x); el.querySelectorAll(".pill[data-p]").forEach(p => p.classList.toggle("on", onOf(x)[+p.dataset.p]));
+  else { const v = !anyOn(x); setOn(x, [v, v, v]); }   // клик по обложке — вкл/выкл и у своих песен; редактор — только карандаш (Ваня 13.11)
+  const el = card; el.className = cardClass(x); el.querySelectorAll(".cx[data-p]").forEach(p => p.classList.toggle("on", onOf(x)[+p.dataset.p]));
   if (filter === "on" || filter === "off") render();
   stats();
 });
-$("allOn").onclick = () => { visible().forEach(x => setOn(x, [true, true])); changed(); };
-$("allOff").onclick = () => { visible().forEach(x => setOn(x, [false, false])); changed(); };
+$("allOn").onclick = () => { visible().forEach(x => setOn(x, [true, true, true])); changed(); };
+$("allOff").onclick = () => { visible().forEach(x => setOn(x, [false, false, false])); changed(); };
 $("q").oninput = () => render();
 $("sortSel").onchange = () => { vs.sort = $("sortSel").value; saveVs(); render(); };
 $("artSel").onchange = () => { vs.art = $("artSel").value; saveVs(); render(); };
@@ -935,7 +1004,7 @@ async function addFiles(list) {
       const cDur = C_DUR, drop = guessDrop(a), outro = Math.max(0, a.duration - cDur);
       const res = await api("/api/song/upload?name=" + encodeURIComponent(f.name), toPcm(a).buffer, true);
       await api("/api/song/cover?id=" + encodeURIComponent(res.id), await coverPng(null, title, artist), true);
-      await api("/api/song/save", { id: res.id, title, artist, drop: +drop.toFixed(2), outro: +outro.toFixed(2), cDur, race: true, city: true });
+      await api("/api/song/save", { id: res.id, title, artist, drop: +drop.toFixed(2), outro: +outro.toFixed(2), cDur, race: true, city: true, garage: true });
       await api("/api/music/put?id=" + encodeURIComponent(res.id) + "&name=" + encodeURIComponent(f.name), f, true);
       added++;
     } catch (er) { bad.push(f.name); }
@@ -1025,6 +1094,7 @@ function showThanks() {
   askYesNo({ title: t("thanksT"), yes: t("close"), no: null, tall: true, cls: "dlg-thanks", onOpen: box => fitThanks(box.closest(".dlg-back")), html: `
 <div class="thanks"><div>
   <h3>${t("cMade")}</h3><p>Kitivski + Claude <small>(Claude — AI by Anthropic)</small></p>
+  <h3>${t("cSpecial")}</h3><ul><li><b>Low Rider</b> — ${t("cLowRider")} · ${L("https://steamcommunity.com/profiles/76561198421221810", "Steam")}</li></ul>
   <h3>${t("cInside")}</h3><ul>
    <li><b>Frosty Toolsuite</b> — ${t("cFrosty")}. ${L("https://github.com/CadeEvs/FrostyToolsuite", "CadeEvs/FrostyToolsuite")}, ${t("cFork")}: ${L("https://github.com/HarGabt/FrostyToolsuite", "HarGabt/FrostyToolsuite")}</li>
    <li><b>EA audio encoder</b> — ${t("cEnc")}: ${L("https://lame.sourceforge.io", "LAME")}, ${L("https://github.com/Thealexbarney/LibAtrac9", "LibAtrac9")}</li>
@@ -1042,14 +1112,14 @@ function showThanks() {
 }
 
 // ---------- своя песня: окно «гонка» (волна, GO, финиш), обложка ----------
-const rp = { open: false, song: null, id: null, file: "", fileObj: null, dur: 0, drop: 0, outro: 0, cDur: C_DUR, peaks: null, audio: null, img: null, imgChanged: false, race: true, city: true };
+const rp = { open: false, song: null, id: null, file: "", fileObj: null, dur: 0, drop: 0, outro: 0, cDur: C_DUR, peaks: null, audio: null, img: null, imgChanged: false, race: true, city: true, garage: true };
 const fmt = s => { s = Math.max(0, s || 0); return Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0"); };
 
 function openSong(song, file) {
   stopPanel(); if (playing) stopPreview();
   Object.assign(rp, { open: true, song, id: song ? song.id : null, file: song ? song.file : "", fileObj: null, dur: song ? song.dur : 0, drop: song ? song.drop : 0,
     outro: song ? song.outro : 0, cDur: song ? song.cDur || C_DUR : C_DUR, peaks: null, audio: song ? song.audio : null, img: null, imgChanged: false, covMode: song && song.cover ? "img" : "gen",
-    race: song ? song.race : true, city: song ? song.city : true });
+    race: song ? song.race : true, city: song ? song.city : true, garage: song ? song.garage : true });
   $("rpH").textContent = t(song ? "panelEdit" : "panelNew");
   $("rpArtist").value = song ? song.artist : ""; $("rpTitle").value = song ? song.title : "";
   $("rpDel").style.display = song ? "" : "none";
@@ -1066,16 +1136,16 @@ function openSong(song, file) {
 }
 function closeSong() { stopPanel(); rp.open = false; $("rpan").classList.remove("show"); $("rpDim").classList.remove("show"); }
 // всё, что сохраняет кнопка «Зберегти»: имя, звук (id/файл), GO, финиш, где играет, обложка
-const rpSnap = () => JSON.stringify([$("rpArtist").value, $("rpTitle").value, rp.id, rp.file, +(rp.drop || 0).toFixed(2), +(rp.outro || 0).toFixed(2), rp.cDur, rp.race, rp.city, rp.covMode, rp.imgChanged]);
+const rpSnap = () => JSON.stringify([$("rpArtist").value, $("rpTitle").value, rp.id, rp.file, +(rp.drop || 0).toFixed(2), +(rp.outro || 0).toFixed(2), rp.cDur, rp.race, rp.city, rp.garage, rp.covMode, rp.imgChanged]);
 // закрыть руками (✕, клик мимо, Esc): есть несохраненное — спросить; после «Зберегти» / «Видалити» закрывается без вопроса (closeSong)
 async function tryCloseSong() {
   if (!rp.open) return;
   if (rpSnap() !== rp.snap && !await askYesNo({ title: t("leaveT"), html: t(rp.song ? "leaveHtml" : "leaveNewHtml"), yes: t("leaveYes"), no: t("leaveNo"), start: 1 })) return;
   closeSong();
 }
-function pillsRp() { $("rpRace").classList.toggle("on", rp.race); $("rpCity").classList.toggle("on", rp.city); }
-$("rpRace").onclick = () => { rp.race = !rp.race; pillsRp(); };
-$("rpCity").onclick = () => { rp.city = !rp.city; pillsRp(); };
+// где играет — те же значки, что на плитке, со словом (перерисовка при каждом открытии — подписи на текущем языке)
+function pillsRp() { const o = [rp.race, rp.city, rp.garage]; $("rpWhere").querySelectorAll(".cx[data-p]").forEach(e => e.outerHTML = cxChip(+e.dataset.p, !!o[+e.dataset.p])); }
+$("rpWhere").onclick = e => { const c = e.target.closest(".cx[data-p]"); if (!c) return; const k = CTX[+c.dataset.p]; rp[k] = !rp[k]; pillsRp(); };
 function showBody() {
   const ok = !!rp.audio;
   $("rpBody").style.display = ok ? "" : "none";
@@ -1429,7 +1499,7 @@ async function importMusic(x) {
     const cDur = num(inf.cDur) ?? C_DUR, drop = num(inf.drop) ?? guessDrop(a), outro = num(inf.outro) ?? Math.max(0, a.duration - cDur);
     const res = await api("/api/song/upload?name=" + encodeURIComponent(x.src.split("\\").pop()), toPcm(a).buffer, true);
     await api("/api/song/cover?id=" + encodeURIComponent(res.id), await coverPng(img, title, artist), true);
-    await api("/api/song/save", { id: res.id, title, artist, drop: +drop.toFixed(2), outro: +outro.toFixed(2), cDur, race: true, city: true });
+    await api("/api/song/save", { id: res.id, title, artist, drop: +drop.toFixed(2), outro: +outro.toFixed(2), cDur, race: true, city: true, garage: true });
     x.newId = res.id;
   }
   await api("/api/music/done", { id: x.newId || x.id, src: x.src, asig: x.asig, isig: x.isig, replace: x.kind === "new" ? x.id : null });
@@ -1715,7 +1785,7 @@ $("rpOk").onclick = async () => {
       const blob = await new Promise(r => $("covC").toBlob(r, "image/png"));
       await api("/api/song/cover?id=" + encodeURIComponent(rp.id) + (rp.song ? "&tofolder=1" : ""), blob, true);
     }
-    await api("/api/song/save", { id: rp.id, title: $("rpTitle").value, artist: $("rpArtist").value, drop: +rp.drop.toFixed(2), outro: +rp.outro.toFixed(2), cDur: rp.cDur, race: rp.race, city: rp.city });
+    await api("/api/song/save", { id: rp.id, title: $("rpTitle").value, artist: $("rpArtist").value, drop: +rp.drop.toFixed(2), outro: +rp.outro.toFixed(2), cDur: rp.cDur, race: rp.race, city: rp.city, garage: rp.garage });
     if (!rp.song && rp.fileObj) await api("/api/music/put?id=" + encodeURIComponent(rp.id) + "&name=" + encodeURIComponent(rp.fileObj.name), rp.fileObj, true).catch(e => note(esc(errText(e))));
     S = await api("/api/state"); songs = S.songs;
     closeSong(); render(); stats();
