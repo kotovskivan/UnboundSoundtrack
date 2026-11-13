@@ -159,6 +159,14 @@ h1 span { display: block; color: var(--acid); }
 .shot-btn { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; color: inherit; font: inherit; }
 .hero .shot-btn img { border: 1px solid var(--acid); box-shadow: 14px 14px 0 rgba(182,255,26,.16); transform: rotate(1deg); transition: transform .2s; }
 .hero .shot-btn:hover img { transform: rotate(0deg); }
+/* 13.11 (Ваня): видео фоном первого экрана — static/video/hero.mp4 (1280×544, 30 fps, без звука, 3,8 МБ).
+   Грузится после load страницы, только на широком экране; пленка темнее слева, где текст */
+.hero-zone { position: relative; isolation: isolate; }
+.hero-bg { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.4s; pointer-events: none; }
+.hero-zone::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 1.4s;
+  background: linear-gradient(0deg, var(--ink), transparent 22%), linear-gradient(180deg, var(--ink), transparent 12%),
+              linear-gradient(90deg, rgba(10,10,10,.9) 0%, rgba(10,10,10,.72) 45%, rgba(10,10,10,.5) 100%); }
+.hero-zone.vid .hero-bg, .hero-zone.vid::before { opacity: 1; }
 
 /* ---------- бегущая строка ---------- */
 .ticker { width: 110vw; margin-left: -5vw; background: var(--paper); color: var(--ink); overflow: hidden; white-space: nowrap; transform: rotate(-1.2deg); font-weight: 700; font-size: 14px; letter-spacing: .06em; padding: 8px 0; }
@@ -266,6 +274,8 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
 </header>
 
 <main>
+  <div class="hero-zone">
+  <video class="hero-bg" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" data-src="../video/hero.mp4"></video>
   <div class="wrap">
     <section class="hero">
       <div>
@@ -286,6 +296,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
              sizes="(min-width: 980px) 58vw, 100vw" width="1440" height="900" alt="Le tue canzoni accanto ai brani del gioco." fetchpriority="high">
       </button>
     </section>
+  </div>
   </div>
 
   <div class="ticker" aria-hidden="true"><div class="ticker-track">UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / </div></div>
@@ -427,6 +438,21 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
   });
   lb.querySelector("button").addEventListener("click", function () { lb.close(); });
   lb.addEventListener("click", function (e) { if (e.target === lb) lb.close(); });
+
+  /* 13.11: видео фоном — качаем только после полной загрузки страницы (Ваня: «сначала сайт, потом видео»);
+     телефон, «меньше движения», «экономия трафика» — не качаем вовсе; ушло с экрана — пауза */
+  var bv = document.querySelector(".hero-bg"), net = navigator.connection;
+  if (bv && matchMedia("(min-width: 980px)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches && !(net && net.saveData)) {
+    var play = function () { var p = bv.play(); if (p && p.catch) p.catch(function () {}); };
+    var go = function () {
+      bv.muted = true;
+      bv.addEventListener("playing", function () { bv.parentNode.classList.add("vid"); }, { once: true });
+      bv.src = bv.dataset.src;
+      play();
+      if ("IntersectionObserver" in window) new IntersectionObserver(function (e) { if (e[0].isIntersecting) play(); else bv.pause(); }).observe(bv);
+    };
+    if (document.readyState === "complete") go(); else window.addEventListener("load", go);
+  }
 
   /* «эта страница есть на твоем языке» — только подсказка, без автоперехода (так правильно для SEO) */
   var CUR = "it", PAGES = {"uk": {"t": "Ця сторінка є українською", "n": "Українська", "href": "../"}, "en": {"t": "This page is also in English", "n": "English", "href": "../en/"}, "de": {"t": "Diese Seite gibt es auch auf Deutsch", "n": "Deutsch", "href": "../de/"}, "es": {"t": "Esta página también está en español", "n": "Español", "href": "../es/"}, "fr": {"t": "Cette page existe aussi en français", "n": "Français", "href": "../fr/"}, "it": {"t": "Questa pagina è disponibile anche in italiano", "n": "Italiano", "href": "../it/"}, "pl": {"t": "Ta strona jest też po polsku", "n": "Polski", "href": "../pl/"}, "pt": {"t": "Esta página também está em português", "n": "Português", "href": "../pt/"}, "tr": {"t": "Bu sayfa Türkçe olarak da var", "n": "Türkçe", "href": "../tr/"}, "ru": {"t": "Эта страница есть на русском", "n": "Русский", "href": "../ru/"}, "zh": {"t": "本页面也有简体中文版", "n": "简体中文", "href": "../zh/"}, "ja": {"t": "このページは日本語でもご覧いただけます", "n": "日本語", "href": "../ja/"}, "ko": {"t": "이 페이지는 한국어로도 볼 수 있습니다", "n": "한국어", "href": "../ko/"}};
