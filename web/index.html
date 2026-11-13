@@ -18,6 +18,10 @@
   --font: "Bahnschrift", "DIN Alternate", "Arial Narrow", sans-serif;
   color-scheme: dark;
 }
+/* у Bahnschrift нет иероглифов: латиница — Bahnschrift, остальное — шрифт Windows для языка (lang="zh-Hans" / "ja" / "ko" ставит applyI18n) */
+:lang(zh) { --font: "Bahnschrift", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif; }
+:lang(ja) { --font: "Bahnschrift", "Yu Gothic UI", "Meiryo UI", "Meiryo", sans-serif; }
+:lang(ko) { --font: "Bahnschrift", "Malgun Gothic", sans-serif; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; background: #0b0b0c; color: var(--paper); font-family: var(--font); overflow: hidden; }
 body { font-variation-settings: "wdth" 85, "wght" 500; }
@@ -109,6 +113,10 @@ body { font-variation-settings: "wdth" 85, "wght" 500; }
 .cr i { display: block; margin-top: 4px; font-style: normal; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); font-variation-settings: "wdth" 100, "wght" 600; }
 .cr:hover i { color: var(--acid); }
 .foot { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 4px; }
+.foot .brk { flex-basis: 100%; height: 0; margin: -7px 0; }   /* перенос строки внутри .foot */
+.foot-l { display: inline-block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute);   /* как .frosty: тот же наклон и рамка — иначе съезжает */
+  transform: skewX(-10deg); font-variation-settings: "wdth" 100, "wght" 600; border-bottom: 1px solid transparent;
+  flex-basis: 100%; margin-bottom: -8px; }   /* подпись своей строкой над ссылками: в одну строку с YouTube не влезает в 340px */
 .frosty { display: inline-block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); text-decoration: none; cursor: pointer; background: none; border: 0; font-family: inherit;
   transform: skewX(-10deg); font-variation-settings: "wdth" 100, "wght" 600; border-bottom: 1px solid transparent; }
 .frosty b { color: var(--paper); font-weight: normal; font-variation-settings: "wdth" 100, "wght" 700; }
@@ -129,6 +137,12 @@ body { font-variation-settings: "wdth" 85, "wght" 500; }
 
 .legend { margin: 14px 0 0; font-size: 12px; color: var(--mute); letter-spacing: .08em; max-width: 1100px; line-height: 1.45; }
 .legend b { color: var(--paper); font-weight: normal; }
+/* окно «Як це працює» */
+.help h3 { margin: 16px 0 4px; font-size: 14px; letter-spacing: .1em; text-transform: uppercase; color: var(--acid); font-weight: normal; font-variation-settings: "wdth" 100, "wght" 700; }
+.help h3:first-child { margin-top: 0; }
+.help p, .help li { line-height: 1.5; }
+.help ul, .help ol { margin: 4px 0; padding-left: 20px; }
+.help b { color: var(--paper); }
 
 .grid { flex: 1; min-height: 0; overflow-y: auto; margin-top: 14px; padding: 6px 12px 120px 6px; display: grid; grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: 18px; align-content: start; }
 .grid::-webkit-scrollbar { width: 8px; } .grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,.18); }
@@ -173,12 +187,83 @@ body { font-variation-settings: "wdth" 85, "wght" 500; }
 .card.add b { font-size: 22px; text-transform: uppercase; font-weight: normal; font-variation-settings: "wdth" 78, "wght" 700; }
 .card.add span { font-size: 12px; color: var(--mute); letter-spacing: .08em; }
 .card.add.dragto, .card.add:hover { border-color: var(--acid); background: rgba(182,255,26,.07); }
+.card.add.ytadd .plus { font-size: 46px; padding: 9px 0; }
+/* приоритет трека в игре: HIGH (по умолчанию) / LOW — играет редко */
+/* HIGH — залитый красный (часто), LOW — тот же красный контуром (приглушен, редко) */
+.pill.pr { flex: 0 0 auto; min-width: 46px; padding-left: 6px; padding-right: 6px; background: #ff3b3b; color: var(--ink); border-color: #ff3b3b; }
+.pill.pr.low { background: transparent; color: #ff3b3b; border-color: rgba(255,59,59,.75); }
+.pill.pr:hover { border-color: var(--paper); }
+/* сортировка / фильтры / вид */
+.vbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 12px; }
+.vbar select { background: rgba(0,0,0,.55); border: 1px solid var(--line); color: var(--paper); font: inherit; font-size: 12px; letter-spacing: .06em; padding: 7px 10px; cursor: pointer; max-width: 280px; }
+.vbar select:hover, .vbar select:focus { border-color: var(--acid); outline: none; }
+.vbar option { background: #141518; color: var(--paper); }
+.vbar .vt { display: flex; gap: 4px; margin-left: auto; }
+.vbar .vt button { width: 36px; height: 32px; display: grid; place-items: center; background: rgba(0,0,0,.55); border: 1px solid var(--line); color: var(--mute); cursor: pointer; }
+.vbar .vt button:hover { color: var(--paper); border-color: var(--paper); }
+.vbar .vt button.on { background: var(--acid); border-color: var(--acid); color: var(--ink); }
+.vbar .vt svg { width: 16px; height: 16px; fill: currentColor; }
+/* вид списком: та же карточка строкой */
+.grid.list { grid-template-columns: 1fr; gap: 6px; }
+.grid.list .card { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; align-items: center; column-gap: 14px; padding-right: 10px; }
+.grid.list .card:hover { transform: translate(-2px, -2px); }
+.grid.list .card .art { width: 52px; height: 52px; aspect-ratio: auto; }
+.grid.list .card .art .noart { font-size: 9px; padding: 3px; }
+.grid.list .card .meta { padding: 6px 0; display: flex; align-items: baseline; gap: 16px; min-width: 0; }
+.grid.list .card .t { font-size: 16px; flex: 0 1 auto; min-width: 0; }
+.grid.list .card .a { margin-top: 0; flex: 1 1 auto; min-width: 0; }
+.grid.list .card .sw { padding: 0; }
+.grid.list .card .sw .pill { flex: 0 0 auto; min-width: 88px; }
+.grid.list .card .sw .pill.pr { min-width: 52px; }
+.grid.list .mine-tag, .grid.list .yt, .grid.list .pbar, .grid.list .card.off .art::before, .grid.list .card.half .art::before { display: none; }
+.grid.list .ed { width: 26px; height: 26px; right: 13px; top: 13px; opacity: 0; }
+.grid.list .card:hover .ed { opacity: 1; }
+.grid.list .pv { width: 32px; height: 32px; left: 10px; bottom: 10px; font-size: 12px; }
+.grid.list .card.add { display: flex; min-height: 54px; flex-direction: row; justify-content: flex-start; gap: 14px; padding: 8px 16px; }
+.grid.list .card.add .plus { font-size: 30px; }
+.grid.list .card.add.ytadd .plus { font-size: 22px; padding: 0; }
+.grid.list .card.add b { font-size: 18px; }
+/* свои песни мышкой — новый порядок */
+.card.mine[draggable="true"] { cursor: grab; }
+.card.dragging { opacity: .35; }
+.card.dropbefore { box-shadow: -5px 0 0 var(--acid); }
+.card.dropafter { box-shadow: 5px 0 0 var(--acid); }
+.grid.list .card.dropbefore { box-shadow: 0 -4px 0 var(--acid); }
+.grid.list .card.dropafter { box-shadow: 0 4px 0 var(--acid); }
 
 .lang { position: fixed; z-index: 4; top: 14px; right: 34px; display: flex; gap: 4px; align-items: center; }
 .lang span, .lang button { font: inherit; font-size: 11px; letter-spacing: .12em; padding: 3px 7px; border: 1px solid var(--line); color: var(--mute); cursor: pointer; transform: skewX(-10deg); background: rgba(0,0,0,.5); font-variation-settings: "wdth" 100, "wght" 700; text-transform: uppercase; }
 .lang span:hover, .lang button:hover { color: var(--paper); }
 .lang span.on { background: var(--acid); color: var(--ink); border-color: var(--acid); }
+/* программу допиливаем (это релиз, не бета) — баг-репорт на виду (Ваня 12.11: «а то он где-то внизу и не видно») */
+.lang .beta { font-size: 11px; letter-spacing: .06em; padding: 3px 10px; margin-right: 14px; transform: skewX(-10deg); background: rgba(0,0,0,.55); border: 1px solid var(--line); color: var(--mute); text-decoration: none; white-space: nowrap; }
+.lang .beta b { color: var(--paper); font-weight: normal; font-variation-settings: "wdth" 100, "wght" 700; }
+.lang .beta:hover { border-color: var(--acid); color: var(--paper); }
+.lang .beta:hover b { color: var(--acid); }
 .lang button { margin-left: 10px; }
+/* язык: кнопка «UA ▾» + список; внизу серая строка «переводы сделаны ИИ» */
+.lang .lsel { position: relative; }
+.lang .lsel .lcur { margin-left: 0; }
+.lang .lsel.open .lcur { background: var(--acid); color: var(--ink); border-color: var(--acid); }
+.lang .lmenu { display: none; position: absolute; top: calc(100% + 6px); right: 0; z-index: 10; min-width: 230px; max-height: calc(100vh - 70px); overflow-y: auto;
+  padding: 4px 0; background: rgba(12,12,14,.97); border: 1px solid var(--line); box-shadow: 0 12px 34px rgba(0,0,0,.65); }
+.lang .lsel.open .lmenu { display: block; }
+/* первые окна (соглашение → игра → Mod Manager → папки): язык можно сменить прямо там — переключатель поверх затемнения (R1-05), остальное в шапке — нет */
+body.booting .lang { z-index: 1001; }
+body.booting .lang > :not(#lang) { visibility: hidden; }
+.lang .li { display: flex; gap: 12px; align-items: baseline; padding: 7px 16px; font-size: 15px; color: var(--paper); cursor: pointer; white-space: nowrap;
+  font-variation-settings: "wdth" 100, "wght" 500; }
+.lang .li b { width: 22px; flex: none; font-size: 11px; letter-spacing: .1em; color: var(--mute); font-weight: normal; font-variation-settings: "wdth" 100, "wght" 700; }
+.lang .li:hover { background: rgba(255,255,255,.08); }
+.lang .li.on, .lang .li.on b { color: var(--acid); }
+.lang .lnote { margin-top: 4px; padding: 8px 16px 6px; border-top: 1px solid var(--line); max-width: 270px; font-size: 12px; line-height: 1.35; color: var(--mute); white-space: normal; }
+/* окно первого запуска: язык Windows — на всю ширину, остальные — сеткой */
+.dlg-lang .dlg-btns { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: 1180px; }
+.dlg-lang .dlg-btn { min-height: 52px; padding: 0 18px; white-space: nowrap; overflow: hidden; }
+.dlg-lang .dlg-btn:first-child { grid-column: 1 / -1; min-height: 70px; font-size: clamp(22px, 1.9vw, 32px); }
+.dlg-lang .lang-ai { margin-top: 14px; font: 14px var(--font); color: #8f8c99; }
+@media (max-width: 1000px) { .dlg-lang .dlg-btns { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 700px) { .dlg-lang .dlg-btns { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 .note { position: fixed; z-index: 5; right: 34px; bottom: 30px; max-width: 440px; background: var(--paper); color: var(--ink); padding: 14px 18px; transform: translateY(30px) skewX(-6deg); opacity: 0;
   pointer-events: none; transition: .25s; box-shadow: 8px 8px 0 var(--acid); font-size: 14px; line-height: 1.4; }
@@ -209,6 +294,12 @@ body { font-variation-settings: "wdth" 85, "wght" 500; }
 .cov.over { border-color: var(--acid); box-shadow: 0 0 0 2px var(--acid); }
 .cov-h { margin-top: 6px; font-size: 11px; color: var(--mute); line-height: 1.35; }
 .cov-h a { color: var(--acid); cursor: pointer; text-decoration: underline; }
+/* обложка: Залить / Сгенерировать / Удалить */
+.cov-btns { display: flex; gap: 6px; width: 132px; margin-top: 8px; }
+.cb { flex: 1; height: 30px; display: grid; place-items: center; padding: 0; background: rgba(255,255,255,.05); border: 1px solid var(--line); color: var(--paper); cursor: pointer; }
+.cb svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.cb:hover { border-color: var(--acid); color: var(--acid); }
+.cb.del:hover { border-color: #ff3b3b; color: #ff3b3b; }
 .rp-f { display: grid; grid-template-columns: 1fr; gap: 10px; }
 .rp-f label span { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin-bottom: 5px; }
 .rp-f input { width: 100%; background: rgba(255,255,255,.05); border: 1px solid var(--line); color: var(--paper); font: inherit; font-size: 15px; padding: 8px 10px; outline: none; }
@@ -220,18 +311,24 @@ body { font-variation-settings: "wdth" 85, "wght" 500; }
 .wave canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .wv-b { position: absolute; top: 0; bottom: 0; background: rgba(182,255,26,.16); border-left: 1px dashed rgba(182,255,26,.6); pointer-events: none; }
 .wv-b i { position: absolute; left: 6px; bottom: 4px; font-size: 10px; font-style: normal; letter-spacing: .1em; color: var(--acid); }
-.wv-go { position: absolute; top: -8px; bottom: -8px; width: 3px; margin-left: -1px; background: var(--acid); cursor: ew-resize; }
+/* отсчет 3-2-1 перед GO (3 с после катсцены) — своим цветом */
+.wv-n { position: absolute; top: 0; bottom: 0; background: rgba(255,138,0,.26); border-left: 1px dashed rgba(255,138,0,.85); pointer-events: none; }
+.wv-n i { position: absolute; left: 4px; top: 4px; font-size: 10px; font-style: normal; letter-spacing: .06em; color: #ff8a00; white-space: nowrap; }
+.wv-go { position: absolute; top: -8px; bottom: -8px; width: 3px; margin-left: -1px; background: var(--acid); cursor: grab; }   /* рука — «тяни» (Ваня 13.11) */
 .wv-go b { position: absolute; top: -12px; left: 50%; transform: translateX(-50%) skewX(-10deg); background: var(--acid); color: var(--ink); font-size: 11px; padding: 1px 6px; letter-spacing: .1em; font-weight: normal; font-variation-settings: "wdth" 100, "wght" 700; }
-.wv-go::after { content: ""; position: absolute; inset: 0 -8px; }
+.wv-go::after { content: ""; position: absolute; inset: 0 -10px; }   /* та же зона, что ловит mousedown (10 px) */
+body.wv-drag, body.wv-drag * { cursor: grabbing !important; }   /* тянут GO / финиш — рука сжата, где бы ни была мышь */
 .wv-c { position: absolute; top: 0; bottom: 0; background: rgba(255,230,0,.22); border: 2px solid var(--sun); cursor: grab; }
 .wv-c:active { cursor: grabbing; }
 .wv-ph { position: absolute; top: 0; bottom: 0; width: 2px; background: #fff; pointer-events: none; display: none; }
 .wv-cd { position: absolute; inset: 0; display: grid; place-items: center; font-size: 72px; color: var(--acid); text-shadow: 4px 4px 0 rgba(0,0,0,.8); pointer-events: none;
   font-variation-settings: "wdth" 75, "wght" 700; transform: skewX(-10deg); }
-.wv-msg { position: absolute; inset: 0; display: grid; place-items: center; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); }
+.wv-msg { position: absolute; inset: 0; display: grid; place-items: center; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); pointer-events: none; /* только надпись — мышь сквозь нее к GO / финишу (иначе над GO был крестик, 13.11) */ }
 .parts { margin-top: 16px; }
 .part { display: grid; grid-template-columns: 46px 1fr auto; gap: 14px; align-items: center; padding: 10px 12px; margin-bottom: 8px; border: 1px solid var(--line); border-left: 4px solid var(--paper); }
 .part.b { border-left-color: var(--acid); } .part.c { border-left-color: var(--sun); }
+.parts-note { margin: 2px 0 0; font-size: 12px; line-height: 1.35; color: var(--mute); }
+.parts-note a { color: var(--acid); cursor: pointer; text-decoration: underline; white-space: nowrap; }
 .part b { display: block; font-size: 17px; text-transform: uppercase; font-weight: normal; font-variation-settings: "wdth" 80, "wght" 700; }
 .part span { display: block; margin-top: 2px; font-size: 12px; line-height: 1.35; color: var(--mute); }
 .part em { font-style: normal; font-size: 13px; color: #cfcfca; white-space: nowrap; font-variant-numeric: tabular-nums; }
@@ -248,7 +345,7 @@ body { font-variation-settings: "wdth" 85, "wght" 500; }
 <div class="bg" id="bg"><div class="photo"></div><div class="leak"></div><div class="shade"></div><div class="logo"></div><div class="halftone"></div><div class="grunge"></div><div class="dots"></div><div class="noise"></div><div class="vig"></div></div>
 <div class="ghost"><span>Soundtrack</span><span>Soundtrack</span></div>
 
-<div class="lang" id="langBar"><span id="lang" style="display:contents"></span><button id="foldersBtn" data-i18n="folders"></button><button id="aboutBtn" data-i18n="about" style="margin-left:4px"></button></div>
+<div class="lang" id="langBar"><a class="beta" href="https://forms.gle/StNa4GFZRHckFVpi8" data-i18n="betaNote"></a><span id="lang" style="display:contents"></span><button id="foldersBtn" data-i18n="folders"></button><button id="browserBtn" data-i18n="menuBrowser" style="margin-left:4px"></button><button id="aboutBtn" data-i18n="about" style="margin-left:4px"></button></div>
 <div class="app">
   <aside class="side">
     <div class="tag"><b>UNBOUND · SOUNDTRACK</b></div>
@@ -277,7 +374,7 @@ body { font-variation-settings: "wdth" 85, "wght" 500; }
           <rect x="-1.9" y="-19.5" width="3.8" height="19.5" rx="1.9" transform="rotate(241)"/><rect x="-1.6" y="-15" width="3.2" height="15" rx="1.6" transform="rotate(270)"/>
           <rect x="-1.9" y="-18.5" width="3.8" height="18.5" rx="1.9" transform="rotate(299)"/><rect x="-1.6" y="-14" width="3.2" height="14" rx="1.6" transform="rotate(331)"/>
           <circle r="4.2"/></g></svg></span>
-        <span><b>Claude</b><i><span data-i18n="claudeRole"></span> · claude.ai ↗</i></span>
+        <span><b lang="en">Claude</b><i><span data-i18n="claudeRole"></span> · <span lang="en">claude.ai ↗</span></i></span>
       </a>
       <a class="cr" href="https://steamcommunity.com/id/kitivski/">
         <span class="ic cat"><svg viewBox="0 0 48 48" aria-hidden="true">
@@ -290,12 +387,16 @@ body { font-variation-settings: "wdth" 85, "wght" 500; }
           <path fill="none" stroke="#f4f4f0" stroke-opacity=".6" stroke-width=".9" stroke-linecap="round"
             d="M24 34q-1.4 2.6-4 1.6M24 34q1.4 2.6 4 1.6M17 32.5l-8.5-1.6M17 34.3l-8.5 1M31 32.5l8.5-1.6M31 34.3l8.5 1"/>
         </svg></span>
-        <span><b>Kitivski</b><i><span data-i18n="devRole"></span> · Steam ↗</i></span>
+        <span><b lang="en">Kitivski</b><i><span data-i18n="devRole"></span> · Steam ↗</i></span>
       </a>
       <div class="foot">
         <a class="frosty" href="https://github.com/HarGabt/FrostyToolsuite"><span data-i18n="poweredBy"></span> <b>Frosty Mod Manager</b> ↗</a>
+        <a class="frosty" href="https://www.nexusmods.com/needforspeedunbound/mods/97?tab=description">+ <b>NFS Unbound Encryption Key</b> ↗</a>
+        <span class="brk"></span>
         <button class="frosty" id="logBtn" data-i18n="log"></button>
         <a class="frosty" href="https://forms.gle/StNa4GFZRHckFVpi8"><b data-i18n="bugReport"></b> ↗</a>
+        <span class="brk"></span>
+        <span class="foot-l" data-i18n="ourPages"></span><a class="frosty" href="https://kotovskivan.github.io/UnboundSoundtrack/"><b data-i18n="site"></b> ↗</a><a class="frosty" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3837419990"><b>Steam</b> ↗</a><a class="frosty" href="https://www.nexusmods.com/needforspeedunbound/mods/671"><b>Nexus</b> ↗</a><a class="frosty" href="https://www.youtube.com/@kitivski"><b>YouTube</b> ↗</a>
       </div>
     </div>
   </aside>
@@ -305,9 +406,14 @@ body { font-variation-settings: "wdth" 85, "wght" 500; }
       <div class="search"><input id="q" data-i18n-ph="search" autocomplete="off"></div>
       <button class="btn" id="allOn" data-i18n="enableAll"></button>
       <button class="btn" id="allOff" data-i18n="disableAll"></button>
-      <button class="btn go" id="build" data-i18n="build"></button>
+      <button class="btn" id="helpBtn" data-i18n="helpBtn"></button>
+      <!-- кнопки «Зібрати мод» вверху больше нет (Ваня 12.11: не нужна, мешает) — сборка из пункта меню слева -->
     </div>
-    <div class="legend"><span data-i18n="legend"></span> <span data-i18n="legendPv"></span></div>
+    <!-- подсказки (legend, legendPv) — в окне «Як це працює», кнопка helpBtn -->
+    <div class="vbar">
+      <select id="sortSel" data-i18n-title="sortT"></select><select id="artSel" data-i18n-title="artT"></select><select id="whereSel" data-i18n-title="whereSelT"></select>
+      <span class="vt"><button id="vTiles" data-i18n-title="viewTiles"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 1h6v6H1zM9 1h6v6H9zM1 9h6v6H1zM9 9h6v6H9z"/></svg></button><button id="vList" data-i18n-title="viewList"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 2h3v3H1zM6 2h9v3H6zM1 7h3v3H1zM6 7h9v3H6zM1 12h3v3H1zM6 12h9v3H6z"/></svg></button></span>
+    </div>
     <div class="grid" id="grid"></div>
   </main>
 </div>
@@ -315,7 +421,7 @@ body { font-variation-settings: "wdth" 85, "wght" 500; }
 <div class="note" id="note"></div>
 <audio id="au" preload="none"></audio>
 <audio id="au2" preload="auto"></audio>
-<input type="file" id="songFile" accept=".mp3,.wav,.flac,.ogg,.oga,.opus,.m4a,.aac,audio/*" hidden>
+<input type="file" id="songFile" accept=".mp3,.wav,.flac,.ogg,.oga,.opus,.m4a,.aac,.webm,audio/*" hidden>
 <input type="file" id="covFile" accept="image/png,image/jpeg,image/webp,image/gif,image/bmp" hidden>
 
 <div class="rp-dim" id="rpDim"></div>
@@ -328,21 +434,25 @@ body { font-variation-settings: "wdth" 85, "wght" 500; }
       <div class="rp-top">
         <div>
           <div class="cov" id="cov" data-i18n-title="coverPick"><canvas id="covC" width="256" height="256"></canvas></div>
-          <div class="cov-h"><a id="covPick" data-i18n="coverPick"></a><br><span id="covHint"></span></div>
+          <div class="cov-btns"><button class="cb" id="covPick" data-i18n-title="covUp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M7 9l5-5 5 5M4 15v5h16v-5"/></svg></button><button class="cb" id="covGen" data-i18n-title="covGen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3l1.9 5.1L18 10l-5.1 1.9L11 17l-1.9-5.1L4 10l5.1-1.9zM18.5 15l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></svg></button><button class="cb del" id="covDel" data-i18n-title="covDel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></button></div>
+          <div class="cov-h"><span id="covHint"></span></div>
         </div>
         <div class="rp-f">
-          <label><span data-i18n="artistF"></span><input id="rpArtist" autocomplete="off" maxlength="80"></label>
-          <label><span data-i18n="titleF"></span><input id="rpTitle" autocomplete="off" maxlength="80"></label>
+          <!-- длина как в программе (Music.MaxArtist / MaxTitle): длинные в игре все равно не видно (Ваня 13.11) -->
+          <label><span data-i18n="artistF"></span><input id="rpArtist" autocomplete="off" maxlength="60"></label>
+          <label><span data-i18n="titleF"></span><input id="rpTitle" autocomplete="off" maxlength="40"></label>
           <div class="rp-where"><small data-i18n="playsIn"></small><span class="pill r" id="rpRace" data-i18n="races"></span><span class="pill f" id="rpCity" data-i18n="city"></span></div>
         </div>
       </div>
-      <div class="wave" id="wave"><canvas id="wc"></canvas><div class="wv-b" id="wvB"><i>17 s</i></div><div class="wv-c" id="wvC"></div>
+      <div class="wave" id="wave"><canvas id="wc"></canvas><div class="wv-b" id="wvB"><i>17 s</i></div><div class="wv-n" id="wvN"><i>3·2·1</i></div><div class="wv-c" id="wvC"></div>
         <div class="wv-go" id="wvGo"><b>GO</b></div><div class="wv-ph" id="wvPh"></div><div class="wv-cd" id="wvCd"></div><div class="wv-msg" id="wvMsg"></div></div>
       <div class="parts">
         <div class="part" data-p="A"><button class="pp">▶</button><div><b data-i18n="partA"></b><span data-i18n="partAsub"></span></div><em id="tA"></em></div>
         <div class="part b" data-p="B"><button class="pp">▶</button><div><b data-i18n="partB"></b><span data-i18n="partBsub"></span></div><em id="tB"></em></div>
         <div class="part c" data-p="C"><button class="pp">▶</button><div><b data-i18n="partC"></b><span data-i18n="partCsub"></span></div><em id="tC"></em></div>
       </div>
+      <!-- 13.11 Ваня: старт 20,45 может слегка не попадать — знаешь лучше, пиши в баг-репорт (та же форма, что в подвале) -->
+      <p class="parts-note"><span data-i18n="startNote"></span> <a href="https://forms.gle/StNa4GFZRHckFVpi8"><span data-i18n="bugReport"></span> ↗</a></p>
     </div>
   </div>
   <div class="rp-row"><button class="btn" id="rpDel" data-i18n="del"></button><button class="btn go" id="rpOk" data-i18n="save"></button></div>
@@ -354,7 +464,8 @@ body { font-variation-settings: "wdth" 85, "wght" 500; }
 "use strict";
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const B_INTRO = 17, C_DUR = 25, SR = 48000;
+// старт гонки: катсцена + 3 с отсчета 3-2-1, на GO — дроп (12.11: 17+3 — при 17 дроп бил на «3»; 13.11: 21+3 и 17+4 не то; 17 + 3,65 = 20,65 (замер по трекам игры) тоже мимо → 17 + 3,45 = 20,45)
+const B_CUT = 17, B_COUNT = 3.45, B_INTRO = B_CUT + B_COUNT, C_DUR = 25, SR = 48000;   // те же числа — src/Audio.cs (13.11: 20,45 — Ваня после теста 20,65)
 const AUDIO_EXT = [".mp3", ".wav", ".flac", ".ogg", ".oga", ".opus", ".m4a", ".aac"];
 let S = null, tracks = [], songs = [], filter = "all";
 
@@ -384,32 +495,53 @@ document.addEventListener("click", e => {
 });
 // ссылка — в браузере по умолчанию через программу; программа не ответила — открываем сами
 const openUrl = u => api("/api/url", { url: u }).catch(() => window.open(u, "_blank", "noopener"));
+// ключ шифрования игры для Frosty Mod Manager (Nexus) — в окнах Frosty / ключа / выбора папки Mod Manager ({keyLink} в текстах)
+const KEY_LINK = '<a href="https://www.nexusmods.com/needforspeedunbound/mods/97?tab=description">NFS Unbound Encryption Key ↗</a>';
 
 // ---------- старт: язык → соглашение → игра → Mod Manager → подготовка ----------
 async function boot() {
   try { S = await api("/api/state"); } catch (e) { await showError(e); return; }
   if (I18N[S.lang]) setLang(S.lang);
-  else {   // первый запуск: сначала язык (подсвечен язык Windows, если он есть среди наших)
-    const v = await askYesNo({ title: t("langT"), html: "<p>Оберіть мову · Wybierz język · Choose your language · Sprache wählen · Escolha o idioma</p>",
-      buttons: LANGS.map(([c]) => ({ label: LANG_NAMES[c], val: c })), start: LANGS.findIndex(([c]) => c === LANG) });
+  else {   // первый запуск: язык Windows (если он есть среди наших, иначе English) — сверху крупно, остальные — сеткой;
+           // заголовок, подсказка и строка «переводы сделаны ИИ» — на том языке, на котором стоит выбор (мышь / стрелки)
+    const win = LANG, codes = [win, ...LANGS.map(([c]) => c).filter(c => c !== win)];
+    const L = (c, k) => (I18N[c] && I18N[c][k]) || I18N.en[k];
+    const v = await askYesNo({ title: L(win, "langT"), cls: "dlg-lang", html: `<p data-lp>${L(win, "langPick")}</p>`,
+      buttons: codes.map((c, i) => ({ label: i ? LANG_NAMES[c] : LANG_NAMES[c] + " — " + L(c, "langGo"), val: c })),
+      onOpen: box => {
+        const back = box.closest(".dlg-back"), note = document.createElement("p");
+        note.className = "lang-ai"; note.textContent = L(win, "aiNote");
+        back.querySelector(".dlg-btns").after(note);
+        back.querySelectorAll(".dlg-btn").forEach((b, i) => {
+          b.lang = hl(codes[i]);
+          const show = () => {
+            back.querySelector(".dlg-title").textContent = L(codes[i], "langT");
+            box.querySelector("[data-lp]").textContent = L(codes[i], "langPick"); note.textContent = L(codes[i], "aiNote");
+            back.querySelector(".dlg").lang = hl(codes[i]);
+          };
+          b.addEventListener("focus", show); b.addEventListener("mouseenter", show);   // стрелки / Tab — focus, мышь — mouseenter
+        });
+      } });
     setLang(I18N[v] ? v : LANG);
     await api("/api/lang", { lang: LANG }).catch(() => {});
   }
+  if (S.view) { if (S.view.sort) vs.sort = S.view.sort; if (S.view.view) vs.view = S.view.view; }   // вид и сортировка — из settings.json (P2-07)
+  document.body.classList.add("booting");   // язык в шапке — поверх первых окон (R1-05); show() убирает
   if (!S.agreed) {
-    if (!await askYesNo({ title: t("agreeT"), html: t("agreeHtml"), yes: t("agreeYes"), no: t("agreeNo") })) return quit();
+    if (!await ask(() => ({ title: t("agreeT"), html: t("agreeHtml"), yes: t("agreeYes"), no: t("agreeNo") }))) return quit();
     await api("/api/agree", {});
   }
   while (!S.game) {
-    if (!await askYesNo({ title: t("gameT"), html: t("gameHtml"), yes: t("pickFolder"), no: t("exit") })) return quit();
+    if (!await ask(() => ({ title: t("gameT"), html: t("gameHtml"), yes: t("pickFolder"), no: t("exit") }))) return quit();
     await pick("game");
   }
   while (!S.fmm || !S.key) {
     if (!S.fmm) {
-      const v = await askYesNo({ title: t("fmmT"), html: t("fmmHtml"), yes: t("pickFolder"), no: t("download") });
+      const v = await ask(() => ({ title: t("fmmT"), html: t("fmmHtml", { keyLink: KEY_LINK }) + `<p><small>${t("fmmFile")}</small></p>`, yes: t("pickFolder"), no: t("download") }));
       if (v) await pick("fmm"); else openUrl("https://github.com/HarGabt/FrostyToolsuite/releases");
     } else {
-      const v = await askYesNo({ title: t("keyT"), html: t("keyHtml"), yes: t("retry"), no: t("openFmm") });
-      if (!v) await api("/api/open", { what: "fmm" }).catch(() => {});
+      const v = await ask(() => ({ title: t("keyT"), html: t("keyHtml", { keyLink: KEY_LINK }), yes: t("retry"), no: t("openFmm") }));
+      if (!v) await api("/api/open", { what: "fmm" }).catch(showError);   // R1-03: не запустился — сказать
       S = await api("/api/search", {});
     }
   }
@@ -424,13 +556,18 @@ async function musicInfo() {
   if (await askYesNo({ title: t("musicT"), html: t("musicHtml", { mine: t("secMine"), add: t("addSong") }), yes: t("musicOk"), no: t("musicOpen"), tall: true }) === false)
     api("/api/open", { what: "music" }).catch(() => {});
 }
+// окно, которое переводится на лету: f() строит {title, html, yes, no} через t(); язык сменили на первых экранах — dialog.js зовет f() снова (R1-05)
+const ask = f => askYesNo(Object.assign(f(), { re: f }));
 // выбор папки прямо в окне программы (системное окно выбора открывалось позади окна программы)
 async function pick(what) {
-  let cur = "", valid = false;
+  let cur = "", valid = false, reload = null;
   const isGame = what === "game";
+  const hint = () => t(isGame ? "pickGameHint" : "pickFmmHint", { keyLink: KEY_LINK });
   const ok = await askYesNo({
     title: t(isGame ? "gameT" : "fmmT"), yes: t("pickThis"), no: t("cancel"),
-    html: `<p>${t(isGame ? "pickGameHint" : "pickFmmHint")}</p>
+    re: () => ({ title: t(isGame ? "gameT" : "fmmT"), yes: t("pickThis"), no: t("cancel") }),
+    onRelang: back => { back.querySelector("[data-hint]").innerHTML = hint(); if (reload) reload(); },
+    html: `<p data-hint>${hint()}</p>
       <div class="fp-path"><button data-up title="..">↑</button><input data-in spellcheck="false"><button data-go>→</button></div>
       <div class="fp-list" data-list></div><div class="fp-st" data-st></div>`,
     onOpen: (box, done) => {
@@ -438,18 +575,19 @@ async function pick(what) {
       let parent = null;
       const load = async path => {
         let r; try { r = await api("/api/dirs", { path }); } catch (e) { st.textContent = errText(e); return; }
-        cur = r.path; parent = r.parent; inp.value = r.path;
+        cur = r.path; parent = r.parent; inp.value = r.missing || r.path;   // R1-02: путь, которого нет, не стираем
         valid = !!(isGame ? r.game : r.fmm);
         st.className = "fp-st " + (valid ? "ok" : "no");
-        st.textContent = !r.path ? t("fpPlaces") : valid ? t(isGame ? "fpOkGame" : "fpOkFmm") : (r.denied ? t("fpDenied") : t("fpNo"));
+        st.textContent = r.missing ? t("fpNone") : !r.path ? t("fpPlaces") : valid ? t(isGame ? "fpOkGame" : "fpOkFmm") : (r.denied ? t("fpDenied") : t("fpNo"));
         list.innerHTML = "";
         for (const d of r.dirs) {
           const b = document.createElement("button"), hit = isGame ? d.game : d.fmm;
-          b.textContent = (hit ? "✓ " : "") + d.name; b.title = d.path; if (hit) b.className = "hit";
+          b.textContent = (hit ? "✓ " : "") + (d.kind ? t("place_" + d.kind) : d.name); b.title = d.path; if (hit) b.className = "hit";   // R1-07
           b.onclick = () => load(d.path);
           list.appendChild(b);
         }
       };
+      reload = () => load(inp.value);
       box.querySelector("[data-up]").onclick = () => load(parent || "");
       box.querySelector("[data-go]").onclick = () => load(inp.value);
       inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); load(inp.value); } });
@@ -468,10 +606,10 @@ async function pick(what) {
 // папки игры и Mod Manager: показать, подтвердить или поменять
 async function confirmPaths() {
   while (true) {
-    const ok = await askYesNo({ title: t("whereT"), html: t("whereHtml", { g: esc(S.game || "—"), f: esc(S.fmm || "—") }), yes: t("whereYes"), no: t("whereNo") });
+    const ok = await ask(() => ({ title: t("whereT"), html: t("whereHtml", { g: esc(S.game || "—"), f: esc(S.fmm || "—") }), yes: t("whereYes"), no: t("whereNo") }));
     if (ok && S.game && S.fmm && S.key) { await api("/api/pathsok", {}); S.pathsOk = true; return true; }
     if (!ok) {
-      const g = await askYesNo({ title: t("changeT"), html: t("changeHtml"), yes: t("changeGame"), no: t("changeFmm") });
+      const g = await ask(() => ({ title: t("changeT"), html: t("changeHtml"), yes: t("changeGame"), no: t("changeFmm") }));
       await pick(g ? "game" : "fmm");
     }
     if (!S.key && S.fmm) { boot(); return false; }   // новый Mod Manager без ключа — пусть boot покажет подсказку
@@ -479,7 +617,7 @@ async function confirmPaths() {
 }
 async function changeFolders() {
   const before = S.game;
-  if (!await askYesNo({ title: t("whereT"), html: t("whereHtml", { g: esc(S.game || "—"), f: esc(S.fmm || "—") }).replace(/<p>[^<]*\?<\/p>$/, ""), yes: t("close"), no: t("whereNo") })) {
+  if (!await askYesNo({ title: t("whereT"), html: t("whereHtml", { g: esc(S.game || "—"), f: esc(S.fmm || "—") }).replace(/<p>[^<]*[?？]<\/p>$/, ""), yes: t("close"), no: t("whereNo") })) {
     const g = await askYesNo({ title: t("changeT"), html: t("changeHtml"), yes: t("changeGame"), no: t("changeFmm") });
     await pick(g ? "game" : "fmm");
     S = await api("/api/state").catch(() => S);
@@ -490,28 +628,75 @@ function quit() { api("/api/quit", {}).catch(() => {}); setTimeout(() => window.
 
 // задание программы (подготовка / сборка) с полосой прогресса; true — успех
 async function runJob(path, titleKey, first) {
-  let j;
+  let j, stopping = false, asking = false;
   try { j = await api(path, {}); } catch (e) { await showError(e); return false; }
-  showBusy(t(titleKey), first ? t("prepFirst") : "");
+  // сборку можно остановить (Ваня 13.11): «Стоп» / Esc -> «Зупинити?» (по умолчанию «Продовжити») -> программа гасит рабочий процесс; мод в Mods не тронут
+  const stop = path === "/api/build" ? { label: t("ytStop"), fn: async () => {
+    if (asking || stopping) return;
+    asking = true;
+    const ok = await askYesNo({ title: t("buildStopT"), html: t("buildStopHtml"), yes: t("ytStop"), no: t("buildGoOn"), start: 1 });
+    asking = false;
+    if (!ok || stopping) return;
+    stopping = true; updateBusy(t("buildStopping"), -1);
+    api("/api/job/stop", {}).catch(() => {});
+  } } : null;
+  showBusy(t(titleKey), first ? t("prepFirst") : "", stop);
   while (!j.done) {
     await new Promise(r => setTimeout(r, 400));
-    try { j = await api("/api/job"); } catch (e) { hideBusy(); await showError(e); return false; }
+    try { j = await api("/api/job"); } catch (e) {
+      // ошибка задания приходит броском из api() ({key: job.error}), а не в j — свои случаи разбираем здесь (13.11: «Стоп» показывал err_stopped)
+      hideBusy();
+      if (e && e.key === "stopped") { note(t("buildStopped")); return false; }
+      if (e && e.key === "vcMissing") return (await vcMissing()) ? runJob(path, titleKey, first) : false;
+      await showError(e); return false;
+    }
     if (!j) break;
     const [key, ...rest] = (j.step || "").split(" ");
-    if (key) updateBusy(t("step_" + key, { a: rest.join(" ") }), j.pct);
+    if (key && !stopping) updateBusy(t("step_" + key, { a: rest.join(" ") }), j.pct);
   }
   hideBusy();
+  if (j && j.error === "stopped") { note(t("buildStopped")); return false; }
+  if (j && j.error === "vcMissing") return (await vcMissing()) ? runJob(path, titleKey, first) : false;
   if (j && j.error) { await showError({ key: j.error, arg: j.errorArg }); return false; }
   runJob.result = j && j.result;
   return true;
 }
+// P2-01: Frosty не загрузился — нет Microsoft Visual C++ (обычно хватает своей копии в app\frosty; это запасной путь).
+// Установщик Microsoft лежит в app\vcredist; true — поставили, повторить
+async function vcMissing() {
+  if (!await askYesNo({ title: t("vcT"), html: t("vcHtml"), yes: t("vcInstall"), no: t("close") })) return false;
+  await api("/api/open", { what: "vcredist" }).catch(showError);
+  return await askYesNo({ title: t("vcT"), html: t("vcAfter"), yes: t("retry"), no: t("close") });
+}
 
 // ---------- главное окно ----------
 function show() {
+  document.body.classList.remove("booting");
   const bg = $("bg").style, root = document.documentElement.style;
   for (const [k, v] of Object.entries(S.bg || {})) { bg.setProperty("--" + k, `url("${v}")`); root.setProperty("--" + k, `url("${v}")`); }
   tracks = S.tracks; songs = S.songs;
   renderProfiles(); render(); stats();
+}
+
+// ---------- вид, сортировка, фильтры (Ваня 12.11); запоминает программа (settings.json, P2-07) — localStorage окна каждый запуск новый ----------
+const vs = { sort: "order", art: "", where: "", view: "tiles" };
+// помним вид и сортировку; фильтры (исполнитель, «где играет») — нет: после перезапуска все песни видны
+const saveVs = () => api("/api/view", { sort: vs.sort, view: vs.view }).catch(() => {});
+// «A & B, C feat. D» -> [A, B, C, D]
+const splitArt = a => String(a || "").split(/\s*(?:,|&|\bx\b|\bfeat\.?|\bft\.?|\bwith\b)\s*/i).map(s => s.trim()).filter(Boolean);
+const isLow = x => x.mine ? !!x.low : !!(x.on && x.on[2]);
+let orderOk = false;   // можно ли таскать свои песни: «мой порядок», без фильтров и поиска
+function fillBars() {
+  const opt = (v, txt, cur) => `<option value="${esc(v)}"${v === cur ? " selected" : ""}>${esc(txt)}</option>`;
+  $("sortSel").innerHTML = [["order", "sortOrder"], ["artist", "sortArtist"], ["title", "sortTitle"], ["new", "sortNew"]].map(([v, k]) => opt(v, t(k), vs.sort)).join("");
+  const cnt = new Map();   // ключ — без регистра, имя — как встретилось первым
+  for (const x of (songs || []).concat(tracks || [])) for (const a of splitArt(x.artist)) { const k = a.toLowerCase(), c = cnt.get(k); if (c) c.n++; else cnt.set(k, { name: a, n: 1 }); }
+  if (vs.art && !cnt.has(vs.art)) vs.art = "";
+  const arts = [...cnt.entries()].sort((a, b) => a[1].name.localeCompare(b[1].name));
+  $("artSel").innerHTML = opt("", t("artAll"), vs.art) + arts.map(([k, c]) => opt(k, c.name + " · " + c.n, vs.art)).join("");
+  $("whereSel").innerHTML = [["", "whereAll"], ["race", "whereRace"], ["city", "whereCity"], ["low", "whereLow"]].map(([v, k]) => opt(v, t(k), vs.where)).join("");
+  $("vTiles").classList.toggle("on", vs.view !== "list"); $("vList").classList.toggle("on", vs.view === "list");
+  $("grid").classList.toggle("list", vs.view === "list");
 }
 
 function visible() {
@@ -522,6 +707,10 @@ function visible() {
   return all.filter(x => {
     if (!m(x)) return false;
     const o = onOf(x);
+    if (vs.art && !splitArt(x.artist).some(a => a.toLowerCase() === vs.art)) return false;
+    if (vs.where === "race" && !o[0]) return false;
+    if (vs.where === "city" && !o[1]) return false;
+    if (vs.where === "low" && !isLow(x)) return false;
     if (filter === "mine") return x.mine;
     if (filter === "on") return o[0] || o[1];
     if (filter === "off") return !o[0] && !o[1];
@@ -533,21 +722,27 @@ function cardClass(x) { const o = onOf(x); return "card" + (!o[0] && !o[1] ? " o
 
 function card(x) {
   const o = onOf(x), key = x.mine ? "s:" + x.id : "t:" + x.slot;
-  const art = x.cover ? `<img src="${esc(x.cover)}" loading="lazy" alt="">` : `<div class="noart">${esc(x.title)}</div>`;
-  return `<div class="${cardClass(x)}" data-k="${esc(key)}">
+  const art = x.cover ? `<img src="${esc(x.cover)}" loading="lazy" alt="">` : `<div class="noart"${dataLang()}>${esc(x.title)}</div>`;
+  return `<div class="${cardClass(x)}" data-k="${esc(key)}"${x.mine && orderOk && numbered(x) ? ' draggable="true"' : ""}>
     <div class="art" data-off="${esc(t("offStamp"))}">${art}
-      ${x.mine ? `<span class="mine-tag">${t("yours")}</span><button class="ed" data-ed="1" title="${esc(t("editTip"))}"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm17.71-10.21a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>` : (x.preview ? `<button class="pv ${playing === x.slot ? "on" : ""}" data-pv="1" title="${esc(t("pvTip"))}">${playing === x.slot ? "❚❚" : "▶"}</button><div class="pbar"><i id="pb-${esc(x.slot)}"></i></div>` : "") + `<button class="yt" data-yt="1" title="${esc(t("ytTip"))}">YouTube ↗</button>`}</div>
-    <div class="meta"><div class="t" title="${esc(x.title)}">${esc(x.title)}</div><div class="a" title="${esc(x.artist)}">${esc(x.artist)}</div></div>
-    <div class="sw"><span class="pill r ${o[0] ? "on" : ""}" data-p="0">${t("races")}</span><span class="pill f ${o[1] ? "on" : ""}" data-p="1">${t("city")}</span></div>
+      ${x.mine ? `<span class="mine-tag">${t("yours")}</span><button class="pv ${playing === x.id ? "on" : ""}" data-pv="1" title="${esc(t("listenTip"))}">${playing === x.id ? "❚❚" : "▶"}</button><div class="pbar"><i id="pb-${esc(x.id)}"></i></div><button class="ed" data-ed="1" title="${esc(t("editTip"))}"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm17.71-10.21a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>` : (x.preview ? `<button class="pv ${playing === x.slot ? "on" : ""}" data-pv="1" title="${esc(t("pvTip"))}">${playing === x.slot ? "❚❚" : "▶"}</button><div class="pbar"><i id="pb-${esc(x.slot)}"></i></div>` : "") + `<button class="yt" data-yt="1" title="${esc(t("ytTip"))}">YouTube ↗</button>`}</div>
+    <div class="meta"${dataLang()}><div class="t" title="${esc(x.title)}">${esc(x.title)}</div><div class="a" title="${esc(x.artist)}">${esc(x.artist)}</div></div>
+    <div class="sw"><span class="pill r ${o[0] ? "on" : ""}" data-p="0">${t("races")}</span><span class="pill f ${o[1] ? "on" : ""}" data-p="1">${t("city")}</span><span class="pill pr ${isLow(x) ? "low" : ""}" data-pr="1" title="${esc(t("prioTip"))}">${isLow(x) ? "LOW" : "HIGH"}</span></div>
   </div>`;
 }
 function render() {
+  fillBars();
   const v = visible(), mineV = v.filter(x => x.mine), gameV = v.filter(x => !x.mine);
+  const cmp = { artist: (a, b) => (a.artist || "").localeCompare(b.artist || "") || (a.title || "").localeCompare(b.title || ""),
+    title: (a, b) => (a.title || "").localeCompare(b.title || ""), new: (a, b) => (b.added || 0) - (a.added || 0) }[vs.sort];
+  if (cmp) { mineV.sort(cmp); if (vs.sort !== "new") gameV.sort(cmp); }
+  orderOk = vs.sort === "order" && !vs.art && !vs.where && !$("q").value.trim() && (filter === "all" || filter === "mine");
   const withAdd = filter === "all" || filter === "mine";
   const sep = (cls, key, n) => `<div class="sep ${cls}"><b>${t(key)}</b><i>${n}</i></div>`;
   let h = "";
   if (withAdd || mineV.length) h += sep("mine", "secMine", mineV.length).replace("</div>", `<button class="mbtn" id="musicHelp" title="${esc(t("musicT"))}">?</button><button class="mbtn" id="musicBtn">${t("musicBtn")}</button></div>`)
-    + (withAdd ? `<div class="card add" id="addCard" tabindex="0"><div class="plus">+</div><b>${t("addSong")}</b><span>${t("addSongSub")}</span></div>` : "")
+    + (withAdd ? `<div class="card add" id="addCard" tabindex="0"><div class="plus">+</div><b>${t("addSong")}</b><span>${t("addSongSub")}</span></div>`
+      + `<div class="card add ytadd" id="ytCard" tabindex="0"><div class="plus">▶</div><b>${t("ytAdd")}</b><span>${t("ytAddSub")}</span></div>` : "")
     + mineV.map(card).join("");
   if (gameV.length && filter !== "mine") h += sep("game", "secGame", gameV.length) + gameV.map(card).join("");
   $("grid").innerHTML = h;
@@ -558,6 +753,8 @@ function render() {
     ac.onclick = () => openSong(null);
     ac.onkeydown = e => { if (e.key === "Enter") openSong(null); };
   }
+  const yc = $("ytCard");
+  if (yc) { yc.onclick = () => ytAsk(); yc.onkeydown = e => { if (e.key === "Enter") ytAsk(); }; }
 }
 // ---------- превью 30 с (Deezer / iTunes) прямо в окне ----------
 let playing = null;
@@ -565,15 +762,16 @@ function pvMarks() {
   document.querySelectorAll(".pv").forEach(b => { const k = b.closest(".card").dataset.k.slice(2), on = k === playing; b.classList.toggle("on", on); b.textContent = on ? "❚❚" : "▶"; });
   document.querySelectorAll(".card .pbar i").forEach(i => { if (i.id !== "pb-" + playing) i.style.width = 0; });
 }
-async function play(slot) {
-  const au = $("au");
-  if (playing === slot) { au.pause(); playing = null; pvMarks(); return; }
-  stopPanel(); au.pause(); playing = slot; pvMarks();
+// своя песня (Ваня 13.11) — звук программы с ПК (data\songs\<id>\song.wav) целиком с начала; трек игры — 30 с Deezer
+async function play(x) {
+  const au = $("au"), k = x.mine ? x.id : x.slot;
+  if (playing === k) { au.pause(); playing = null; pvMarks(); return; }
+  stopPanel(); au.pause(); playing = k; pvMarks();
   try {
-    const r = await api("/api/preview?slot=" + encodeURIComponent(slot));
-    if (playing !== slot) return;
-    au.src = r.url; await au.play();
-  } catch (e) { if (playing === slot) { playing = null; pvMarks(); } note(esc(t("err_noPreview"))); }
+    const url = x.mine ? x.audio : (await api("/api/preview?slot=" + encodeURIComponent(x.slot))).url;
+    if (playing !== k) return;
+    au.src = url; await au.play();
+  } catch (e) { if (playing === k) { playing = null; pvMarks(); } note(esc(t(x.mine ? "err_crash" : "err_noPreview"))); }
 }
 function stopPreview() { $("au").pause(); playing = null; pvMarks(); }
 $("au").addEventListener("timeupdate", () => { const au = $("au"), el = playing && document.getElementById("pb-" + playing); if (el && au.duration) el.style.width = (100 * au.currentTime / au.duration) + "%"; });
@@ -583,7 +781,7 @@ const itemByKey = k => k.startsWith("s:") ? songs.find(s => s.id === k.slice(2))
 // ---------- профили: набор треков игры + какие свои песни включены; сами песни общие ----------
 function renderProfiles() {
   const list = (S && S.presets) || [], one = list.length <= 1;
-  $("profList").innerHTML = list.map(p => `<div class="pf ${p.id === S.active ? "on" : ""}" data-id="${esc(p.id)}"><span class="nm" title="${esc(p.name)}">${esc(p.name)}</span>`
+  $("profList").innerHTML = list.map(p => `<div class="pf ${p.id === S.active ? "on" : ""}" data-id="${esc(p.id)}"><span class="nm"${dataLang()} title="${esc(p.name)}">${esc(p.name)}</span>`
     + (p.id === S.active ? `<button data-ren title="${esc(t("renameT"))}">✎</button>` + (one ? "" : `<button data-del title="${esc(t("del"))}">✕</button>`) : "") + `</div>`).join("");
   const a = $("profList").querySelector(".pf.on"); if (a) a.scrollIntoView({ block: "nearest" });
 }
@@ -634,28 +832,116 @@ function saveChoice() {
 }
 function setOn(x, o) {
   if (x.mine) { x.race = o[0]; x.city = o[1]; api("/api/song/flags", { id: x.id, race: o[0], city: o[1] }).catch(showError); }
-  else { x.on = o; saveChoice(); }
+  else { x.on = isLow(x) ? [o[0], o[1], true] : [o[0], o[1]]; saveChoice(); }   // [гонки, город, low]
+}
+// приоритет в игре: HIGH (по умолчанию) / LOW
+function setLow(x, v) {
+  if (x.mine) { x.low = v; api("/api/song/flags", { id: x.id, race: x.race, city: x.city, low: v }).catch(showError); }
+  else { const o = (x.on || [true, true]).slice(0, 2); x.on = v ? [o[0], o[1], true] : o; saveChoice(); }
 }
 function changed() { render(); stats(); }
 
 $("grid").addEventListener("click", e => {
   const card = e.target.closest(".card[data-k]"); if (!card) return;
   const x = itemByKey(card.dataset.k); if (!x) return;
-  if (e.target.closest("[data-pv]")) { play(x.slot); return; }
+  if (e.target.closest("[data-pv]")) { play(x); return; }
   if (e.target.closest("[data-ed]")) { openSong(x); return; }
   if (e.target.closest("[data-yt]")) { openUrl("https://www.youtube.com/results?search_query=" + encodeURIComponent((x.artist + " " + x.title).trim())); return; }
-  const pill = e.target.closest(".pill");
+  if (e.target.closest("[data-pr]")) {
+    setLow(x, !isLow(x)); const b = card.querySelector("[data-pr]"); b.classList.toggle("low", isLow(x)); b.textContent = isLow(x) ? "LOW" : "HIGH";
+    if (vs.where === "low") render();
+    return;
+  }
+  const pill = e.target.closest(".pill[data-p]");
   const o = onOf(x).slice();
   if (pill) { o[+pill.dataset.p] = !o[+pill.dataset.p]; setOn(x, o); }
-  else if (x.mine) { openSong(x); return; }
-  else { const v = !(o[0] || o[1]); setOn(x, [v, v]); }
-  const el = card; el.className = cardClass(x); el.querySelectorAll(".pill").forEach(p => p.classList.toggle("on", onOf(x)[+p.dataset.p]));
+  else { const v = !(o[0] || o[1]); setOn(x, [v, v]); }   // клик по обложке — вкл/выкл и у своих песен; редактор — только карандаш (Ваня 13.11)
+  const el = card; el.className = cardClass(x); el.querySelectorAll(".pill[data-p]").forEach(p => p.classList.toggle("on", onOf(x)[+p.dataset.p]));
   if (filter === "on" || filter === "off") render();
   stats();
 });
 $("allOn").onclick = () => { visible().forEach(x => setOn(x, [true, true])); changed(); };
 $("allOff").onclick = () => { visible().forEach(x => setOn(x, [false, false])); changed(); };
 $("q").oninput = () => render();
+$("sortSel").onchange = () => { vs.sort = $("sortSel").value; saveVs(); render(); };
+$("artSel").onchange = () => { vs.art = $("artSel").value; saveVs(); render(); };
+$("whereSel").onchange = () => { vs.where = $("whereSel").value; saveVs(); render(); };
+$("vTiles").onclick = () => { vs.view = "tiles"; saveVs(); render(); };
+$("vList").onclick = () => { vs.view = "list"; saveVs(); render(); };
+
+// ---------- свои песни мышкой: новый порядок (папки Music перенумеруются — Music.Reorder) ----------
+let dragId = null;
+const numbered = s => /^\d+\\/.test(s.src || "");   // песня в папке Music\<номер>\
+function dragClear() { document.querySelectorAll(".card.dragging,.card.dropbefore,.card.dropafter").forEach(c => c.classList.remove("dragging", "dropbefore", "dropafter")); }
+const dropSide = (c, e) => { const r = c.getBoundingClientRect(); return vs.view === "list" ? e.clientY > r.top + r.height / 2 : e.clientX > r.left + r.width / 2; };
+$("grid").addEventListener("dragstart", e => {
+  const c = e.target.closest(".card.mine[draggable]"); if (!c) return;
+  dragId = c.dataset.k.slice(2); c.classList.add("dragging");
+  e.dataTransfer.effectAllowed = "move"; try { e.dataTransfer.setData("text/x-ust-song", dragId); } catch (er) {}
+});
+$("grid").addEventListener("dragend", () => { dragId = null; dragClear(); });
+$("grid").addEventListener("dragover", e => {
+  if (!dragId) return;
+  const c = e.target.closest(".card.mine[draggable]");
+  document.querySelectorAll(".card.dropbefore,.card.dropafter").forEach(x => { if (x !== c) x.classList.remove("dropbefore", "dropafter"); });
+  if (!c || c.dataset.k === "s:" + dragId) return;
+  e.preventDefault(); e.dataTransfer.dropEffect = "move";
+  const after = dropSide(c, e); c.classList.toggle("dropafter", after); c.classList.toggle("dropbefore", !after);
+});
+$("grid").addEventListener("drop", async e => {
+  if (!dragId) return;
+  e._done = true; e.preventDefault();
+  const c = e.target.closest(".card.mine[draggable]"), id = dragId; dragId = null; dragClear();
+  if (!c || c.dataset.k === "s:" + id) return;
+  const ids = songs.filter(numbered).map(s => s.id), from = ids.indexOf(id);
+  if (from < 0) return;
+  ids.splice(from, 1);
+  let to = ids.indexOf(c.dataset.k.slice(2)); if (to < 0) return;
+  if (dropSide(c, e)) to++;
+  ids.splice(to, 0, id);
+  try { if (playing) stopPreview(); S = await api("/api/music/order", { ids }); tracks = S.tracks; songs = S.songs; render(); stats(); }
+  catch (er) { await showError(er); }
+});
+
+// ---------- файлы мышкой на окно: одна песня — редактор, несколько — сразу в библиотеку; ссылка YouTube / .txt со ссылками — окно «Пісні з YouTube» ----------
+async function dropAny(e) {
+  if (rp.open || document.querySelector(".dlg-back.show")) return;
+  const all = [...(e.dataTransfer.files || [])];
+  const files = all.filter(f => AUDIO_EXT.includes((f.name.match(/\.[^.]+$/) || [""])[0].toLowerCase()) || (f.type || "").startsWith("audio/"));
+  if (files.length === 1) { openSong(null, files[0]); return; }
+  if (files.length > 1) { addFiles(files); return; }
+  const txt = all.find(f => /\.(txt|csv|tsv)$/i.test(f.name));
+  if (txt) { ytAsk(await readTxt(txt)); return; }
+  const u = e.dataTransfer.getData("text/uri-list") || e.dataTransfer.getData("text/plain") || "";
+  if ((u.match(YT_RE) || []).some(isYt)) ytAsk(u);
+}
+// несколько файлов: как импорт из папки Music — имена из тегов / имени файла, GO и финиш сами, обложка нарисована, файл — в Music\<номер>\
+async function addFiles(list) {
+  if (playing) stopPreview();
+  showBusy(t("musicImpT"), "");
+  let added = 0; const bad = [];
+  for (let i = 0; i < list.length; i++) {
+    const f = list[i];
+    updateBusy(t("musicStep", { n: i + 1, m: list.length, a: f.name }), 100 * i / list.length);
+    try {
+      const buf = await f.arrayBuffer(), tg = id3(buf), a = await decode(buf);
+      let [artist, title] = parseName(f.name);
+      if (tg.title) { artist = tg.artist || ""; title = tg.title; }
+      const cDur = C_DUR, drop = guessDrop(a), outro = Math.max(0, a.duration - cDur);
+      const res = await api("/api/song/upload?name=" + encodeURIComponent(f.name), toPcm(a).buffer, true);
+      await api("/api/song/cover?id=" + encodeURIComponent(res.id), await coverPng(null, title, artist), true);
+      await api("/api/song/save", { id: res.id, title, artist, drop: +drop.toFixed(2), outro: +outro.toFixed(2), cDur, race: true, city: true });
+      await api("/api/music/put?id=" + encodeURIComponent(res.id) + "&name=" + encodeURIComponent(f.name), f, true);
+      added++;
+    } catch (er) { bad.push(f.name); }
+  }
+  hideBusy();
+  try { S = await api("/api/state"); tracks = S.tracks; songs = S.songs; render(); stats(); } catch (er) {}
+  const msg = [];
+  if (added) msg.push(t("musicAdded", { n: added, build: t("build") }));
+  if (bad.length) msg.push(esc(t("musicFail", { a: bad.join(", ") })));
+  if (msg.length) note(msg.join("<br>"));
+}
 
 const items = [...document.querySelectorAll("#menu li")];
 function pickMenu(li) {
@@ -665,7 +951,7 @@ function pickMenu(li) {
 items.forEach(li => li.onclick = () => pickMenu(li));
 document.addEventListener("keydown", e => {
   if (document.querySelector(".dlg-back")) return;
-  if (e.key === "Escape" && rp.open) { closeSong(); return; }
+  if (e.key === "Escape" && rp.open) { tryCloseSong(); return; }
   if (rp.open) return;
   if (e.ctrlKey && e.key.toLowerCase() === "f") { e.preventDefault(); $("q").focus(); return; }
   if (e.ctrlKey && e.key.toLowerCase() === "s") { e.preventDefault(); build(); return; }
@@ -676,6 +962,20 @@ document.addEventListener("keydown", e => {
 });
 $("aboutBtn").onclick = showThanks;
 $("foldersBtn").onclick = () => changeFolders().catch(showError);
+$("browserBtn").onclick = () => pickBrowser().catch(showError);
+// в каком браузере открывать программу (Ваня 13.11): Edge по умолчанию; Chromium — окном, Firefox и др. — вкладкой.
+// Выбрал другой — программа открывает новое окно, это закрывается само
+async function pickBrowser() {
+  const r = await api("/api/browsers"), cur = (r.current || "").toLowerCase();
+  const items = r.items.map(b => ({ label: (b.id.toLowerCase() === cur ? "✓ " : "") + b.name + (b.edge ? " · " + t("browserRec") : "") + (b.app ? "" : " · " + t("browserTab")), val: b.id }));
+  items.push({ label: (cur === "default" ? "✓ " : "") + t("browserDef") + " · " + t("browserTab"), val: "default" });
+  const v = await askYesNo({ title: t("browserT"), html: t("browserHtml"), buttons: items, start: Math.max(0, items.findIndex(x => x.val.toLowerCase() === cur)) });
+  if (!v || v.toLowerCase() === cur) return;
+  await api("/api/browser", { id: v });
+  const b = r.items.find(x => x.id === v);
+  note(t("browserDone", { b: esc(b ? b.name : t("browserDef")) }));
+  setTimeout(() => window.close(), 1500);   // окно --app закрывается; вкладку браузер может не дать закрыть — тогда видна подсказка
+}
 $("logBtn").onclick = () => api("/api/open", { what: "log" }).catch(() => {});
 
 // ---------- сборка ----------
@@ -684,36 +984,56 @@ async function build() {
   const all = songs.concat(tracks);
   const r = all.filter(x => onOf(x)[0]).length, f = all.filter(x => onOf(x)[1]).length;
   if ((r === 0 || f === 0) && !await askYesNo({ title: t("emptyT"), html: t("emptyHtml"), yes: t("yes"), no: t("no") })) return;
-  $("build").disabled = true;
+  if (build.busy) return;   // двойной клик по пункту меню — одна сборка
+  build.busy = true;
   try {
     if (await runJob("/api/build", "buildT")) {
       const res = runJob.result || {};
       const open = await askYesNo({ title: t("builtT"), html: t("builtHtml", { path: esc(res.path || "") }), yes: t("openFmm"), no: t("close") });
       await askYesNo({ title: t("offT"), html: t("offHtml"), yes: t("offYes"), no: null });
-      if (open) api("/api/open", { what: "fmm" }).catch(() => {});
+      if (open) api("/api/open", { what: "fmm" }).catch(showError);   // R1-03
     }
-  } finally { $("build").disabled = false; }
+  } finally { build.busy = false; }
 }
-$("build").onclick = build;
 
 // ---------- окно «Спасибо» ----------
+// На всю высоту окна программы, но только видимой на экране части (окно бывает выше экрана или сдвинуто за край — Ваня: «вылазит за экран»).
+// Окно целиком на экране — это просто 100% высоты. Пересчет при изменении размера.
+function fitThanks(back) {
+  const fit = () => {
+    if (!back.isConnected) { removeEventListener("resize", fit); return; }
+    const top = window.screenY + Math.max(0, window.outerHeight - window.innerHeight);   // верх содержимого окна на экране
+    const a = screen.availTop || 0, b = a + screen.availHeight;
+    const vt = Math.max(0, Math.min(innerHeight - 300, a - top)), vb = Math.min(innerHeight, Math.max(vt + 300, b - top));
+    back.style.setProperty("--vis-top", vt + "px"); back.style.setProperty("--vis-h", (vb - vt) + "px");
+  };
+  fit(); addEventListener("resize", fit);
+}
+// «Як це працює»: все подсказки (раньше — строка под поиском) + как устроено
+function showHelp() {
+  askYesNo({ title: t("helpT"), yes: t("close"), no: null, tall: true,
+    html: '<div class="help">' + t("helpHtml", { legend: t("legend") + " " + t("legendPv") }) + "</div>" });
+}
+$("helpBtn").onclick = showHelp;
 function showThanks() {
   const L = (h, s) => `<a href="${h}">${s}</a>`;
-  askYesNo({ title: t("thanksT"), yes: t("close"), no: null, tall: true, html: `
+  askYesNo({ title: t("thanksT"), yes: t("close"), no: null, tall: true, cls: "dlg-thanks", onOpen: box => fitThanks(box.closest(".dlg-back")), html: `
 <div class="thanks"><div>
   <h3>${t("cMade")}</h3><p>Kitivski + Claude <small>(Claude — AI by Anthropic)</small></p>
   <h3>${t("cInside")}</h3><ul>
    <li><b>Frosty Toolsuite</b> — ${t("cFrosty")}. ${L("https://github.com/CadeEvs/FrostyToolsuite", "CadeEvs/FrostyToolsuite")}, ${t("cFork")}: ${L("https://github.com/HarGabt/FrostyToolsuite", "HarGabt/FrostyToolsuite")}</li>
-   <li><b>EA audio encoder</b> — ${t("cEnc")}: ${L("https://lame.sourceforge.io", "LAME")}, ${L("https://github.com/Thealexbarney/LibAtrac9", "LibAtrac9")}</li></ul>
+   <li><b>EA audio encoder</b> — ${t("cEnc")}: ${L("https://lame.sourceforge.io", "LAME")}, ${L("https://github.com/Thealexbarney/LibAtrac9", "LibAtrac9")}</li>
+   <li><b>yt-dlp</b> — ${t("cYt")}: ${L("https://github.com/yt-dlp/yt-dlp", "yt‑dlp/yt‑dlp")}</li></ul>
   <h3>${t("cPrev")}</h3><ul><li>${L("https://www.deezer.com", "Deezer")} · ${L("https://www.apple.com/itunes/", "iTunes")} — ${t("cPrevTxt")}</li></ul>
-  <h3>${t("cNeed")}</h3><ul><li><b>Frosty Mod Manager</b> (HarGabt) — ${L("https://github.com/HarGabt/FrostyToolsuite/releases", t("releases"))}</li></ul>
+  <h3>${t("cNeed")}</h3><ul><li><b>Frosty Mod Manager</b> (HarGabt) — ${L("https://github.com/HarGabt/FrostyToolsuite/releases", t("releases"))}</li>
+   <li><b>Frosty Mod Manager — NFS Unbound Encryption Key</b> — ${L("https://www.nexusmods.com/needforspeedunbound/mods/97?tab=description", "Nexus")}</li></ul>
   <h3>${t("cLearned")}</h3><ul>
    <li><b>Alternate Waves</b> — ${L("https://www.nexusmods.com/needforspeedunbound/mods/340", "Nexus")} · ${L("https://nfsmods.xyz/mod?id=6532", "nfsmods.xyz")}</li>
    <li><b>The Lakeshore Sound</b> — ${L("https://nfsmods.xyz/mod/7400", "nfsmods.xyz")}</li>
    <li><b>vgmstream</b> — ${L("https://github.com/vgmstream/vgmstream", "vgmstream/vgmstream")}</li></ul>
   <h3>${t("cUsed")}</h3><ul><li>${L("https://www.python.org", "Python")}, ${L("https://github.com/PyAV-Org/PyAV", "PyAV")}, ${L("https://numpy.org", "NumPy")}, ${L("https://python-pillow.org", "Pillow")} — ${t("cResearch")}</li></ul>
   <p><small>${t("cNotAff")} · v${esc(S && S.version || "")}</small></p>
- </div><div><h3>${t("cSpecial")}</h3><img src="img/thanks.jpg" alt=""><div class="cap">Kitivski</div></div></div>` });
+ </div></div>` });
 }
 
 // ---------- своя песня: окно «гонка» (волна, GO, финиш), обложка ----------
@@ -723,12 +1043,13 @@ const fmt = s => { s = Math.max(0, s || 0); return Math.floor(s / 60) + ":" + St
 function openSong(song, file) {
   stopPanel(); if (playing) stopPreview();
   Object.assign(rp, { open: true, song, id: song ? song.id : null, file: song ? song.file : "", fileObj: null, dur: song ? song.dur : 0, drop: song ? song.drop : 0,
-    outro: song ? song.outro : 0, cDur: song ? song.cDur || C_DUR : C_DUR, peaks: null, audio: song ? song.audio : null, img: null, imgChanged: false,
+    outro: song ? song.outro : 0, cDur: song ? song.cDur || C_DUR : C_DUR, peaks: null, audio: song ? song.audio : null, img: null, imgChanged: false, covMode: song && song.cover ? "img" : "gen",
     race: song ? song.race : true, city: song ? song.city : true });
   $("rpH").textContent = t(song ? "panelEdit" : "panelNew");
   $("rpArtist").value = song ? song.artist : ""; $("rpTitle").value = song ? song.title : "";
   $("rpDel").style.display = song ? "" : "none";
   pillsRp(); showBody(); wvMsg("");
+  rp.snap = rpSnap();   // что было при открытии — закрытие сверяет: поменяли → «Вийти без збереження?»
   $("rpan").classList.add("show"); $("rpDim").classList.add("show");
   if (song && song.cover) { const im = new Image(); im.onload = () => { if (rp.song === song) { rp.img = im; drawCover(); showBody(); } }; im.src = song.cover; }
   drawCover();
@@ -739,6 +1060,14 @@ function openSong(song, file) {
   }
 }
 function closeSong() { stopPanel(); rp.open = false; $("rpan").classList.remove("show"); $("rpDim").classList.remove("show"); }
+// всё, что сохраняет кнопка «Зберегти»: имя, звук (id/файл), GO, финиш, где играет, обложка
+const rpSnap = () => JSON.stringify([$("rpArtist").value, $("rpTitle").value, rp.id, rp.file, +(rp.drop || 0).toFixed(2), +(rp.outro || 0).toFixed(2), rp.cDur, rp.race, rp.city, rp.covMode, rp.imgChanged]);
+// закрыть руками (✕, клик мимо, Esc): есть несохраненное — спросить; после «Зберегти» / «Видалити» закрывается без вопроса (closeSong)
+async function tryCloseSong() {
+  if (!rp.open) return;
+  if (rpSnap() !== rp.snap && !await askYesNo({ title: t("leaveT"), html: t(rp.song ? "leaveHtml" : "leaveNewHtml"), yes: t("leaveYes"), no: t("leaveNo"), start: 1 })) return;
+  closeSong();
+}
 function pillsRp() { $("rpRace").classList.toggle("on", rp.race); $("rpCity").classList.toggle("on", rp.city); }
 $("rpRace").onclick = () => { rp.race = !rp.race; pillsRp(); };
 $("rpCity").onclick = () => { rp.city = !rp.city; pillsRp(); };
@@ -748,7 +1077,7 @@ function showBody() {
   $("rpDrop").classList.toggle("small", ok);
   $("rpDropT").textContent = ok ? (rp.file || "") + (rp.dur ? "  ·  " + fmt(rp.dur) : "") : t("dropHere");
   $("rpOk").disabled = !ok;
-  $("covHint").textContent = rp.img ? "" : t("coverAuto");
+  $("covHint").textContent = rp.covMode === "gen" ? t("coverAuto") : "";
 }
 const wvMsg = s => $("wvMsg").textContent = s;
 
@@ -824,8 +1153,68 @@ function peaksFrom(a) {
   rp.peaks = pk;
 }
 
-// где «дроп»: самый большой скачок громкости (6 с после против 6 с до) в первые 2 минуты; раньше 17 с — штраф
+// где «дроп» (GO на старте гонки) — Ваня 12.11: «переделай дроп всем… делать на GO».
+// Дроп = момент, когда бас / бочка выходят на полную громкость песни после более тихого куска (заход бита, дроп после билда).
+// 1) низы (до ~150 Гц: два однополюсных фильтра) — громкость каждые 10 мс;
+// 2) скачок низов «4 с после против 4 с до», после него песня должна звучать почти на полную (>= 60 % громких мест песни);
+// 3) берем ПЕРВЫЙ скачок, где низы выросли хотя бы вдвое (первые 2,5 минуты) — первый дроп / заход бита, а не дроп после брейкдауна
+//    в середине песни; тихий интро-бит (< 60 % громкости) не в счет (Bass Inside: интро 13 с, дроп 61 с). Двойного нет — самый сильный скачок;
+// 4) точное время — самый резкий удар низов (шаг 10 мс) в ±0,6 с от скачка.
+// Раньше 20 с — можно: сборка ставит перед песней тишину, дроп все равно падает ровно на GO. Ничего не нашли — старый расчет (громкость, шаг 0,5 с).
 function guessDrop(a) {
+  const sr = a.sampleRate, L = a.getChannelData(0), R = a.numberOfChannels > 1 ? a.getChannelData(1) : L;
+  const hop = Math.round(sr / 100), nf = Math.floor(L.length / hop), low = new Float32Array(nf);
+  const k = 1 - Math.exp(-2 * Math.PI * 150 / sr);
+  let y1 = 0, y2 = 0;
+  for (let f = 0; f < nf; f++) {
+    let s = 0;
+    for (let j = f * hop, e = j + hop; j < e; j++) { y1 += k * ((L[j] + R[j]) * 0.5 - y1); y2 += k * (y1 - y2); s += y2 * y2; }
+    low[f] = Math.sqrt(s / hop);
+  }
+  const G = 5, ng = Math.floor(nf / G), lg = new Float32Array(ng);   // кадры по 50 мс
+  for (let i = 0; i < ng; i++) { let s = 0; for (let j = 0; j < G; j++) s += low[i * G + j]; lg[i] = s / G; }
+  const loud = Float32Array.from(lg).sort()[Math.floor(ng * 0.8)] || 1e-6;   // «громко для этой песни»
+  const W = 80, cl = new Float64Array(ng + 1);                                  // окно 4 с
+  for (let i = 0; i < ng; i++) cl[i + 1] = cl[i] + lg[i];
+  const t1 = Math.min(ng - W, Math.round(Math.min(150, a.duration - 20) / 0.05)), sc = new Float32Array(ng), pa = new Float32Array(ng);
+  let best = 0;
+  for (let i = Math.max(W, 60); i < t1; i++) {                                  // не раньше 3 с от начала (и 4 с окна)
+    const pre = (cl[i] - cl[i - W]) / W, post = (cl[i + W] - cl[i]) / W;
+    pa[i] = post;
+    if (post < 0.6 * loud || post <= pre) continue;
+    sc[i] = Math.log((post + 1e-4) / (pre + 1e-4));
+    if (sc[i] > best) best = sc[i];
+  }
+  if (best < 0.35) return guessDropRms(a);                                     // скачка нет (ровная песня) — как раньше
+  const top = i => { for (let j = Math.max(0, i - 40); j <= Math.min(ng - 1, i + 40); j++) if (sc[j] > sc[i]) return false; return true; };   // местный максимум ±2 с
+  let c = -1;
+  for (let i = 1; i < ng - 1 && c < 0; i++) if (sc[i] >= Math.LN2 && top(i)) c = i;   // первый: низы выросли >= 2 раз
+  if (c < 0) for (let i = 1; i < ng - 1 && c < 0; i++) if (sc[i] >= best && sc[i] > 0) c = i;   // иначе самый сильный
+  if (c < 0) return guessDropRms(a);
+  // EDM: первое место бывает куплетом с басом на ~70 %, а главный дроп — через 20–40 с (Bring The Madness: 19 → 58 с, Recess: 46 → 56 с).
+  // Есть в ближайшие 45 с дроп заметно мощнее (бас >= 1,2 раза громче и скачок >= 1,6 раза) — берем его (первый такой).
+  // громкость после первого места — по самым громким 4 с в первые 1,5 с после него (кандидат стоит чуть раньше удара, сразу после — занижено)
+  let pc = 0; for (let j = c; j < Math.min(t1, c + 30); j++) pc = Math.max(pc, pa[j]);
+  // главный дроп — почти на полную (>= 85 % громких мест песни): у хип-хопа «бит плотнее во втором куплете» не в счет (AIN'T SHIT CHANGE 23,59, не 44,75)
+  for (let i = c + 41; i < Math.min(t1, c + 900); i++)
+    if (sc[i] >= Math.log(1.6) && pa[i] >= 1.2 * pc && pa[i] >= 0.85 * loud && top(i)) { c = i; break; }
+  // точное время: окно 4 с ставит кандидата раньше удара (Mount Sinai 43,16 вместо 43,67, Jungle — на 1,1 с). В ±1,5 с ищем место, где сразу и резкий
+  // удар низов (30 мс после против 30 мс до), и устойчивая ступенька (1 с после против 1 с до) — произведение. Сбивка перед дропом: удар без ступеньки;
+  // нарастание: ступенька без удара. Сверено 12.11 с ручными GO Вани: AIN'T SHIT CHANGE (23,53), Edge of the Earth (9,47).
+  // Из сильных (>= половины лучшего) — самое раннее: первый удар дропа, а не место, где бит уже заполнился (AIN'T SHIT CHANGE: 23,59, а не 24,9).
+  const m = (f, n) => { let s = 0; for (let j = 0; j < n; j++) s += low[f + j]; return s / n; };
+  const f0 = Math.max(100, c * G - 150), f1 = Math.min(nf - 100, c * G + 150), pd = new Float64Array(Math.max(0, f1 - f0));
+  let bd = 0;
+  for (let f = f0; f < f1; f++) { pd[f - f0] = Math.max(0, m(f, 3) - m(f - 3, 3)) * Math.max(0, m(f, 100) - m(f - 100, 100)); if (pd[f - f0] > bd) bd = pd[f - f0]; }
+  if (bd <= 0) return c * G / 100;
+  for (let f = f0; f < f1; f++) {
+    const d = pd[f - f0];   // первое сильное место — и его вершина (удар длится 30–60 мс)
+    if (d >= 0.5 * bd) { let g = f; while (g + 1 < f1 && pd[g + 1 - f0] > pd[g - f0]) g++; return g / 100; }
+  }
+  return c * G / 100;
+}
+// старый расчет (до 12.11): самый большой скачок громкости (6 с после против 6 с до) в первые 2 минуты, шаг 0,5 с; раньше 20 с — штраф
+function guessDropRms(a) {
   const d = a.getChannelData(0), hop = Math.floor(a.sampleRate / 2), n = Math.floor(d.length / hop), r = new Float32Array(n);
   for (let i = 0; i < n; i++) { let s = 0; for (let j = i * hop; j < (i + 1) * hop; j += 4) s += d[j] * d[j]; r[i] = Math.sqrt(s / (hop / 4)); }
   const W = 12; let best = Math.min(B_INTRO, a.duration / 3), bs = 0;
@@ -853,15 +1242,17 @@ function drawWave() {
 
 function layout() {
   const ready = rp.dur > 0 && !!rp.peaks;
-  $("wvGo").style.display = $("wvB").style.display = $("wvC").style.display = ready ? "" : "none";
+  $("wvGo").style.display = $("wvB").style.display = $("wvN").style.display = $("wvC").style.display = ready ? "" : "none";
   if (!rp.dur) { drawWave(); return; }
   const p = s => (100 * Math.max(0, Math.min(rp.dur, s)) / rp.dur) + "%";
   const b0 = Math.max(0, rp.drop - B_INTRO), cd = Math.min(rp.cDur, rp.dur);
   $("wvGo").style.left = p(rp.drop);
-  $("wvB").style.left = p(b0); $("wvB").style.width = (100 * (rp.drop - b0) / rp.dur) + "%";
+  const n0 = Math.max(0, rp.drop - B_COUNT);   // начало отсчета
+  $("wvB").style.left = p(b0); $("wvB").style.width = (100 * Math.max(0, n0 - b0) / rp.dur) + "%";
+  $("wvN").style.left = p(n0); $("wvN").style.width = (100 * (rp.drop - n0) / rp.dur) + "%";
   $("wvC").style.left = p(rp.outro); $("wvC").style.width = (100 * cd / rp.dur) + "%";
   $("tA").textContent = fmt(rp.dur);
-  $("tB").textContent = `${fmt(b0)} → ${fmt(rp.dur)}`;
+  $("tB").textContent = (rp.drop < B_INTRO ? t("bPad", { s: (B_INTRO - rp.drop).toFixed(1) }) : "") + `${fmt(b0)} → ${fmt(rp.dur)}`;   // GO раньше 20 с — тишина перед песней
   $("tC").textContent = `${fmt(rp.outro)} – ${fmt(rp.outro + cd)}`;
   drawWave();
 }
@@ -875,6 +1266,7 @@ $("wave").addEventListener("mousedown", e => {
   if (Math.abs(s - rp.drop) < 10 * px) drag = { k: "go" };
   else if (s >= rp.outro && s <= rp.outro + rp.cDur) drag = { k: "c", off: s - rp.outro };
   else { pplay("A", s); return; }
+  document.body.classList.add("wv-drag");
   e.preventDefault();
 });
 addEventListener("mousemove", e => {
@@ -886,7 +1278,7 @@ addEventListener("mousemove", e => {
 });
 addEventListener("mouseup", () => {
   if (!drag) return;
-  const d = drag; drag = null;
+  const d = drag; drag = null; document.body.classList.remove("wv-drag");
   if (d.k === "go") pplay("B", Math.max(0, rp.drop - 4)); // сразу слышно 3-2-1-GO
   else pplay("C");
 });
@@ -900,11 +1292,17 @@ function pplay(mode, from) {
   if (mode === "A") start = from || 0;
   if (mode === "B") start = from ?? Math.max(0, rp.drop - B_INTRO);
   if (mode === "C") { start = rp.outro; end = rp.outro + Math.min(rp.cDur, rp.dur); }
+  // GO раньше B_INTRO (20,45 с): в игре старт начинается с тишины (сборка ставит ее перед песней, дроп ровно на GO) — так и слушаем
+  const wait = mode === "B" && from === undefined ? Math.max(0, B_INTRO - rp.drop) : 0;
   pp = { mode, end };
   const go = () => { if (!pp || pp.mode !== mode) return; au2.currentTime = start; au2.volume = 1; au2.play().catch(() => {}); };
-  if (au2.dataset.src !== src) { au2.dataset.src = src; au2.src = src; au2.addEventListener("loadedmetadata", go, { once: true }); }
-  else if (au2.readyState < 1) au2.addEventListener("loadedmetadata", go, { once: true });
-  else go();
+  const launch = () => {
+    if (!pp || pp.mode !== mode) return;
+    if (au2.dataset.src !== src) { au2.dataset.src = src; au2.src = src; au2.addEventListener("loadedmetadata", go, { once: true }); }
+    else if (au2.readyState < 1) au2.addEventListener("loadedmetadata", go, { once: true });
+    else go();
+  };
+  if (wait > 0) { au2.pause(); setTimeout(launch, wait * 1000); } else launch();
   marks(); requestAnimationFrame(tick);
 }
 function stopPanel() { au2.pause(); pp = null; marks(); $("wvPh").style.display = "none"; $("wvCd").textContent = ""; }
@@ -918,15 +1316,16 @@ function tick() {
   }
   if (rp.dur) { $("wvPh").style.display = "block"; $("wvPh").style.left = (100 * ct / rp.dur) + "%"; }
   const left = rp.drop - ct;
-  $("wvCd").textContent = pp.mode === "B" && left > -1 && left <= 3 ? (left > 0 ? Math.ceil(left) : "GO") : "";
+  $("wvCd").textContent = pp.mode === "B" && left > -1 && left <= Math.min(3, B_COUNT) ? (left > 0 ? Math.ceil(left) : "GO") : "";   // цифры — только 3-2-1, как в игре (старт 3,45 с)
   requestAnimationFrame(tick);
 }
 au2.addEventListener("ended", stopPanel);
 document.querySelectorAll(".part .pp").forEach(b => b.onclick = () => pplay(b.closest(".part").dataset.p));
 
 // ---------- обложка: своя картинка (квадрат по центру) или нарисованная из названия ----------
-function drawCover() { paintCover($("covC"), rp.img, $("rpTitle").value, $("rpArtist").value); }
-function paintCover(c, img, ttl, art) {
+// covMode: img — своя картинка, gen — нарисована из названия, none — пустая (кнопка «Удалить»)
+function drawCover() { paintCover($("covC"), rp.covMode === "img" ? rp.img : null, $("rpTitle").value, $("rpArtist").value, rp.covMode === "none"); }
+function paintCover(c, img, ttl, art, empty) {
   const g = c.getContext("2d"), W = 256;
   g.clearRect(0, 0, W, W);
   if (img) {
@@ -938,6 +1337,7 @@ function paintCover(c, img, ttl, art) {
     let seed = 7; for (const ch of (ttl + art)) seed = (seed * 31 + ch.charCodeAt(0)) >>> 0;
     const R = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296);
     for (let i = 0; i < 900; i++) { g.fillStyle = `rgba(255,255,255,${0.03 + R() * 0.06})`; g.fillRect(R() * W, R() * W, 1, 1); }
+    if (empty) return;   // «Удалить»: пустая темная обложка
     g.save(); g.translate(W / 2, W / 2); g.rotate(-0.22);
     g.fillStyle = "#b6ff1a"; g.fillRect(-W, -22, W * 2, 44);
     g.fillStyle = "#ffe600"; g.fillRect(-W, 26, W * 2, 6);
@@ -954,16 +1354,18 @@ function paintCover(c, img, ttl, art) {
     g.fillText(artist.slice(0, 32), 18, W - 32);
   }
 }
-$("rpTitle").addEventListener("input", () => { if (!rp.img) drawCover(); });
-$("rpArtist").addEventListener("input", () => { if (!rp.img) drawCover(); });
+$("rpTitle").addEventListener("input", () => { if (rp.covMode === "gen") drawCover(); });
+$("rpArtist").addEventListener("input", () => { if (rp.covMode === "gen") drawCover(); });
 function takeImage(f) {
   if (!f || !(f.type || "").startsWith("image/")) return;
   const url = URL.createObjectURL(f), im = new Image();
-  im.onload = () => { rp.img = im; rp.imgChanged = true; drawCover(); showBody(); };
+  im.onload = () => { rp.img = im; rp.covMode = "img"; rp.imgChanged = true; drawCover(); showBody(); };
   im.onerror = () => note(esc(t("err_badImage")));
   im.src = url;
 }
 $("cov").onclick = $("covPick").onclick = () => $("covFile").click();
+$("covGen").onclick = () => { rp.covMode = "gen"; rp.img = null; rp.imgChanged = true; drawCover(); showBody(); };
+$("covDel").onclick = () => { rp.covMode = "none"; rp.img = null; rp.imgChanged = true; drawCover(); showBody(); };
 $("covFile").onchange = e => { takeImage(e.target.files[0]); e.target.value = ""; };
 $("cov").addEventListener("dragover", e => { e.preventDefault(); $("cov").classList.add("over"); });
 $("cov").addEventListener("dragleave", () => $("cov").classList.remove("over"));
@@ -1029,6 +1431,274 @@ async function importMusic(x) {
 }
 addEventListener("focus", syncMusic);
 
+// ---------- песни по ссылкам YouTube / YT Music: программа качает их (yt-dlp) в Music\<номер>\, дальше — обычный импорт папки ----------
+// Ваня 12.11: «зашел как пользователь и думать не хочу» -> сначала выбор: одна песня / плейлист-альбом / много ссылок / список из .txt.
+// Песня и плейлист — окно на одно поле. Много ссылок — список: вставил — строка сразу в списке, программа спрашивает YouTube, что по ссылке
+// (картинка, название, исполнитель, длина — «не понятно, что программа видит по ссылке, просто тупая ссылка»), у строки кнопка «✕ Прибрати».
+// .txt (Ваня): «Назва,Виконавець,Посилання;Назва,Виконавець,Посилання» — песни через ; или с новой строки, поля через запятую (или Tab — столбцы
+// таблицы), ссылка — в любом поле, имена можно не писать (возьмем с YouTube), «Виконавець - Назва» одним полем тоже; кириллицу из файла не берем.
+// Плейлист / альбом — одна строка (сколько песен, сколько уже есть). «Завантажити все» — окно с весом и временем, дальше по одной с прогрессом.
+const YT_RE = /https?:\/\/[^\s;,"'<>]+/gi;
+const isYt = u => /^https?:\/\/([a-z0-9-]+\.)*(youtube\.com|youtu\.be)\//i.test(u || "");
+const isYtList = u => { try { const p = new URL(u).pathname.toLowerCase(); return p.startsWith("/playlist") || p.startsWith("/browse/"); } catch (e) { return false; } };
+const ytShort = u => String(u || "").replace(/^https?:\/\/(www\.|music\.|m\.)?/i, "");
+function ytKey(u) {   // одна песня / плейлист под разными ссылками (music. / www. / youtu.be, &list=, &t=, &si=) — один ключ
+  try {
+    const x = new URL(u), p = x.pathname;
+    if (p.toLowerCase().startsWith("/browse/")) return "b:" + p.slice(8);
+    if (p.toLowerCase().startsWith("/playlist")) return "l:" + x.searchParams.get("list");
+    if (x.searchParams.get("v")) return "v:" + x.searchParams.get("v");
+    if (/(^|\.)youtu\.be$/i.test(x.hostname)) return "v:" + p.slice(1);
+  } catch (e) {}
+  return u;
+}
+const ytVid = u => { const k = ytKey(u); return k.startsWith("v:") ? k.slice(2) : ""; };
+const ytThumb = id => "https://i.ytimg.com/vi/" + encodeURIComponent(id) + "/mqdefault.jpg";   // превью ролика — картинка строки
+const ytLen = s => { const r = Math.round(s || 0); return r > 0 ? Math.floor(r / 60) + ":" + String(r % 60).padStart(2, "0") : ""; };
+function ytParse(text) {   // текст (вставка / .txt) -> {rows: [{url, title, artist}], skip: кусков без ссылки YouTube}
+  const rows = []; let skip = 0;
+  const cyr = s => /[Ѐ-ӿ�]/.test(s);   // кириллица / битые знаки (не та кодировка) — поле не берем, имя с YouTube
+  for (let rec of String(text || "").replace(/^﻿/, "").split(/[;\r\n]+/)) {
+    rec = rec.trim();
+    if (!rec || rec.startsWith("#") || rec.startsWith("//")) continue;   // пусто / комментарий
+    const links = (rec.match(YT_RE) || []).map(u => u.replace(/[).]+$/, "")).filter(isYt);
+    if (!links.length) { skip++; continue; }                               // заголовок, текст, чужая ссылка
+    if (links.length > 1) { links.forEach(url => rows.push({ url, title: "", artist: "" })); continue; }   // несколько ссылок подряд — без имен
+    const f = rec.replace(YT_RE, "").split(/[,\t]/).map(s => s.replace(/"/g, "").trim()).filter(Boolean);
+    let title = f[0] || "", artist = f.slice(1).join(", ");                // исполнитель с запятыми («Skrillex, Fred again..») — все поля после названия
+    if (f.length === 1) { const m = title.match(/^(.+?)\s+[-–—]\s+(.+)$/); if (m) { artist = m[1].trim(); title = m[2].trim(); } }
+    if (cyr(title)) title = ""; if (cyr(artist)) artist = "";
+    rows.push({ url: links[0], title, artist });
+  }
+  return { rows, skip };
+}
+async function readTxt(f) {   // .txt из Блокнота: UTF-8, UTF-16 (с BOM) или старая латинская кодировка Windows (польская — 1250)
+  const b = new Uint8Array(await f.arrayBuffer());
+  if (b[0] === 0xFF && b[1] === 0xFE) return new TextDecoder("utf-16le").decode(b);
+  if (b[0] === 0xFE && b[1] === 0xFF) return new TextDecoder("utf-16be").decode(b);
+  try { return new TextDecoder("utf-8", { fatal: true }).decode(b); }
+  catch (e) { return new TextDecoder(LANG === "pl" ? "windows-1250" : "windows-1252").decode(b); }
+}
+// список из .txt: окно с форматом и примером -> выбор файла -> тот же список (видно, что в файле, лишнее можно убрать)
+async function ytPickTxt() {
+  const ex = ["Bass Inside,AC Slater,https://music.youtube.com/watch?v=m_j8vkVHRl8;", "Technique,Minnesota,https://www.youtube.com/watch?v=D0-eCHab-Lo."].join("<br>");   // как файл-пример; точка закрывает список
+  // «Приклад файлу» (Ваня: «файл пример должен быть»): программа кладет YouTube-list.txt рядом с собой и показывает в Проводнике; окно открывается снова
+  let saved = null;
+  for (;;) {
+    const v = await askYesNo({ title: t("ytM4"),
+      html: `<p>${t("ytTxtFmt")}</p><p class="yt-ex"><code>${ex}</code></p>`
+        + (saved ? `<p class="fp-st ok">${t("ytSampleDone", { f: esc(saved) })}</p>` : "") + `<p><small>${t("ytTxtNote")}</small></p>`,
+      buttons: [{ label: t("ytTxtPick"), val: "pick" }, { label: t("ytSample"), val: "sample" }, { label: t("cancel"), val: false }] });
+    if (v === "sample") { try { saved = (await api("/api/yt/sample", {})).name; } catch (e) { await showError(e); } continue; }
+    if (v !== "pick") return null;
+    break;
+  }
+  const text = await new Promise(res => {
+    const fi = document.createElement("input"); fi.type = "file"; fi.accept = ".txt,.csv,.tsv,text/plain";
+    fi.onchange = async () => res(fi.files[0] ? await readTxt(fi.files[0]) : null);
+    fi.addEventListener("cancel", () => res(null));
+    fi.click();
+  });
+  if (text == null) return null;
+  if (!ytParse(text).rows.length) { await askYesNo({ title: t("ytM4"), html: `<p>${t("ytTxtNone")}</p>`, yes: t("close"), no: null }); return null; }
+  return text;
+}
+async function ytAsk(pre) {   // pre — текст (ссылку / .txt перетащили на окно программы) — сразу список
+  if (playing) stopPreview();
+  // сначала выбор; Esc и «Скасувати» — выйти
+  let mode = pre ? "list" : await askYesNo({ title: t("ytT"), html: `<p>${t("ytChoose")}</p><ul><li>${t("ytM1d")}</li><li>${t("ytM2d")}</li><li>${t("ytM3d")}</li><li>${t("ytM4d")}</li></ul>`,
+    buttons: [{ label: t("ytM1"), val: "song" }, { label: t("ytM2"), val: "pl" }, { label: t("ytM3"), val: "list" }, { label: t("ytM4"), val: "txt" }, { label: t("cancel"), val: false }] });
+  if (!mode) return;
+  const fromTxt = mode === "txt";
+  if (fromTxt) { pre = await ytPickTxt(); if (pre == null) return; mode = "list"; }
+  const L = [], seen = new Set(), infoQ = [];
+  let skip = 0, dup = 0, alive = true, free = -1, infoRun = 0, readQ = Promise.resolve(), haveQ = Promise.resolve(), box = null, inp = null, lbl = null;
+  const plan = () => {   // что качать: без «уже есть» и без повторов (одна песня в двух плейлистах — один раз)
+    const ids = new Set(), todo = []; let total = 0, have = 0;
+    const push = (k, x) => { if (ids.has(k)) return; ids.add(k); total++; if (x.have) have++; else todo.push(x); };
+    for (const x of L) {
+      if (x.err) continue;
+      if (x.pl) { if (x.r) x.r.items.forEach(it => push("v:" + it.id, it)); continue; }
+      const own = !!(x.artist || x.title), inf = x.info && x.info.found ? x.info : null;
+      // свои имена — в song.json (names); нет своих — имя и канал с YouTube только для поиска песни вместо клипа / замены недоступного (как у плейлиста)
+      push(x.k, { url: x.url, artist: own ? x.artist : inf ? inf.by : "", title: own ? x.title : inf ? inf.title : "", dur: inf ? inf.len : 0, names: own, have: x.have });
+    }
+    return { todo, total, have };
+  };
+  // строка списка: картинка, имя (свое / с YouTube), под ним — исполнитель, длина, ссылка; справа — метка и «✕ Прибрати»
+  const row = (x, i) => {
+    const id = x.pl ? (x.r && x.r.items[0] ? x.r.items[0].id : "") : ytVid(x.url);
+    const img = id ? `<img src="${esc(ytThumb(id))}" alt="">` : `<span class="ph">${x.pl ? "≡" : "▶"}</span>`;
+    let m, cls = "", tag = "";
+    const s = [];
+    if (x.pl) {
+      m = t("ytPl") + (x.r && x.r.title ? " «" + esc(x.r.title) + "»" : "");
+      if (x.err) { s.push(esc(x.err)); cls = " bad"; }
+      else if (!x.r) s.push(t("ytPlRead"));
+      else { s.push(t("ytPlN", { n: x.r.items.length })); const hv = x.r.items.filter(y => y.have).length; if (hv) s.push(t("ytHaveTag") + ": " + hv); }
+      tag = `<span class="yt-tag pl">${t("ytPl")}</span>`;
+    } else {
+      const inf = x.info, ok = inf && inf.found;
+      if (x.title || x.artist) {   // свои имена из файла; YouTube про ссылку не знает — желтым под именем
+        m = esc((x.artist ? x.artist + " — " : "") + (x.title || (ok ? inf.title : "")));
+        if (ok) s.push("YouTube: " + esc(inf.title + (inf.by ? " · " + inf.by : "")));
+        else if (inf) { s.push(t("ytNoInfo")); cls = " warn"; }
+      }
+      else if (ok) { m = esc(inf.title); if (inf.by) s.push(esc(inf.by)); }
+      else if (inf) { m = t("ytNoInfo"); cls = " warn"; }
+      else m = `<span class="wait">${t("ytPeek")}</span>`;
+      if (ok && inf.len) s.push(ytLen(inf.len));
+      if (x.have) { tag = `<span class="yt-tag">${t("ytHaveTag")}</span>`; cls += " off"; }   // не .tag — это метка «СВОЯ» карточек (зеленая, наклон)
+    }
+    s.push(`<span class="u">${esc(ytShort(x.url))}</span>`);
+    return `<div class="yt-row${cls}"><span class="n">${i + 1}</span>${img}<div class="tx"><div class="m">${m}</div><div class="s">${s.join(" · ")}</div></div>`
+      + `${tag}<button class="del" data-del="${esc(x.k)}">✕ ${t("ytDelTip")}</button></div>`;
+  };
+  const draw = () => {
+    if (!box) return;
+    // перерисовываем только изменившиеся строки (картинки не мигают)
+    const list = box.querySelector("[data-list]");
+    L.forEach((x, i) => {
+      const h = row(x, i);
+      if (x.h !== h) { const d = document.createElement("div"); d.innerHTML = h; const el = d.firstElementChild; if (x.el) x.el.replaceWith(el); x.el = el; x.h = h; }
+      if (list.children[i] !== x.el) list.insertBefore(x.el, list.children[i] || null);
+    });
+    while (list.children.length > L.length) list.lastElementChild.remove();
+    const p = plan(), wait = L.some(x => x.pl && !x.r && !x.err), st = box.querySelector("[data-st]"), parts = [];
+    if (L.length) parts.push(t("ytInList", { n: L.length }));
+    if (skip) parts.push(t("ytSkipped", { k: skip }));
+    if (dup) parts.push(t("ytDupN", { k: dup }));
+    st.textContent = parts.join(" · "); st.className = "fp-st" + (skip ? " no" : "");
+    lbl.textContent = L.length ? t("ytGoAll", { n: p.todo.length + (wait ? "+" : "") }) : t("ytGo");
+  };
+  const peekNext = () => {   // что по ссылке — по 3 запроса разом (YT Music, без yt-dlp)
+    while (infoRun < 3 && infoQ.length) {
+      const x = infoQ.shift(); if (x.gone || !alive) continue;
+      infoRun++;
+      api("/api/yt/info", { url: x.url }).then(r => { x.info = r; }, () => { x.info = { found: false }; }).then(() => { infoRun--; draw(); peekNext(); });
+    }
+  };
+  const addRows = (p, countSkip) => {
+    if (countSkip) skip += p.skip;
+    const fresh = [];
+    for (const x of p.rows) { x.k = ytKey(x.url); if (seen.has(x.k)) { dup++; continue; } seen.add(x.k); x.pl = isYtList(x.url); L.push(x); fresh.push(x); }
+    const singles = fresh.filter(x => !x.pl);   // одиночные: «уже есть?» одним запросом (id ролика / исполнитель|название) + что по ссылке
+    if (singles.length) haveQ = haveQ.then(() => api("/api/yt/have", { items: singles.map(x => ({ url: x.url, artist: x.artist, title: x.title })) })
+      .then(r => { singles.forEach((x, i) => x.have = !!(r.have && r.have[i])); if (r.free >= 0) free = r.free; draw(); }, () => {}));
+    if (box) { infoQ.push(...singles); peekNext(); }
+    for (const x of fresh.filter(x => x.pl))   // плейлисты — по одному: программа держит один запрос yt-dlp разом
+      readQ = readQ.then(() => alive && !x.gone ? api("/api/yt/list", { url: x.url })
+        .then(r => { if (r.playlist) { x.r = r; if (r.free >= 0) free = r.free; } else x.pl = false; }, e => { x.err = errText(e); }).then(draw) : null);
+    draw();
+    if (box && fresh.length) { const l = box.querySelector("[data-list]"); l.scrollTop = l.scrollHeight; }
+  };
+  const say = text => { const st = box.querySelector("[data-st]"); st.textContent = text; st.className = "fp-st no"; };
+  // одна песня / плейлист: одно поле, Enter или «Завантажити». Что вставили — то и делаем по самой ссылке (плейлист в поле «песня» — тоже ок)
+  const askOne = pl => askYesNo({ title: pl ? t("ytListT") : t("ytSongT"), yes: t("ytGo"), no: t("cancel"),
+    html: `<p>${pl ? t("ytPlHtml") : t("ytSongHtml")}</p><div class="fp-path"><input data-in spellcheck="false" placeholder="${pl ? "https://music.youtube.com/playlist?list=…" : "https://music.youtube.com/watch?v=…"}"></div><div class="fp-st" data-st></div>`,
+    onOpen: (b, done) => {
+      inp = b.querySelector("[data-in]");
+      inp.onkeydown = e => {
+        if (e.key !== "Enter") return; e.preventDefault();
+        if (ytParse(inp.value).rows.length) done(true);
+        else if (inp.value.trim()) { const st = b.querySelector("[data-st]"); st.textContent = errText({ key: "ytLink" }); st.className = "fp-st no"; }
+      };
+      setTimeout(() => inp.focus(), 80);
+    } });
+  const ok = mode !== "list" ? await askOne(mode === "pl") : await askYesNo({ title: fromTxt ? t("ytM4") : t("ytM3"), yes: t("ytGo"), no: t("cancel"), tall: true,
+    html: `<p>${t("ytHtml")}</p>`
+      + `<div class="fp-path"><input data-in spellcheck="false" placeholder="https://music.youtube.com/watch?v=…"><button data-add>${t("ytAddBtn")}</button></div>`
+      + `<div class="yt-list" data-list></div><div class="fp-st" data-st></div>`,
+    onOpen: (b, done) => {
+      box = b; inp = b.querySelector("[data-in]"); lbl = b.parentElement.querySelector(".dlg-btn .lbl");
+      const add = () => { const v = inp.value.trim(); if (!v) return; const p = ytParse(v); if (!p.rows.length) say(errText({ key: "ytLink" })); else { addRows(p, false); inp.value = ""; } inp.focus(); };
+      inp.onkeydown = e => { if (e.key !== "Enter") return; e.preventDefault(); if (inp.value.trim()) add(); else if (L.length) done(true); };
+      inp.addEventListener("paste", e => {   // вставили ссылку / пачку — сразу в список (с тем, что уже набрано в поле: «Назва,Виконавець,»)
+        const s = e.clipboardData.getData("text") || "";
+        if (!(s.match(YT_RE) || []).some(isYt)) return;
+        e.preventDefault();
+        addRows(ytParse(inp.value.slice(0, inp.selectionStart) + s + inp.value.slice(inp.selectionEnd)), /[\n;]/.test(s.trim()));
+        inp.value = "";
+      });
+      b.querySelector("[data-add]").onclick = add;
+      b.querySelector("[data-list]").onclick = e => {
+        const d = e.target.closest("[data-del]"); if (!d) return;
+        const i = L.findIndex(y => y.k === d.dataset.del); if (i < 0) return;
+        const x = L.splice(i, 1)[0]; x.gone = true; seen.delete(x.k); if (x.el) x.el.remove();
+        draw(); inp.focus();
+      };
+      const back = b.closest(".dlg-back");   // ссылку из браузера / .txt мышкой — на окно
+      back.addEventListener("dragover", e => e.preventDefault());
+      back.addEventListener("drop", async e => {
+        e.preventDefault(); e.stopPropagation();
+        const f = [...(e.dataTransfer.files || [])].find(y => /\.(txt|csv|tsv)$/i.test(y.name));
+        if (f) addRows(ytParse(await readTxt(f)), true);
+        else addRows(ytParse(e.dataTransfer.getData("text/uri-list") || e.dataTransfer.getData("text/plain") || ""), false);
+        inp.focus();
+      });
+      if (pre) addRows(ytParse(pre), true);
+      draw(); setTimeout(() => inp.focus(), 80);
+    } });
+  if (!ok) { alive = false; return; }
+  if (inp.value.trim()) addRows(ytParse(inp.value), false);   // вставили руками и сразу нажали «Завантажити»
+  if (!L.length) { if (inp.value.trim()) await showError({ key: "ytLink" }); return; }
+  alive = false;   // что по ссылке — больше не спрашиваем (качаем)
+  if (L.some(x => x.pl && !x.r && !x.err)) { alive = true; showBusy(t("ytT"), t("ytRead")); await readQ; hideBusy(); alive = false; }
+  await haveQ;
+  const { todo, total, have } = plan(), bad = L.filter(x => x.err);
+  const badHtml = bad.map(x => `<br><span class="warn">✕ ${esc(ytShort(x.url))}: ${esc(x.err)}</span>`).join("");
+  if (!todo.length) {
+    const msg = total ? (L.length === 1 && L[0].pl ? t("ytAllHave", { n: total }) : t("ytNothing")) : "";
+    await askYesNo({ title: bad.length && !total ? t("ytFailT") : t("ytT"), html: `<p>${msg}${badHtml}</p>`, yes: t("close"), no: null });
+    return;
+  }
+  if (L.length === 1 && !L[0].pl) {   // одна песня — как раньше: сразу качаем, без окна веса
+    const x = todo[0];
+    showBusy(t("ytT"), t("ytBusy"));
+    try { await api("/api/yt", { url: x.url, artist: x.artist, title: x.title, dur: x.dur, names: x.names }); hideBusy(); }
+    catch (e) { hideBusy(); await showError(e); return; }
+    await syncMusic();
+    return;
+  }
+  const one = L.length === 1 && L[0].pl;
+  const head = (one ? `<b>${esc(L[0].r.title)}</b> — ${t("ytListN", { n: total })}` : t("ytMixN", { k: L.length, n: total })) + (have ? " " + t("ytHave", { k: have }) : "") + badHtml;
+  await ytRun(todo, one ? t("ytListT") : t("ytT"), head, free);
+}
+// список песен (плейлист / пачка ссылок): окно веса и времени, потом по одной (прогресс, «Стоп» — после текущей); потом обычный импорт Music
+async function ytRun(todo, title, head, free) {
+  const min = Math.max(1, Math.round(todo.length * 6 / 60));
+  // вес — замер 11.11 на 79 песнях: скачанное (m4a) 16,6 КБ на секунду звука, данные программы (wav + куски EA) 231 КБ/с, мод 39 КБ/с
+  const secs = todo.reduce((a, x) => a + (x.dur > 0 ? x.dur : 200), 0), dl = secs * 16.6e3 + todo.length * 40e3, disk = secs * (16.6e3 + 231e3), mod = secs * 39e3;
+  const fmt = b => (b >= 1e9 ? (b / 1e9).toFixed(1) + " " + t("uGB") : Math.max(1, Math.round(b / 1e6)) + " " + t("uMB")).replace(".", ["en", "zh", "ja", "ko"].includes(LANG) ? "." : ",");   // 1.5 GB — en/zh/ja/ko, 1,5 — остальные
+  const full = free >= 0 && disk + mod > free;
+  if (!await askYesNo({ title, yes: t("ytListGo", { n: todo.length }), no: t("cancel"),
+    html: `<p>${head}</p><p>${t("ytListHtml", { min, mine: t("secMine") })}</p>`
+      + `<p>${t("ytSize", { dl: fmt(dl), disk: fmt(disk), mod: fmt(mod), free: free >= 0 ? fmt(free) : "?" })}${full ? ` <b style="color:#ff3b3b">${t("ytNoSpace")}</b>` : ""}</p>`
+      + `<p><small>${t("ytLag")}</small></p>` })) return;
+  let stop = false, ok = 0, alt = 0, miss = 0; const bad = [];
+  showBusy(title, "", { label: t("ytStop"), fn: () => { stop = true; updateBusy(t("ytStopping")); } });
+  for (let i = 0; i < todo.length && !stop; i++) {
+    const x = todo[i], nm = x.title ? (x.artist ? x.artist + " — " : "") + x.title : ytShort(x.url);   // без имени (ссылка из списка) — сама ссылка
+    updateBusy(t("ytStep", { n: i + 1, m: todo.length, a: nm }), 100 * i / todo.length);
+    // недоступный ролик программа сама меняет на ту же песню с YT Music (название + длина), alt — сколько таких; names — имена из списка человека
+    try {
+      const res = await api("/api/yt", { url: x.url, artist: x.artist, title: x.title, dur: x.dur, names: !!x.names }); ok++; miss = 0;
+      if (res && res.alt) { alt++; busyLog("↻ " + (res.name || nm) + " — " + t("ytAltLine"), "warn"); }
+      if (res && res.retried) busyLog("⟳ " + (res.name || nm) + " — " + t("ytRetryLine"), "warn");
+    } catch (e) {   // ошибка — сразу строкой под полосой (Ваня: «чтоб юзеру было понятно»), итог — списком в конце
+      const m = nm + ": " + errText(e); bad.push(m); busyLog("✕ " + m, "err");
+      if (e.key === "net" || (e.key !== "ytGone" && ++miss >= 5)) break;   // 5 сбоев подряд — YouTube уперся, дальше без толку
+    }
+  }
+  hideBusy();
+  await syncMusic();
+  const sum = t("ytDone", { ok, n: todo.length }) + (alt ? " " + t("ytAlt", { k: alt }) : "");
+  if (bad.length) {
+    const v = await askYesNo({ title: t("ytFailT"), html: `<p>${sum}</p><ul>${bad.map(b => `<li>${esc(b)}</li>`).join("")}</ul>`, yes: t("close"), no: t("openLog"), tall: bad.length > 6 });
+    if (v === false) api("/api/open", { what: "log" }).catch(() => {});
+  } else if (stop || alt) note(sum);
+}
+
 // ---------- сохранить / удалить ----------
 $("rpOk").onclick = async () => {
   if (!rp.audio || !rp.id) return;
@@ -1057,20 +1727,21 @@ $("rpDel").onclick = async () => {
 $("rpPick").onclick = e => { e.preventDefault(); $("songFile").click(); };
 $("rpDrop").onclick = e => { if (!rp.audio) { e.preventDefault(); $("songFile").click(); } };
 $("songFile").onchange = e => { const f = e.target.files[0]; if (f) { if (!rp.open) openSong(null, f); else takeFile(f); } e.target.value = ""; };
-$("rpX").onclick = closeSong; $("rpDim").onclick = closeSong;
+$("rpX").onclick = tryCloseSong; $("rpDim").onclick = tryCloseSong;
 
 // файлы мышкой: на «Добавить песню» — новая песня; в панель — взять файл (картинка — в обложку)
 addEventListener("dragover", e => e.preventDefault());
-addEventListener("drop", e => e.preventDefault());
+addEventListener("drop", e => { e.preventDefault(); if (!e._done) dropAny(e); });   // файлы / ссылку бросили мимо карточек — dropAny
 $("grid").addEventListener("dragover", e => { const c = e.target.closest(".card.add"); document.querySelectorAll(".card.add").forEach(x => x.classList.toggle("dragto", x === c)); });
 $("grid").addEventListener("drop", e => {
   document.querySelectorAll(".card.dragto").forEach(x => x.classList.remove("dragto"));
-  const f = e.dataTransfer.files[0]; if (!f) return;
-  if (e.target.closest(".card.add")) openSong(null, f);
+  if (e.target.closest("#ytCard") && !e.dataTransfer.files.length) { const u = e.dataTransfer.getData("text/uri-list") || e.dataTransfer.getData("text/plain") || ""; if (u) { e._done = true; ytAsk(u); return; } }   // ссылку перетащили из браузера — окно со ссылкой в списке
+  const f = e.dataTransfer.files[0]; if (!f || /\.(txt|csv|tsv)$/i.test(f.name)) return;   // .txt со ссылками — dropAny (окно YouTube)
+  if (e.target.closest(".card.add")) { e._done = true; openSong(null, f); }
 });
 $("rpan").addEventListener("dragover", () => { if (!rp.audio) $("rpDrop").classList.add("over"); });
 $("rpan").addEventListener("dragleave", e => { if (!$("rpan").contains(e.relatedTarget)) $("rpDrop").classList.remove("over"); });
-$("rpan").addEventListener("drop", e => {
+$("rpan").addEventListener("drop", e => { e._done = true;
   $("rpDrop").classList.remove("over"); const f = e.dataTransfer.files[0]; if (!f || !rp.open) return;
   if ((f.type || "").startsWith("image/")) takeImage(f); else if (!rp.audio) takeFile(f);
 });
@@ -1103,7 +1774,7 @@ addEventListener("keydown", e => {
 }, true);
 applyI18n("docTitle"); fitSide();
 // язык хранит программа (data\settings.json): localStorage у окна каждый раз новый — порт другой
-const relang = () => { applyI18n("docTitle"); fitSide(); if (S) { renderProfiles(); render(); } if (rp.open) { $("rpH").textContent = t(rp.song ? "panelEdit" : "panelNew"); showBody(); } };
+const relang = () => { applyI18n("docTitle"); fitSide(); relangDialogs(); if (S) { renderProfiles(); render(); } if (rp.open) { $("rpH").textContent = t(rp.song ? "panelEdit" : "panelNew"); showBody(); } };
 const onLang = () => { relang(); api("/api/lang", { lang: LANG }).catch(() => {}); };
 function setLang(c) {
   if (c !== LANG) { LANG = c; try { localStorage.setItem("lang", c); } catch (e) {} relang(); }
@@ -1113,11 +1784,22 @@ langSwitcher($("lang"), onLang);
 boot();
 </script>
 <style>
-.thanks { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 28px; align-items: start; }
-.thanks img { width: 100%; display: block; box-shadow: 0 0 0 1px #000, 0 10px 40px rgba(0,0,0,.5); }
+.thanks { position: absolute; left: 0; right: 0; top: 42%; bottom: 0; overflow-y: auto; padding: 34px 24px 6px 0;   /* список поверх дымки, листается сам */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 34px); mask-image: linear-gradient(to bottom, transparent 0, #000 34px); }
+.thanks > div { max-width: 1100px; }
+.thanks::-webkit-scrollbar { width: 6px; }
+.thanks::-webkit-scrollbar-thumb { background: #3a3a42; }
 .thanks h3 { margin: 14px 0 4px; font: 900 15px "Arial Black", sans-serif; letter-spacing: .04em; color: #58ff3c; text-transform: uppercase; }
 .thanks h3:first-child { margin-top: 0; }
-.thanks .cap { margin-top: 8px; color: #9d9aa6; font-size: .85em; }
+.dlg-thanks .dlg {   /* задник: картинка Kitivski на все окно, дымка снизу (под список) и чуть слева (как на примере Вани) */
+  background: linear-gradient(to bottom, rgba(20,21,24,0) 32%, rgba(20,21,24,.8) 60%, rgba(20,21,24,.94) 80%, #141518 100%),
+              linear-gradient(to right, rgba(20,21,24,.5), rgba(20,21,24,0) 50%),
+              url(img/thanks.jpg) center 30% / cover no-repeat, #141518; }
+.dlg-thanks .dlg-fx { opacity: .55; }
+.dlg-thanks { align-items: flex-start; padding-top: var(--vis-top, 0px); }
+.dlg-thanks .dlg { height: var(--vis-h, 100vh); display: flex; flex-direction: column; }
+.dlg-thanks .dlg-body { flex: 1; min-height: 0; display: flex; flex-direction: column; max-width: none; }
+.dlg-thanks .dlg-text { flex: 1; min-height: 0; max-height: none; position: relative; overflow: hidden; padding-right: 0; margin-top: 4px; }
 @media (max-width: 900px) { .thanks { grid-template-columns: 1fr; } }
 </style>
 </body>

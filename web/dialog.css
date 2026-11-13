@@ -1,5 +1,10 @@
 /* Окно да/нет в духе игры: темная полоса на всю ширину, лента сверху, крупный заголовок, кнопки YES/NO.
    Все нарисовано тут (CSS + canvas), без вырезок из игры. Шрифты — системные Windows 10/11. */
+:root { --dfont: "Bahnschrift", "Segoe UI", sans-serif; }
+/* иероглифы: у Bahnschrift и Segoe UI их нет — шрифт Windows для языка (атрибут lang у страницы или у кнопки) */
+:lang(zh) { --dfont: "Bahnschrift", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif; }
+:lang(ja) { --dfont: "Bahnschrift", "Yu Gothic UI", "Meiryo UI", "Meiryo", sans-serif; }
+:lang(ko) { --dfont: "Bahnschrift", "Malgun Gothic", sans-serif; }
 .dlg-back {
   position: fixed; inset: 0; z-index: 1000;
   display: flex; align-items: center;
@@ -32,11 +37,12 @@
 .dlg-title {
   margin: 0 0 14px; font: 900 clamp(34px, 4.2vw, 76px)/1 "Arial Black", "Segoe UI Black", sans-serif;
   text-transform: uppercase; letter-spacing: .005em; transform: scaleX(1.12); transform-origin: left;
+  max-width: 89%;   /* scaleX 1.12 растягивает уже после переноса строк: 89% × 1.12 ≈ 100% — длинный заголовок переносится, а не вылезает за край */
   color: #f4f2f8; text-shadow: 2px 2px 0 rgba(226, 92, 240, .55);
 }
 
 .dlg-text {
-  font-family: "Bahnschrift", "Segoe UI", sans-serif; font-stretch: condensed;
+  font-family: var(--dfont); font-stretch: condensed;
   font-size: clamp(17px, 1.35vw, 25px); line-height: 1.35; color: #e9e7ee;
   max-height: 46vh; overflow-y: auto; padding-right: 10px;
 }
@@ -50,12 +56,12 @@
 .dlg-text::-webkit-scrollbar { width: 6px; }
 .dlg-text::-webkit-scrollbar-thumb { background: #3a3a42; }
 
-.dlg-btns { display: flex; gap: 10px; margin-top: 22px; }
+.dlg-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
 .dlg-btn {
   position: relative; display: flex; align-items: center; gap: 12px;
   min-height: 62px; padding: 0 26px; border: 0; cursor: pointer;
   background: #24252b; color: #f2f0f5;
-  font-family: "Bahnschrift", "Segoe UI", sans-serif; font-stretch: condensed;
+  font-family: var(--dfont); font-stretch: condensed;
   font-size: clamp(20px, 1.6vw, 28px); text-transform: uppercase; letter-spacing: .02em;
   transition: background .12s, color .12s;
 }
@@ -71,11 +77,15 @@
 .dlg-btn:focus, .dlg-btn:focus-visible { outline: none; }
 .dlg-tall .dlg-text { max-height: 64vh; }
 
-.dlg-hint { margin-top: 14px; font: 13px "Bahnschrift", "Segoe UI", sans-serif; color: #77747f; }
+.dlg-hint { margin-top: 14px; font: 13px var(--dfont); color: #77747f; }
 
 .busy-bar { position: relative; height: 6px; margin-top: 18px; max-width: 760px; background: rgba(255,255,255,.1); overflow: hidden; transform: skewX(-20deg); }
 .busy-bar i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: #58ff3c; transition: width .3s; }
 .busy-bar.run i { width: 30%; animation: busy-run 1.2s ease-in-out infinite; }
+.busy-log { margin-top: 14px; max-width: 760px; max-height: 7.5em; overflow-y: auto; font-size: 13px; line-height: 1.5; color: #c9c7d1; }
+.busy-log:empty { display: none; }
+.busy-log .err { color: #ff6b5b; }
+.busy-log .warn { color: #ffe600; }
 @keyframes busy-run { from { left: -30%; } to { left: 100%; } }
 .dlg-text a { color: #9fd8ff; text-decoration: none; border-bottom: 1px solid rgba(159,216,255,.35); }
 .dlg-text a:hover { color: #fff; border-color: #fff; }
@@ -102,3 +112,25 @@
 .fp-list::-webkit-scrollbar { width: 6px; } .fp-list::-webkit-scrollbar-thumb { background: #3a3a42; }
 .fp-st { margin-top: 8px; font-size: .8em; min-height: 1.3em; }
 .fp-st.ok { color: #58ff3c; } .fp-st.no { color: #ffd84a; }
+
+/* окно «Пісні з YouTube»: список ссылок — каждая строка отдельной плашкой: картинка, имя, под ним исполнитель / длина / ссылка, «✕ Прибрати» */
+.yt-list { max-height: 40vh; overflow-y: auto; margin: 4px 0 6px; padding-right: 6px; display: flex; flex-direction: column; gap: 6px; }
+.yt-list:empty { display: none; }
+.yt-row { flex: none; display: flex; align-items: center; gap: 12px; padding: 7px 10px; background: #1f2026; border: 1px solid rgba(255,255,255,.09); }
+.yt-row .n { flex: none; width: 1.6em; text-align: right; color: #77747f; font-size: .75em; font-variant-numeric: tabular-nums; }
+.yt-row img, .yt-row .ph { flex: none; width: 76px; height: 43px; object-fit: cover; background: #2a2b31; }
+.yt-row .ph { display: flex; align-items: center; justify-content: center; color: #58ff3c; font-size: .9em; }
+.yt-row .tx { flex: 1; min-width: 0; line-height: 1.25; }
+.yt-row .m { font-size: .85em; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.yt-row .m .wait { color: #9d9aa6; font-style: italic; }
+.yt-row .s { margin-top: 2px; font-size: .62em; color: #9d9aa6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.yt-row .s .u { color: #6f6c78; }
+.yt-row .yt-tag { flex: none; font-size: .55em; padding: 4px 9px; border: 1px solid #9d9aa6; color: #e9e7ee; text-transform: uppercase; letter-spacing: .05em; }
+.yt-row .yt-tag.pl { border-color: #58ff3c; color: #58ff3c; }
+.yt-row.off .tx, .yt-row.off img { opacity: .5; }   /* «вже є»: бледнеет имя и картинка, метка и «✕ Прибрати» — четкие */
+.yt-row.warn .m, .yt-row.warn .s { color: #ffd84a; }
+.yt-row.bad .s { color: #ff6b5b; }
+.yt-row .del { flex: none; background: #2c2d34; color: #f2f0f5; border: 0; font: inherit; font-size: .62em; padding: 8px 12px; cursor: pointer; white-space: nowrap; }
+.yt-row .del:hover { background: #ff3b3b; color: #fff; }
+.yt-list::-webkit-scrollbar { width: 6px; } .yt-list::-webkit-scrollbar-thumb { background: #3a3a42; }
+.yt-ex code { display: block; padding: 10px 12px; background: #1f2026; border: 1px solid rgba(255,255,255,.09); line-height: 1.6; word-break: break-all; }

@@ -1,6 +1,6 @@
 // Unbound Soundtrack — точка входа.
 // Папка программы:  Unbound Soundtrack.exe, README.txt, app\ (web, frosty, encoder), data\ (настройки, песни, лог — создается сама).
-// Режимы: без аргументов — окно (сервер 127.0.0.1 + Edge --app); "--worker <job.json>" — тяжелая работа с игрой через Frosty
+// Режимы: без аргументов — окно (сервер 127.0.0.1 + окно браузера, Ui.OpenWindow); "--worker <job.json>" — тяжелая работа с игрой через Frosty
 // (отдельный процесс: чистая память на каждую сборку, падение Frosty не роняет окно).
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using System.Web.Script.Serialization;
 
 static class App
 {
-    public const string Version = "1.0.0a";
+    public const string Version = "1.0.1";
     public const string Profile = "NeedForSpeedUnbound";
     public static string Root, AppDir, WebDir, FrostyDir, EncDir, DataDir, SongsDir, UiDir, LogPath, MusicDir;
     public static readonly JavaScriptSerializer Json = new JavaScriptSerializer { MaxJsonLength = int.MaxValue, RecursionLimit = 64 };
@@ -31,6 +31,8 @@ static class App
         UiDir = Path.Combine(DataDir, "ui");
         LogPath = Path.Combine(DataDir, "log.txt");
         MusicDir = Path.Combine(Root, "Music");            // сюда человек кладет свои песни (Music.cs)
+        // VCRUNTIME140.dll нужна FrostyHash / libzstd / zlibwapi; на чистой Windows ее нет (P2-01) — своя копия в app\frosty, ищется после папки exe
+        try { SetDllDirectory(FrostyDir); } catch { }
         AppDomain.CurrentDomain.AssemblyResolve += Resolve;
         try
         {
@@ -46,6 +48,23 @@ static class App
         }
     }
 
+    [System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode, SetLastError = true)]
+    static extern bool SetDllDirectory(string path);
+
+    // настоящая версия Windows для лога: Environment.OSVersion без манифеста говорит 6.2.9200 (R1-13)
+    public static string WinVersion()
+    {
+        try
+        {
+            using (var k = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
+            {
+                object ma = k.GetValue("CurrentMajorVersionNumber"), mi = k.GetValue("CurrentMinorVersionNumber"), b = k.GetValue("CurrentBuild"), u = k.GetValue("UBR"), d = k.GetValue("DisplayVersion");
+                return ma + "." + mi + "." + b + (u != null ? "." + u : "") + (d != null ? " (" + d + ")" : "");
+            }
+        }
+        catch { return Environment.OSVersion.Version.ToString(); }
+    }
+
     [MethodImpl(MethodImplOptions.NoInlining)] static int RunWorker(string job) { return Worker.Run(job); }
     [MethodImpl(MethodImplOptions.NoInlining)] static int RunUi(string[] args) { return Ui.Run(args); }
 
@@ -56,6 +75,7 @@ static class App
         string[] tries = n == "EbxClasses"
             ? new[] { Path.Combine(FrostyDir, "Profiles", "NFSUnboundSDK.dll") }
             : new[] { Path.Combine(FrostyDir, n + ".dll"), Path.Combine(FrostyDir, "ThirdParty", n + ".dll"), Path.Combine(FrostyDir, "Profiles", n + ".dll") };
+        // UnsafeLoadFrom, не LoadFrom: zip из интернета → Проводник ставит метку на все DLL → LoadFrom падает 0x80131515 (баг 1.0, фикс 1.0.0a)
         foreach (string p in tries) if (File.Exists(p)) return Assembly.UnsafeLoadFrom(p);
         return null;
     }
@@ -96,6 +116,7 @@ class Song
     public string id, title = "", artist = "", file = "";
     public double dur, drop, outro, cDur = 25;
     public bool race = true, city = true, draft = true, cover;
+    public bool low;             // приоритет в игре: false — High (по умолчанию), true — Low (играет редко: движок сначала ищет High)
     public string src, asig, isig;   // песня из папки Music: путь звука относительно Music, подписи звука и картинки (размер:время)
     public long added;
     public int num;              // номер трека в игре (ставит сборка: 140, 141…)
@@ -106,14 +127,14 @@ class Song
 class Preset
 {
     public string id, name;
-    public Dictionary<string, bool[]> choice = new Dictionary<string, bool[]>();   // слот игры -> [гонки, город]
-    public Dictionary<string, bool[]> songs = new Dictionary<string, bool[]>();    // id своей песни -> [гонки, город]; нет в списке = выключена
+    public Dictionary<string, bool[]> choice = new Dictionary<string, bool[]>();   // слот игры -> [гонки, город, low] (low нет = High)
+    public Dictionary<string, bool[]> songs = new Dictionary<string, bool[]>();    // id своей песни -> [гонки, город, low]; нет в списке = выключена
 }
 
 class Settings
 {
     public bool agreed, pathsOk;   // pathsOk — человек подтвердил папки игры и Mod Manager
-    public string lang;            // язык окна (uk/pl/en/de/pt); null — первый запуск, окно спросит
+    public string lang;            // язык окна (13 кодов — Ui.Langs); null — первый запуск, окно спросит
     public bool musicTold;         // окно «Пісні з папки» уже показали
     public List<string> skipped = new List<string>();   // песни из Music, удаленные в программе (папка осталась) — не подтягивать снова
     public string gamePath, fmmPath;
@@ -123,6 +144,8 @@ class Settings
     public List<Preset> presets = new List<Preset>();
     public string activePreset;
     public string lastBuild;
+    public string browser;                         // в чем открывать окно: путь exe браузера, "default" — браузер по умолчанию, null — Edge (Ui.OpenWindow)
+    public Dictionary<string, string> view;        // вид главного окна: sort / art / where / view (P2-07: localStorage окна каждый запуск новый — порт другой)
 
     static readonly object l = new object();
     static Settings cur;
@@ -147,13 +170,13 @@ class Settings
     public void Snapshot(Preset p)
     {
         p.choice = choice.ToDictionary(k => k.Key, k => (bool[])k.Value.Clone());
-        p.songs = songs.Where(s => !s.draft).ToDictionary(s => s.id, s => new[] { s.race, s.city });
+        p.songs = songs.Where(s => !s.draft).ToDictionary(s => s.id, s => new[] { s.race, s.city, s.low });
     }
     // профиль -> рабочее состояние (песни, которых в профиле нет, — выключены, но остаются в библиотеке)
     public void Load(Preset p)
     {
         choice = p.choice.ToDictionary(k => k.Key, k => (bool[])k.Value.Clone());
-        foreach (var s in songs) { bool[] f; if (p.songs.TryGetValue(s.id, out f) && f.Length >= 2) { s.race = f[0]; s.city = f[1]; } else { s.race = false; s.city = false; } }
+        foreach (var s in songs) { bool[] f; if (p.songs.TryGetValue(s.id, out f) && f.Length >= 2) { s.race = f[0]; s.city = f[1]; s.low = f.Length > 2 && f[2]; } else { s.race = false; s.city = false; s.low = false; } }
         activePreset = p.id;
     }
 

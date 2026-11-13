@@ -51,7 +51,7 @@
   window.askYesNo = function (o) {
     return new Promise(resolve => {
       const back = document.createElement("div");
-      back.className = "dlg-back" + (o.tall ? " dlg-tall" : "");
+      back.className = "dlg-back" + (o.tall ? " dlg-tall" : "") + (o.cls ? " " + o.cls : "");
       // o.buttons: [{label, val}] — свои кнопки (выбор языка), o.start — какая подсвечена сначала; Esc — false
       const btns = o.buttons || [{ label: o.yes || "YES", val: true }];
       if (!o.buttons && o.no !== null) btns.push({ label: o.no || "NO", val: false });
@@ -77,6 +77,8 @@
       };
       const key = e => {
         if (e.target && e.target.tagName === "INPUT" && e.key !== "Escape") return;   // поле ввода внутри окна — клавиши его
+        // переключатель языка поверх первых окон (R1-05): Esc закрывает список языков, Enter открывает его — не «Вийти» / не кнопка окна
+        if (document.querySelector(".lsel.open") || (e.target && e.target.closest && e.target.closest(".lang"))) return;
         if (e.key === "ArrowRight" || e.key === "ArrowLeft" || e.key === "Tab") { e.preventDefault(); focus(cur + (e.key === "ArrowLeft" || e.shiftKey ? -1 : 1)); }
         else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); done(btns[cur].val); }
         else if (e.key === "Escape" && btns.length > 1) { e.preventDefault(); done(false); }
@@ -86,13 +88,25 @@
       const cv = back.querySelector(".dlg-fx"), repaint = () => paintFx(cv);
       window.addEventListener("resize", repaint);
       requestAnimationFrame(() => { repaint(); back.classList.add("show"); focus(o.start > 0 ? o.start : 0); });
+      // o.re() — те же {title, html, yes, no} на новом языке (язык сменили, пока окно открыто); живое содержимое (onOpen) не трогаем — для него o.onRelang
+      if (o.re || o.onRelang) back._re = () => {
+        if (o.re) {
+          const x = o.re();
+          back.querySelector(".dlg-title").textContent = x.title || "";
+          if (x.html != null && !o.onOpen) back.querySelector(".dlg-text").innerHTML = x.html;
+          const labels = x.buttons ? x.buttons.map(b => b.label) : [x.yes || "YES"].concat(x.no !== null ? [x.no || "NO"] : []);
+          back.querySelectorAll(".dlg-btn .lbl").forEach((el, i) => { if (labels[i] != null) el.textContent = labels[i]; });
+        }
+        if (o.onRelang) o.onRelang(back);
+      };
       if (o.onOpen) o.onOpen(back.querySelector(".dlg-text"), done);   // живое содержимое (выбор папки и т.п.)
     });
   };
+  window.relangDialogs = () => document.querySelectorAll(".dlg-back").forEach(b => b._re && b._re());
 
   // «идет работа»: та же полоса, без кнопок — заголовок, шаг, полоска прогресса (pct < 0 — бегущая)
   let busy = null;
-  window.showBusy = function (title, text) {
+  window.showBusy = function (title, text, stop) {   // stop = {label, fn}: кнопка «Стоп» под полосой, Esc — то же
     if (!busy) {
       busy = document.createElement("div");
       busy.className = "dlg-back";
@@ -100,12 +114,32 @@
       busy.innerHTML = '<div class="dlg" role="status" aria-live="polite">' +
         `<div class="dlg-ribbon"><span>${rib}${rib}</span></div><canvas class="dlg-fx"></canvas>` +
         '<div class="dlg-body"><h1 class="dlg-title"></h1><div class="dlg-text"><p class="busy-step"></p></div>' +
-        '<div class="busy-bar"><i></i></div></div></div>';
+        '<div class="busy-bar"><i></i></div><div class="busy-log"></div></div></div>';
       document.body.appendChild(busy);
       requestAnimationFrame(() => { paintFx(busy.querySelector(".dlg-fx")); busy.classList.add("show"); });
     }
     busy.querySelector(".dlg-title").textContent = title || "";
+    setStop(stop);
     updateBusy(text, -1);
+  };
+  function setStop(o) {
+    let row = busy.querySelector(".dlg-btns");
+    busy.onStop = o ? o.fn : null;
+    if (!o) { if (row) row.remove(); return; }
+    if (!row) {
+      row = document.createElement("div"); row.className = "dlg-btns";
+      row.innerHTML = `<button class="dlg-btn focus"><span class="key">Esc</span><span class="lbl"></span>${SWOOSH}</button>`;
+      busy.querySelector(".dlg-body").appendChild(row);
+    }
+    row.querySelector(".lbl").textContent = o.label;
+    row.querySelector("button").onclick = () => busy && busy.onStop && busy.onStop();
+  }
+  document.addEventListener("keydown", e => { if (busy && busy.onStop && e.key === "Escape") { e.preventDefault(); busy.onStop(); } }, true);
+  // строка под полосой (ошибка / замена / повтор) — видно сразу, по ходу работы; kind: err | warn
+  window.busyLog = function (text, kind) {
+    if (!busy) return;
+    const box = busy.querySelector(".busy-log"), d = document.createElement("div");
+    d.className = kind || ""; d.textContent = text; box.appendChild(d); box.scrollTop = box.scrollHeight;
   };
   window.updateBusy = function (text, pct) {
     if (!busy) return;

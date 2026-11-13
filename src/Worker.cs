@@ -42,8 +42,12 @@ static class Worker
 {
     const string BANK = "audio/music/event/exc_music_event_02", BANK1 = "audio/music/event/exc_music_event_01";
     const string LOGIC = "audio/music/logic/pf_music_logic";
-    static readonly string[] RACE = { "IsMeetupTrack", "IsEventTrack", "IsTrialEscalationTrack", "IsTakeoverTrack", "IsGarageTrack" };
-    const string FREE = "IsFreedriveTrack";
+    const string CONTROL = "audio/music/logic/exc_music_control";   // звуковой граф музыки: список банков в WaveSwitcherNodeData
+    // ГОНКИ — заезды, митапы, тейковеры; МІСТО — свободная езда и гараж (так написано в окне). Гараж был в RACE —
+    // в гараже играли песни с галочкой «Гонки» (отзыв в Steam 12.11), теперь — «Місто»
+    static readonly string[] RACE = { "IsMeetupTrack", "IsEventTrack", "IsTrialEscalationTrack", "IsTakeoverTrack" };
+    static readonly string[] CITY = { "IsFreedriveTrack", "IsGarageTrack" };
+    const string FREE = "IsFreedriveTrack";   // только для extract (tracks.json, справочно)
     // фоны окна: имя в игре -> файл
     static readonly string[][] BG = {
         new[] { "ui/textures/fullscreenbackgrounds/safehouses/exc_safehouse_garage_01", "photo.jpg", "1920" },
@@ -58,6 +62,8 @@ static class Worker
     static Dictionary<string, object> job;
 
     public static void Say(string s) { Console.WriteLine(s); Console.Out.Flush(); App.Log("worker> " + s); }
+    // прогресс по песням (счетчик + полоса в окне) — только окну, без log.txt (иначе +сотни строк на сборку)
+    static void Tell(string step, int done, int all, bool log = false) { if (log) App.Log("worker> STEP " + step); Console.WriteLine("STEP " + step); Console.WriteLine("PCT " + (100 * done / Math.Max(1, all))); Console.Out.Flush(); }
 
     public static int Run(string jobPath)
     {
@@ -66,6 +72,11 @@ static class Worker
         {
             job = App.Json.Deserialize<Dictionary<string, object>>(File.ReadAllText(jobPath, Encoding.UTF8));
             string task = (string)job["task"];
+            var mx = new System.Threading.Mutex(false, MutexName);
+            bool got; try { got = mx.WaitOne(0); } catch (System.Threading.AbandonedMutexException) { got = true; }   // прошлый упал — мьютекс наш
+            if (!got) { mx.Dispose(); throw new UserError("busyOld"); }
+            busyMutex = mx;
+            object par; if (job.TryGetValue("parent", out par) && par != null) WatchParent(Convert.ToInt32(par));
             App.Log("worker start: " + task);
             if (task == "extract") Extract();
             else if (task == "build") Build();
@@ -81,8 +92,39 @@ static class Worker
             return 0;
         }
         catch (UserError e) { App.Log("worker user error: " + e); Say("ERR " + e.Key + (e.Arg != null ? " " + e.Arg.Replace("\n", " ") : "")); return 2; }
-        catch (Exception e) { App.Log("worker crash: " + e); Say("ERR crash " + e.GetType().Name + ": " + e.Message.Replace("\n", " ")); return 1; }
+        catch (Exception e)
+        {
+            App.Log("worker crash: " + e);
+            // P2-01: нет Visual C++ (FrostyHash.dll / libzstd / zlibwapi не грузятся; Oodle игры не загрузился — Frosty падает NullReference
+            // в DecompressOodle) — окно предложит установщик из app\vcredist
+            for (var x = e; x != null; x = x.InnerException)
+                if ((x is FileNotFoundException && x.Message.Contains("FrostyHash") && File.Exists(Path.Combine(App.FrostyDir, "FrostyHash.dll")))
+                    || (x is DllNotFoundException && (x.Message.Contains("zstd") || x.Message.Contains("zlib")))
+                    || (x is NullReferenceException && (x.StackTrace ?? "").Contains("Oodle")))
+                { Say("ERR vcMissing " + x.GetType().Name); return 1; }
+            Say("ERR crash " + e.GetType().Name + ": " + e.Message.Replace("\n", " ")); return 1;
+        }
+        finally { if (busyMutex != null) try { busyMutex.ReleaseMutex(); } catch { } }
     }
+
+    // Ваня 13.11: «вышел из программы — все останавливается». Программа закрылась / ее убили — выходим и мы (и гасим кодировщик Tool.exe).
+    // Мод в Mods при этом цел: новый подменяет старый одним шагом в самом конце (Build, .part)
+    static void WatchParent(int pid)
+    {
+        System.Diagnostics.Process parent;
+        try { parent = System.Diagnostics.Process.GetProcessById(pid); } catch { App.Log("worker: program already closed - stopping"); Environment.Exit(3); return; }
+        new System.Threading.Thread(() =>
+        {
+            try { parent.WaitForExit(); } catch { return; }
+            App.Log("worker: program closed - stopping");
+            try { var c = Audio.Current; if (c != null && !c.HasExited) c.Kill(); } catch { }
+            Environment.Exit(3);
+        }) { IsBackground = true }.Start();
+    }
+
+    // P2-05: рабочий процесс от прошлого запуска еще жив (не успел выйти / упала программа) — новая программа не должна запускать второй поверх (A.sek.tmp занят)
+    public static string MutexName { get { return "UnboundSoundtrack-worker-" + (App.Root.ToLowerInvariant().GetHashCode() & 0x7fffffff); } }
+    static System.Threading.Mutex busyMutex;
 
     // ---------- загрузка игры через Frosty ----------
     static void Load()
@@ -123,7 +165,7 @@ static class Worker
         am.Initialize(false, null);
         Frosty.Core.App.FileSystemManager = fs; Frosty.Core.App.ResourceManager = rm; Frosty.Core.App.AssetManager = am;
         Frosty.Core.App.Logger = new Lg();
-        App.Log("игра загружена: ebx " + am.GetEbxCount());
+        App.Log("game loaded: ebx " + am.GetEbxCount());
         if (am.GetEbxEntry(LOGIC) == null || am.GetResEntry(BANK) == null) throw new UserError("gameChanged", "no " + LOGIC);
     }
 
@@ -153,7 +195,7 @@ static class Worker
         {
             Say("PCT " + (100 * i++ / Math.Max(1, arts.Count)));
             try { SaveTexture(a.Item2, Path.Combine(ui, "covers", a.Item1 + ".jpg"), 0, false); }
-            catch (Exception e) { App.Log("обложка " + a.Item1 + ": " + e.Message); }
+            catch (Exception e) { App.Log("cover " + a.Item1 + ": " + e.Message); }
         }
         Say("STEP backgrounds");
         i = 0;
@@ -161,7 +203,7 @@ static class Worker
         {
             Say("PCT " + (100 * i++ / BG.Length));
             try { SaveTexture(b[0], Path.Combine(ui, "bg", b[1]), int.Parse(b[2]), b[1].EndsWith(".png")); }
-            catch (Exception e) { App.Log("фон " + b[0] + ": " + e.Message); }
+            catch (Exception e) { App.Log("background " + b[0] + ": " + e.Message); }
         }
         App.WriteJson(Path.Combine(ui, "tracks.json"), new Dictionary<string, object> {
             { "fingerprint", (string)job["fingerprint"] }, { "app", App.Version }, { "tracks", tracks }, { "when", DateTime.Now.ToString("s") } });
@@ -171,16 +213,16 @@ static class Worker
     static void SaveTexture(string ebxName, string path, int maxW, bool alpha)
     {
         EbxAssetEntry e = am.GetEbxEntry(ebxName);
-        if (e == null) throw new Exception("нет " + ebxName);
+        if (e == null) throw new Exception("missing " + ebxName);
         dynamic root = am.GetEbx(e).RootObject;
         ResAssetEntry re = am.GetResEntry((ulong)root.Resource);
         Texture t = am.GetResAs<Texture>(re);
         string fmt = t.PixelFormat.ToString();
-        if (!fmt.StartsWith("BC7")) throw new Exception("формат " + fmt);
+        if (!fmt.StartsWith("BC7")) throw new Exception("format " + fmt);
         byte[] data; using (var ms = new MemoryStream()) { t.Data.Position = 0; t.Data.CopyTo(ms); data = ms.ToArray(); }
         int w = t.Width, h = t.Height;
         int mip0 = ((w + 3) / 4) * ((h + 3) / 4) * 16;
-        if (data.Length < mip0) throw new Exception("мало данных " + data.Length + " < " + mip0);
+        if (data.Length < mip0) throw new Exception("not enough data " + data.Length + " < " + mip0);
         Img.Save(Bc7.Decode(data, w, h), w, h, path, maxW, alpha);
     }
 
@@ -198,6 +240,7 @@ static class Worker
         foreach (var s in songs)
         {
             n++;
+            Tell("encode " + n + "/" + songs.Count + " · " + Clean(s.title), n - 1, songs.Count);   // у песни из кэша окно иначе ничего не видит
             encDirs.Add(Audio.Prepare(s, piece => Say("STEP encode " + n + "/" + songs.Count + " · " + Clean(s.title) + " · " + piece)));
         }
 
@@ -216,8 +259,9 @@ static class Worker
             bool[] c; if (!choice.TryGetValue(Str(t, "TrackEnumName"), out c) || c.Length < 2) c = new[] { true, true };
             // включено = High (все включенные треки и свои песни на равных), выключено = Never.
             // Раньше было «как в игре, Never -> Low»: тест Вани — из Siri (Low) и Palace (High) в игре звучал только Palace.
-            foreach (string f in RACE) SetEnumInt(t, f, c[0] ? 2 : 0);
-            SetEnumInt(t, FREE, c[1] ? 2 : 0);
+            int pv = c.Length > 2 && c[2] ? 1 : 2;   // приоритет: 2 High (по умолчанию) / 1 Low — Ваня 12.11 (Mid в игре нет: 0 Never, 1 Low, 2 High)
+            foreach (string f in RACE) SetEnumInt(t, f, c[0] ? pv : 0);
+            foreach (string f in CITY) SetEnumInt(t, f, c[1] ? pv : 0);
             // у 38 из 72 треков игры IsDirectlySelectable = False (Siri среди них). Тест Вани: из Siri + Palace звучал только Palace (True).
             // Мод перебивает игру: включенный трек — «выбираемый».
             if (c[0] || c[1]) t.GetType().GetProperty("IsDirectlySelectable").SetValue(t, true);
@@ -226,10 +270,12 @@ static class Worker
         for (int i = 0; i < songs.Count; i++)
         {
             var s = songs[i];
-            Say("STEP cover " + (i + 1) + "/" + songs.Count + " · " + Clean(s.title));
-            object nt = AppendTrack(list, "Siri", s.trackName, s.num, Clean(s.title), Clean(s.artist));
-            foreach (string f in RACE) SetEnumInt(nt, f, s.race ? 2 : 0);
-            SetEnumInt(nt, FREE, s.city ? 2 : 0);
+            Tell("cover " + (i + 1) + "/" + songs.Count + " · " + Clean(s.title), i, songs.Count, true);   // в лог — как раньше: видно, на какой обложке упало
+            string gt = Game(Music.Cut(Clean(s.title), Music.MaxTitle));   // песни, сохраненные до лимита (13.11), тоже не длиннее
+            object nt = AppendTrack(list, "Siri", s.trackName, s.num, gt != "" ? gt : "Track " + s.num, Game(Music.Cut(Clean(s.artist), Music.MaxArtist)));
+            int sv = s.low ? 1 : 2;
+            foreach (string f in RACE) SetEnumInt(nt, f, s.race ? sv : 0);
+            foreach (string f in CITY) SetEnumInt(nt, f, s.city ? sv : 0);
             if (s.race) nr++; if (s.city) nf++;
             var art = Cover("ui/textures/albumart/t_albumart_oki", "ui/textures/albumart/t_albumart_" + s.trackName.ToLowerInvariant(), CoverPixels(s));
             nt.GetType().GetProperty("AlbumArt").SetValue(nt, new PointerRef(new EbxImportReference { FileGuid = art.Item1, ClassGuid = art.Item2 }));
@@ -244,14 +290,14 @@ static class Worker
                 {
                     var pi = o.GetType().GetProperty(f); if (pi == null) continue;
                     long cur = Convert.ToInt64(pi.GetValue(o)), lim = Math.Max(0, nOn - 1);
-                    if (cur > lim) { pi.SetValue(o, Convert.ChangeType(lim, pi.PropertyType)); App.Log("логика: " + f + " " + cur + " -> " + lim + " (включено треков: " + nOn + ")"); }
+                    if (cur > lim) { pi.SetValue(o, Convert.ChangeType(lim, pi.PropertyType)); App.Log("logic: " + f + " " + cur + " -> " + lim + " (tracks on: " + nOn + ")"); }
                 }
         am.ModifyEbx(LOGIC, logic);
 
         // 4) мод
         Say("STEP writeMod");
         var ms = new Frosty.Core.Mod.ModSettings();
-        ms.Title = "Unbound Soundtrack"; ms.Author = "Kitivski + Claude"; ms.Category = "Audio"; ms.Version = App.Version;
+        ms.Title = "Unbound Soundtrack"; ms.Author = "Kitivski + Claude"; ms.Category = "Audio"; ms.Version = App.Version; ms.Link = "https://kotovskivan.github.io/UnboundSoundtrack/";   // Frosty Mod Manager показывает ссылку в описании мода
         ms.Description = (job.ContainsKey("preset") ? "Profile: " + Clean((string)job["preset"]) + ". " : "") + (songs.Count > 0 ? "Own songs: " + string.Join(", ", songs.Select(s => Clean(s.artist) + " - " + Clean(s.title))) + ". " : "")
             + "Game tracks in races: " + nr + ", in the city: " + nf + ". Made with Unbound Soundtrack (fan-made, not affiliated with EA).";
         ms.Icon = ModIcon();
@@ -261,21 +307,57 @@ static class Worker
         string tmp = Path.Combine(App.DataDir, "build.fbmod");
         if (File.Exists(tmp)) File.Delete(tmp);
         new Frosty.Core.FrostyProject().WriteToMod(tmp, ms);
-        if (!File.Exists(tmp) || new FileInfo(tmp).Length < 1000) throw new Exception("мод не записался");
+        if (!File.Exists(tmp) || new FileInfo(tmp).Length < 1000) throw new Exception("mod was not written");
         Directory.CreateDirectory(Path.GetDirectoryName(outPath));
-        try { File.Copy(tmp, outPath, true); }
-        catch (IOException e) { App.Log("copy mod: " + e.Message); throw new UserError("modLocked", outPath); }
+        // копия рядом (.part — Mod Manager его не видит) и подмена одним шагом: остановили / вышли посреди копирования — старый мод в Mods цел (Ваня 13.11: «Стоп»)
+        string part = outPath + ".part";
+        try { File.Copy(tmp, part, true); if (File.Exists(outPath)) File.Replace(part, outPath, null); else File.Move(part, outPath); }
+        catch (IOException e) { App.Log("copy mod: " + e.Message); try { File.Delete(part); } catch { } throw new UserError("modLocked", outPath); }
         File.Delete(tmp);
         Say("OK " + App.Json.Serialize(new Dictionary<string, object> { { "path", outPath }, { "size", new FileInfo(outPath).Length }, { "race", nr }, { "city", nf }, { "songs", songs.Count } }));
     }
 
     static string Clean(string s) { s = (s ?? "").Replace('\r', ' ').Replace('\n', ' ').Trim(); return s.Length > 80 ? s.Substring(0, 80) : s; }
 
+    // Текст на плашке в игре — только ASCII: кириллицу и значки шрифт игры / запись строки Frosty не проверены (Ваня: «давай транслитировать»).
+    // Кириллица → латиница (укр. транслит), буквы с диакритикой → без нее (ë → e, ł → l), остальное (эмодзи, †) — выкинуть.
+    // В программе и в song.json имена — как есть; это только для игры.
+    static readonly Dictionary<char, string> Tr = new Dictionary<char, string> {
+        {'а',"a"},{'б',"b"},{'в',"v"},{'г',"h"},{'ґ',"g"},{'д',"d"},{'е',"e"},{'є',"ye"},{'ж',"zh"},{'з',"z"},{'и',"y"},{'і',"i"},
+        {'ї',"yi"},{'й',"y"},{'к',"k"},{'л',"l"},{'м',"m"},{'н',"n"},{'о',"o"},{'п',"p"},{'р',"r"},{'с',"s"},{'т',"t"},{'у',"u"},
+        {'ф',"f"},{'х',"kh"},{'ц',"ts"},{'ч',"ch"},{'ш',"sh"},{'щ',"shch"},{'ь',""},{'ю',"yu"},{'я',"ya"},{'ы',"y"},{'э',"e"},
+        {'ё',"yo"},{'ъ',""},{'ł',"l"},{'ß',"ss"},{'æ',"ae"},{'ø',"o"},{'đ',"d"},{'œ',"oe"},{'þ',"th"} };
+    static string Game(string s)
+    {
+        s = s ?? "";
+        var a = new System.Text.StringBuilder();
+        for (int i = 0; i < s.Length; i++)
+        {
+            char c = s[i]; string t;
+            if (!Tr.TryGetValue(char.ToLowerInvariant(c), out t)) { a.Append(c); continue; }
+            if (char.IsUpper(c) && t.Length > 0)    // «Щ» в «ЩЕ» → SHCH, в «Ще» → Shch
+                t = (i + 1 < s.Length && char.IsUpper(s[i + 1])) || (i > 0 && char.IsUpper(s[i - 1])) ? t.ToUpperInvariant() : char.ToUpperInvariant(t[0]) + t.Substring(1);
+            a.Append(t);
+        }
+        var b = new System.Text.StringBuilder();
+        foreach (char c in a.ToString().Normalize(System.Text.NormalizationForm.FormD))
+        {
+            if (c >= ' ' && c <= '~') b.Append(c);
+            else if (char.IsWhiteSpace(c)) b.Append(' ');
+            // знак над буквой (ë = e + ¨), эмодзи, значки, иероглифы — выкидываем
+        }
+        return System.Text.RegularExpressions.Regex.Replace(b.ToString(), @"\s+", " ").Trim();
+    }
+
     // ---------- банки музыки ----------
     // Сетка Selection банка — на байтах: ≤ 255 строк. Песня = 3 строки (B старт, C финиш, A полная).
     // Сначала ev02 (проверено в игре), потом ev01 (у него своя сетка). Не хватает — забираем строки ВЫКЛЮЧЕННЫХ треков игры
     // из списка «можно отдавать» (их никто не вызывает напрямую — разбор FrostyReader trackscan), по одному, сколько нужно.
-    class BankWork { public string Name; public ResAssetEntry Re; public byte[] Orig; public SbleBank Bank; public Func<byte[], Guid> NewChunk; public bool Changed; public int Songs; }
+    class BankWork
+    {
+        public string Name; public ResAssetEntry Re; public byte[] Orig; public SbleBank Bank; public Func<byte[], Guid> NewChunk; public bool Changed; public int Songs;
+        public bool IsNew; public List<long> Tpl; public long First = -1; public Guid FileGuid, Root;   // свой банк: треки образца, первый свой номер, GUID ассета
+    }
 
     static BankWork OpenBank(string name)
     {
@@ -296,13 +378,16 @@ static class Worker
         };
         return w;
     }
-    static int Free(BankWork w) { return (255 - w.Bank.SelRows()) / 3; }
+    // свободно песен по строкам Selection (≤ 255 на банк); у своего банка строки образца не считаются — их уберем перед записью
+    static int Free(BankWork w) { return (255 - (w.IsNew ? 3 * w.Songs : w.Bank.SelRows())) / 3; }
+    // влезет ли песня с этим номером: строки + номер в байт «значение − мин» (ev01 до 270, ev02 до 286, свой банк — от первого своего номера)
+    static bool Fits(BankWork w, int num) { long mn = w.IsNew ? (w.First < 0 ? num : w.First) : w.Bank.MinTrack(); return Free(w) > 0 && num - mn <= 255; }
 
     static void SaveBank(BankWork w)
     {
         byte[] nb = w.Bank.Write();
         var check = SbleBank.Read(nb);
-        if (!check.Write().SequenceEqual(nb)) throw new Exception("банк " + w.Name + " не перечитывается байт в байт");
+        if (!check.Write().SequenceEqual(nb)) throw new Exception("bank " + w.Name + " does not read back byte for byte");
         am.ModifyRes(w.Name, nb, w.Re.ResMeta);
         EbxAsset be = am.GetEbx(am.GetEbxEntry(w.Name));
         var chunks = (IList)be.RootObject.GetType().GetProperty("Chunks").GetValue(be.RootObject);
@@ -316,7 +401,82 @@ static class Worker
             chunks.Add(c);
         }
         am.ModifyEbx(w.Name, be);
-        App.Log("банк " + w.Name + ": " + w.Orig.Length + " -> " + nb.Length + " Б, строк Selection " + check.SelRows() + ", своих песен " + w.Songs);
+        App.Log("bank " + w.Name + ": " + w.Orig.Length + " -> " + nb.Length + " B, Selection rows " + check.SelRows() + ", own songs " + w.Songs);
+    }
+
+    // ---------- свои банки (третий, четвертый…): копия ev02 без ее треков — разбор 11.11, findings «Сколько банков можно» ----------
+    // Игра подмешивает к запросам в ev01 строки всех загруженных банков, у которых раздел Selection помечен ключом ev01 (так слышны ev02
+    // и титры). Свой банк: новый ассет NewWaveAsset (EBX + RES) в бандлах ev02, свой ключ (djb2 от GUID корня — как у банков игры),
+    // Selection — с ключом ev01; в граф музыки — рядом с ev01 / ev02 / титрами. Банк титров не трогаем (Ваня).
+    const int MaxNewBanks = 3;
+    static BankWork NewBank(int k)
+    {
+        var w = OpenBank(BANK);   // свежая модель ev02 — образец
+        w.Name = "audio/music/event/unbound_soundtrack_0" + (3 + k); w.IsNew = true; w.Tpl = w.Bank.Tracks();
+        App.Log("own bank " + w.Name + " (template " + BANK + ")");
+        return w;
+    }
+    static void SaveNewBank(BankWork w)
+    {
+        w.Bank.DropTracks(w.Tpl);   // треки образца — вон, потом их варианты / сегменты / чанки
+        w.Bank.Compact();
+        EbxAssetEntry srcE = am.GetEbxEntry(BANK);
+        ResAssetEntry srcR = am.GetResEntry(BANK);
+        // true = свежая копия ОРИГИНАЛА. Без него Frosty отдает рабочий объект ev02, если ev02 уже изменен (SaveBank) — и свой банк
+        // перекрашивал сам ev02 (GUID файла, корень, имя, чанки): в сборках 23:21 / 23:33 у ev02, 03 и 04 был один объект → молчали все трое (разбор 12.11).
+        EbxAsset be = am.GetEbx(srcE, true);
+        be.SetFileGuid(Guid.NewGuid());
+        dynamic root = be.RootObject;
+        root.Name = w.Name;
+        Guid rg = Utils.GenerateDeterministicGuid(be.Objects, (Type)root.GetType(), be.FileGuid);
+        root.SetInstanceGuid(new AssetClassGuid(rg, -1));
+        w.Bank.SetKey(SbleBank.KeyOf(rg));
+        byte[] nb = w.Bank.Write();
+        var check = SbleBank.Read(nb);
+        if (!check.Write().SequenceEqual(nb)) throw new Exception("bank " + w.Name + " does not read back byte for byte");
+        // чанки ассета = чанки банка (GUID + размер)
+        var chunks = (IList)((object)root).GetType().GetProperty("Chunks").GetValue(root);
+        Type ct = chunks[0].GetType(); chunks.Clear();
+        var gl = check.F(SbleBank.DS_CHK, 0xF4369173).Vals; var sl = check.F(SbleBank.DS_CHK, 0xDC19107B).Vals;
+        for (int i = 0; i < check[SbleBank.DS_CHK].Count; i++)
+        {
+            object c = Activator.CreateInstance(ct);
+            ct.GetProperty("ChunkId").SetValue(c, new Guid(check.Data.Skip((int)gl[i] - 1).Take(16).ToArray()));
+            var psz = ct.GetProperty("ChunkSize"); psz.SetValue(c, Convert.ChangeType(sl[i], psz.PropertyType));
+            chunks.Add(c);
+        }
+        EbxAssetEntry newE = am.AddEbx(w.Name, be, srcE.Bundles.ToArray());
+        ResAssetEntry newR = am.AddRes(w.Name, (ResourceType)srcR.ResType, rg.ToByteArray(), nb, srcR.Bundles.ToArray());   // ResMeta = GUID корня (как у ev01 / ev02)
+        newE.LinkAsset(newR);   // поля Resource у NewWaveAsset нет: RES банка связан по имени и ResMeta (GUID корня)
+        foreach (var lst in new[] { newE.AddedBundles, newR.AddedBundles }) { var u = lst.Distinct().ToList(); lst.Clear(); lst.AddRange(u); }
+        am.ModifyEbx(w.Name, be);
+        w.FileGuid = be.FileGuid; w.Root = rg;
+        App.Log("own bank " + w.Name + ": " + nb.Length + " B, key " + check.Key.ToString("X8") + ", rows " + check.SelRows() + ", songs " + w.Songs + ", numbers " + check.MinTrack() + "-" + check.MaxTrack() + ", file " + w.FileGuid);
+    }
+    // граф музыки: свои банки — в список узла WaveSwitcherNodeData рядом с ev01 / ev02 / титрами (узел держит банки загруженными)
+    static void AddToGraph(List<BankWork> mine)
+    {
+        EbxAsset g = am.GetEbx(am.GetEbxEntry(CONTROL));
+        object sw = g.Objects.FirstOrDefault(o => o.GetType().Name == "WaveSwitcherNodeData");
+        if (sw == null) throw new UserError("gameChanged", "no WaveSwitcherNodeData");
+        var waves = (IList)sw.GetType().GetProperty("Waves").GetValue(sw);
+        // у корня графа — ReferencedData: запись {DataOwner = узел, SoundData = банк} на каждый звуковой ассет узлов (ev02 и титры — с владельцем этим узлом).
+        // Разбор 12.11 (FrostyReader patchrefs, 123 графа игры): у WaveSwitcherNodeData все банки всегда есть в ReferencedData.
+        // Без записи (сборки 23:21 / 23:33) свои банки молчали и ev02 тоже; без своих банков ev02 играет (тест 131).
+        object root = g.RootObject;
+        var rd = (IList)root.GetType().GetProperty("ReferencedData").GetValue(root);
+        Type rt = rd[0].GetType();
+        foreach (var w in mine)
+        {
+            var bank = new PointerRef(new EbxImportReference { FileGuid = w.FileGuid, ClassGuid = w.Root });
+            waves.Add(bank); g.AddDependency(w.FileGuid);
+            object e = Activator.CreateInstance(rt);
+            rt.GetProperty("DataOwner").SetValue(e, new PointerRef(sw));
+            rt.GetProperty("SoundData").SetValue(e, bank);
+            rd.Add(e);
+        }
+        am.ModifyEbx(CONTROL, g);
+        App.Log("graph " + CONTROL + ": banks in WaveSwitcherNodeData " + waves.Count + ", ReferencedData " + rd.Count);
     }
 
     // выключенные треки игры (обе галочки сняты), чьи строки можно отдать своим песням.
@@ -341,7 +501,7 @@ static class Worker
     // giveAway — номера выключенных треков игры, чьи строки можно забрать (по порядку: кого отдавать первым)
     static void AddBanks(List<Song> songs, List<string> encDirs, List<long> giveAway)
     {
-        Say("STEP bank");
+        Say("STEP bank 0/" + songs.Count);
         var banks = new List<BankWork> { OpenBank(BANK), OpenBank(BANK1) };
         if (job.ContainsKey("ev01first") && Convert.ToBoolean(job["ev01first"])) banks.Reverse();   // только для теста ev01 в игре (задание вручную)
         foreach (long t in giveAway)
@@ -351,25 +511,30 @@ static class Worker
             {
                 if (!w.Bank.Tracks().Contains(t)) continue;
                 int n = w.Bank.RemoveTrack(t);
-                if (n > 0) { w.Changed = true; App.Log("банк " + w.Name + ": выключенный трек игры " + t + " отдал строк " + n); }
+                if (n > 0) { w.Changed = true; App.Log("bank " + w.Name + ": disabled game track " + t + " freed rows " + n); }
             }
         }
-        int cap = banks.Sum(x => Free(x));
-        if (songs.Count > cap) throw new UserError("tooManySongs", cap.ToString());
-        int num = (int)Math.Max(140, banks.Max(w => w.Bank.MaxTrack()) + 1);   // номер растет на оба банка — не повторяется
+        int num = (int)Math.Max(140, banks.Max(w => w.Bank.MaxTrack()) + 1);   // номер растет на все банки — не повторяется
+        // родные банки полны — свой банк (копия ev02 без ее треков), до MaxNewBanks штук. Флаг задания ev03first — только для теста своего банка в игре
+        bool newFirst = job.ContainsKey("ev03first") && Convert.ToBoolean(job["ev03first"]);
+        int made = 0;
         for (int i = 0; i < songs.Count; i++)
         {
             var s = songs[i];
-            var w = banks.First(x => Free(x) > 0);
+            Tell("bank " + (i + 1) + "/" + songs.Count + " · " + Clean(s.title), i, songs.Count);   // самый долгий шаг (~100 с на 277 песен)
+            var w = banks.FirstOrDefault(x => (!newFirst || x.IsNew) && Fits(x, num));
+            if (w == null && made < MaxNewBanks) { w = NewBank(made++); banks.Add(w); }
+            if (w == null) throw new UserError("tooManySongs", i.ToString());   // влезло i
+            if (w.IsNew && w.First < 0) w.First = num;
             s.num = num++;
             s.trackName = TrackName(s);
             var stream = new MemoryStream(); var pieces = new List<SbleBank.Piece>();
             foreach (var k in new[] { Tuple.Create("B", 0, true), Tuple.Create("C", 1, false), Tuple.Create("A", 3, false) })
             {
                 byte[] a = File.ReadAllBytes(Path.Combine(encDirs[i], k.Item1 + ".sps")), m = File.ReadAllBytes(Path.Combine(encDirs[i], k.Item1 + ".sek"));
-                if (a[0] != 0x48) throw new Exception(k.Item1 + ".sps: не SPS");
+                if (a[0] != 0x48) throw new Exception(k.Item1 + ".sps: not SPS");
                 uint rate = BE32(a, 4) & 0x3FFFF, samples = BE32(a, 8) & 0x1FFFFFFF;
-                if (rate != Audio.SR) throw new Exception("частота " + rate);
+                if (rate != Audio.SR) throw new Exception("sample rate " + rate);
                 while (stream.Length % 16 != 0) stream.WriteByte(0);
                 long off = stream.Length; stream.Write(a, 0, a.Length);
                 pieces.Add(new SbleBank.Piece { Value = k.Item2, Intro = k.Item3, Offset = off, Length = samples / (float)rate, MemGuid = w.NewChunk(m), MemSize = (uint)m.Length });
@@ -377,9 +542,11 @@ static class Worker
             byte[] sd = stream.ToArray();
             w.Bank.AddSong(s.num, pieces, w.NewChunk(sd), (uint)sd.Length);
             w.Changed = true; w.Songs++;
-            App.Log("песня " + s.trackName + " номер " + s.num + " -> " + w.Name + ", звук " + sd.Length + " Б");
+            App.Log("song " + s.trackName + " number " + s.num + " -> " + w.Name + ", audio " + sd.Length + " B");
         }
-        foreach (var w in banks) if (w.Changed) SaveBank(w);
+        foreach (var w in banks) if (w.IsNew) SaveNewBank(w); else if (w.Changed) SaveBank(w);
+        var mine = banks.Where(w => w.IsNew).ToList();
+        if (mine.Count > 0) AddToGraph(mine);
     }
 
     static string TrackName(Song s)
@@ -463,7 +630,7 @@ static class Worker
             }
             string n; return artByGuid.TryGetValue(p.External.FileGuid, out n) ? n : null;
         }
-        catch (Exception ex) { App.Log("обложка трека: " + ex.Message); return null; }
+        catch (Exception ex) { App.Log("track cover: " + ex.Message); return null; }
     }
 
     static string Str(object o, string prop) { object v = o.GetType().GetProperty(prop).GetValue(o); return v == null ? "" : v.ToString(); }
@@ -489,7 +656,7 @@ static class Worker
         ResAssetEntry srcR = am.GetResEntry((ulong)troot.Resource);
         Texture t = am.GetResAs<Texture>(srcR);
         ChunkAssetEntry srcC = am.GetChunkEntry(t.ChunkId);
-        if (pix.Length != t.MipSizes[0]) throw new Exception("обложка: " + pix.Length + " != " + t.MipSizes[0]);
+        if (pix.Length != t.MipSizes[0]) throw new Exception("cover: " + pix.Length + " != " + t.MipSizes[0]);
         EbxAssetEntry newE = am.AddEbx(newArt, tex, srcE.Bundles.ToArray());
         t.AssetNameHash = (uint)Utils.HashString(newArt, true);
         Guid newChunk = am.AddChunk(pix, null, t, srcC.Bundles.ToArray());

@@ -32,10 +32,16 @@ rem Frosty Toolsuite libraries (GPL v3) - to read the game and write the mod
 for %%f in (FrostySdk.dll FrostyCore.dll FrostyHash.dll FrostyModSupport.dll FrostyControls.dll) do copy /y "%FMM%\%%f" "%OUT%\app\frosty\" >nul
 copy /y "%FMM%\Profiles\NFSUnboundSDK.dll" "%OUT%\app\frosty\Profiles\" >nul
 xcopy /y /e /q "%FMM%\ThirdParty" "%OUT%\app\frosty\ThirdParty\" >nul
-rem the window (HTML/JS/CSS) and docs
+rem the window (HTML/JS/CSS) and docs (README.txt + README\ in 12 more languages + THIRD-PARTY.txt)
 xcopy /y /e /q "%HERE%web" "%OUT%\app\web\" >nul
-copy /y "%HERE%docs\*" "%OUT%\" >nul
+xcopy /y /e /q "%HERE%docs" "%OUT%\" >nul
 rem EA audio encoder (optional here): Tool.exe + eaxmaenc.dll + libatrac9.dll + libmp3lame.dll + msvcr120.dll
 if not "%ENC%"=="" for %%f in (Tool.exe eaxmaenc.dll libatrac9.dll libmp3lame.dll msvcr120.dll) do copy /y "%ENC%\%%f" "%OUT%\app\encoder\" >nul
+rem Microsoft Visual C++ runtime (1.0.1): a clean Windows has no VCRUNTIME140.dll - FrostyHash, libzstd, zlibwapi and eaxmaenc need it,
+rem the game's Oodle (oo2core_9_win64.dll) needs VCRUNTIME140_1.dll. The program loads app\frosty first (SetDllDirectory in App.cs).
+for %%f in (vcruntime140.dll vcruntime140_1.dll) do if exist "%WINDIR%\System32\%%f" copy /y "%WINDIR%\System32\%%f" "%OUT%\app\frosty\" >nul
+if exist "%WINDIR%\System32\vcruntime140.dll" copy /y "%WINDIR%\System32\vcruntime140.dll" "%OUT%\app\encoder\" >nul
+rem Not built here (copy from the release zip if you need them): app\yt-dlp.exe (songs from YouTube / YT Music)
+rem and app\vcredist\VC_redist.x64.exe (Microsoft's installer, offered by the program if the runtime still fails to load).
 
 echo Built: %OUT%

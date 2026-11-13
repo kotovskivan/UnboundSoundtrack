@@ -22,6 +22,11 @@ EA audio encoder — app\encoder\Tool.exe + eaxmaenc.dll — from the Sound Edit
   LibAtrac9 (libatrac9.dll) — https://github.com/Thealexbarney/LibAtrac9 ;
   Microsoft Visual C++ runtime (msvcr120.dll).
 
+yt-dlp — app\yt-dlp.exe — downloads a song (sound, cover, artist and title) from a YouTube / YT Music link,
+  album or playlist (the "From YT Music" button). Official release yt-dlp.exe 2026.10.26, unchanged.
+  Made by the yt-dlp team (contributors of the yt-dlp project). License: The Unlicense (public domain).
+  https://github.com/yt-dlp/yt-dlp
+
 This program — Unbound Soundtrack.exe, source code in source\ — GNU GPL v3 (it uses Frosty libraries).
 
 ---------------------------------------------------------------------

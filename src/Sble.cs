@@ -50,7 +50,7 @@ class SbleBank
     // ---------------- чтение ----------------
     public static SbleBank Read(byte[] d)
     {
-        if (U32(d, 0) != 0x656C4253) throw new Exception("не SBle");
+        if (U32(d, 0) != 0x656C4253) throw new Exception("not SBle");
         var b = new SbleBank();
         b.Align = d[8]; b.Unk1 = d[9];
         int n = U16(d, 10); b.Key = U32(d, 12); b.SbrType = U32(d, 16); b.Unk2 = U32(d, 20);
@@ -79,7 +79,7 @@ class SbleBank
                 int cnt = U16(d, q + 30) >> 8;
                 for (int j = 0; j < cnt; j++) ix.ParamIdx.Add(np + j);
                 np += cnt;
-                if (U32(d, q + 8) != 0 || U32(d, q + 16) != 0) throw new Exception("индекс: unkOffset/item3 не 0 — не умею");
+                if (U32(d, q + 8) != 0 || U32(d, q + 16) != 0) throw new Exception("index: unkOffset/item3 not 0 - unsupported");
                 ix.HasArray = U32(d, q) != 0; arrays.Add((int)U32(d, q));
                 ds.Indexes.Add(ix);
             }
@@ -91,8 +91,8 @@ class SbleBank
                 long mn = (int)U32(d, q + 8), mx = (int)U32(d, q + 12); int to = (int)U32(d, q + 16);
                 if (pa.Type == 1) for (int e = 0; e < cnt; e++) pa.Vals.Add(mn + d[to + e]);
                 else if (pa.Type == 0) for (int e = 0; e < cnt; e++) pa.Vals.Add(mn + e);
-                else throw new Exception("параметр типа " + pa.Type + " — не умею");
-                if (pa.Vals.Max() != mx) throw new Exception("параметр: макс не сошелся");
+                else throw new Exception("parameter type " + pa.Type + " - unsupported");
+                if (pa.Vals.Max() != mx) throw new Exception("parameter: max mismatch");
                 ds.Params.Add(pa);
             }
             // ключи строк — из сетки первого индекса с массивом
@@ -106,7 +106,7 @@ class SbleBank
                     ds.RowKeys = new List<int[]>();
                     for (int c = 0; c < cells; c++)
                         for (int r = d[a + c]; r < d[a + c + 1]; r++) ds.RowKeys.Add(CellToKey(ds, ix, c));
-                    if (ds.RowKeys.Count != ds.Count) throw new Exception("сетка покрывает " + ds.RowKeys.Count + " строк из " + ds.Count);
+                    if (ds.RowKeys.Count != ds.Count) throw new Exception("grid covers " + ds.RowKeys.Count + " rows of " + ds.Count);
                 }
             }
             b.Dsets.Add(ds);
@@ -116,6 +116,9 @@ class SbleBank
         {
             var ds = b.Dsets[i];
             int st = (int)U32(d, tab + i * 8), end = i + 1 < n ? (int)U32(d, tab + (i + 1) * 8) : dataOff;
+            // справочные списки лежат ДО массивов индексов: ищем только до них (у своего банка сетка 0,1,2… совпадает со списком номеров вариантов)
+            int icnt = U16(d, st + 0x3E), ioff = U16(d, st + 0x42);
+            for (int k = 0; k < icnt; k++) { int arr = (int)U32(d, st + ioff + 32 * k); if (arr > 0 && arr < end) end = arr; }
             int p = st + (int)U32(d, st + 4);
             byte[] tables = b.TablesBlob(ds, p, new List<int>(), new List<int>(), new List<int>());
             p += tables.Length;
@@ -163,7 +166,7 @@ class SbleBank
                     return raw;
                 }
         }
-        throw new Exception("тип хранения " + f.St);
+        throw new Exception("storage type " + f.St);
     }
 
     static int Pad(int p, int a) { return (p + a - 1) / a * a; }
@@ -242,7 +245,7 @@ class SbleBank
             if (done.ContainsKey(pa.Hash)) { paramPos.Add(done[pa.Hash]); continue; }
             int at = bas + o.Count; done[pa.Hash] = at; paramPos.Add(at);
             long mn = pa.Vals.Min();
-            foreach (long x in pa.Vals) { if (x - mn > 255) throw new Exception("значение параметра не влезает в байт"); o.Add((byte)(x - mn)); }
+            foreach (long x in pa.Vals) { if (x - mn > 255) throw new Exception("parameter value does not fit in a byte"); o.Add((byte)(x - mn)); }
         }
         return o.ToArray();
     }
@@ -262,8 +265,8 @@ class SbleBank
             }
             return c;
         }).ToList();
-        for (int r = 1; r < cellOf.Count; r++) if (cellOf[r] < cellOf[r - 1]) throw new Exception("строки не по порядку ячеек");
-        if (ds.Count > 255) throw new Exception("строк " + ds.Count + " > 255 — сетка на байтах не влезет");
+        for (int r = 1; r < cellOf.Count; r++) if (cellOf[r] < cellOf[r - 1]) throw new Exception("rows not in cell order");
+        if (ds.Count > 255) throw new Exception("rows " + ds.Count + " > 255 - byte grid does not fit");
         var o = new byte[cells + 1];
         int row = 0;
         for (int c = 0; c <= cells; c++) { while (row < cellOf.Count && cellOf[row] < c) row++; o[c] = (byte)row; }
@@ -292,7 +295,7 @@ class SbleBank
         for (int i = 0; i < Dsets.Count; i++)
         {
             var ds = Dsets[i];
-            foreach (var f in ds.Fields) if (f.Vals.Count != ds.Count) throw new Exception("поле " + f.Hash.ToString("X8") + ": значений " + f.Vals.Count + " != " + ds.Count);
+            foreach (var f in ds.Fields) if (f.Vals.Count != ds.Count) throw new Exception("field " + f.Hash.ToString("X8") + ": values " + f.Vals.Count + " != " + ds.Count);
             int st = o.Count; W32(tab + 8 * i, (uint)st);
             int fo = 0x48, io = fo + 24 * ds.Fields.Count, po = io + 32 * ds.Indexes.Count, hsz = po + 24 * ds.Params.Count;
             Zero(hsz);
@@ -359,7 +362,7 @@ class SbleBank
         var trackParams = sel.Params.Where(p => p.Hash == P_TRACK).ToList();
         int ti = trackParams[0].Vals.IndexOf(track);
         if (ti < 0) return 0;
-        if (trackParams[0].Vals.Count <= 1) throw new Exception("последний трек банка не убираем");
+        if (trackParams[0].Vals.Count <= 1) throw new Exception("cannot remove the last track of a bank");
         var keep = Enumerable.Range(0, sel.Count).Where(r => sel.RowKeys[r][0] != ti).ToList();
         int removed = sel.Count - keep.Count;
         foreach (var f in sel.Fields) f.Vals = keep.Select(r => f.Vals[r]).ToList();
@@ -375,8 +378,8 @@ class SbleBank
     {
         var sel = this[DS_SEL]; var vr = this[DS_VAR]; var sg = this[DS_SEG]; var ch = this[DS_CHK];
         var trackParams = sel.Params.Where(p => p.Hash == P_TRACK).ToList();
-        if (trackParams[0].Vals.Contains(track)) throw new Exception("номер " + track + " уже есть в банке");
-        if (track <= trackParams[0].Vals.Max()) throw new Exception("номер должен быть больше " + trackParams[0].Vals.Max() + " (дописываем в конец сетки)");
+        if (trackParams[0].Vals.Contains(track)) throw new Exception("number " + track + " is already in the bank");
+        if (track <= trackParams[0].Vals.Max()) throw new Exception("number must be greater than " + trackParams[0].Vals.Max() + " (appended to the end of the grid)");
         foreach (var p in trackParams) p.Vals.Add(track);
         var pieceVals = sel.Params.First(p => p.Hash == P_PIECE).Vals;
         int trackIdx = trackParams[0].Vals.Count - 1;
@@ -416,7 +419,7 @@ class SbleBank
             vr.Count++;
             // строка Selection
             int pieceIdx = pieceVals.IndexOf(pc.Value);
-            if (pieceIdx < 0) throw new Exception("кусок " + pc.Value + " не из {" + string.Join(",", pieceVals) + "}");
+            if (pieceIdx < 0) throw new Exception("piece " + pc.Value + " not in {" + string.Join(",", pieceVals) + "}");
             F(DS_SEL, SEL_VARIDX).Vals.Add((ulong)varIdx);
             F(DS_SEL, SEL_INTRO).Vals.Add(pc.Intro ? (ulong)BitConverter.ToUInt32(BitConverter.GetBytes(17.0f), 0) : 0UL);
             F(DS_SEL, ID).Vals.Add(id);
@@ -425,6 +428,57 @@ class SbleBank
         }
         foreach (var ds in new[] { sel, vr, sg, ch }) foreach (var f in ds.Fields) Restore(f);
     }
+
+    // ---------------- свой банк (третий, четвертый…) из образца ev02 ----------------
+    // Порядок: образец → AddSong своих песен (номера больше номеров образца) → DropTracks(треки образца) → Compact (выкинуть их
+    // варианты, сегменты и чанки — на них больше никто не ссылается) → SetKey (свой ключ банка). Раздел Selection остается с ключом
+    // ev01 (A23BBC0A): так игра подмешивает к запросам в ev01 и ev02, и банк титров (разбор 11.11, findings «Сколько банков можно»).
+    public void DropTracks(IEnumerable<long> tracks) { foreach (long t in tracks.ToList()) RemoveTrack(t); }
+
+    public void Compact()
+    {
+        var sel = this[DS_SEL]; var vr = this[DS_VAR]; var sg = this[DS_SEG]; var ch = this[DS_CHK];
+        if (sg.Count != vr.Count) throw new Exception("segments " + sg.Count + " != variants " + vr.Count + " - unsupported");
+        var gv = F(DS_CHK, CHK_GUID).Vals;
+        if (Data.Length != 16 * ch.Count || Enumerable.Range(0, ch.Count).Any(i => gv[i] != (ulong)(1 + 16 * i)))
+            throw new Exception("data area is not only chunk GUIDs - unsupported");
+        var fseg = F(DS_VAR, VAR_FIRSTSEG).Vals; var mem = F(DS_VAR, VAR_MEM).Vals; var stm = F(DS_VAR, VAR_STREAM).Vals;
+        var keepVar = F(DS_SEL, SEL_VARIDX).Vals.Select(v => (int)v).Distinct().OrderBy(x => x).ToList();
+        var keepSeg = keepVar.Select(v => (int)fseg[v]).Distinct().OrderBy(x => x).ToList();
+        var keepChk = keepVar.SelectMany(v => new[] { mem[v], stm[v] }).Where(x => (x & 1) == 1).Select(x => (int)(x >> 1)).Distinct().OrderBy(x => x).ToList();
+        Func<List<int>, Dictionary<int, int>> Map = l => l.Select((x, i) => new { x, i }).ToDictionary(a => a.x, a => a.i);
+        var mv = Map(keepVar); var ms = Map(keepSeg); var mc = Map(keepChk);
+        Action<SbDset, List<int>> Keep = (ds, keep) => { foreach (var f in ds.Fields) f.Vals = keep.Select(i => f.Vals[i]).ToList(); ds.Count = keep.Count; };
+        Data = keepChk.SelectMany(i => Data.Skip(16 * i).Take(16)).ToArray();   // только GUID оставленных чанков
+        Keep(vr, keepVar); Keep(sg, keepSeg); Keep(ch, keepChk);
+        F(DS_CHK, CHK_GUID).Vals = Enumerable.Range(0, ch.Count).Select(i => (ulong)(1 + 16 * i)).ToList();
+        var nf = F(DS_VAR, VAR_FIRSTSEG).Vals; var nm = F(DS_VAR, VAR_MEM).Vals; var ns = F(DS_VAR, VAR_STREAM).Vals;
+        for (int i = 0; i < vr.Count; i++)
+        {
+            nf[i] = (ulong)ms[(int)nf[i]];
+            if ((nm[i] & 1) == 1) nm[i] = ((ulong)mc[(int)(nm[i] >> 1)] << 1) | 1;
+            if ((ns[i] & 1) == 1) ns[i] = ((ulong)mc[(int)(ns[i] >> 1)] << 1) | 1;
+        }
+        var sv = F(DS_SEL, SEL_VARIDX).Vals;
+        for (int r = 0; r < sel.Count; r++) sv[r] = (ulong)mv[(int)sv[r]];
+        // параметры-номера (тип 0: 0..N-1) у вариантов / сегментов / чанков — под новое число элементов (как в банках игры)
+        foreach (var ds in new[] { vr, sg, ch }) foreach (var p in ds.Params.Where(p => p.Type == 0)) p.Vals = Enumerable.Range(0, ds.Count).Select(i => (long)i).ToList();
+        foreach (var ds in new[] { sel, vr, sg, ch }) foreach (var f in ds.Fields) Restore(f);
+    }
+
+    // свой ключ банка (у игры ключ = djb2 от строки GUID корневого объекта ассета: проверено на ev01 и ev02); ключ раздела Selection не трогаем
+    public void SetKey(uint key)
+    {
+        uint old = Key; Key = key;
+        foreach (var ds in Dsets) if (ds.Unk1 == old) ds.Unk1 = key;
+    }
+    public static uint KeyOf(Guid rootInstance)
+    {
+        uint r = 5381;
+        foreach (char c in rootInstance.ToString()) r = (r * 33) ^ (byte)c;
+        return r;
+    }
+    public long MinTrack() { return this[DS_SEL].Params.First(p => p.Hash == P_TRACK).Vals.Min(); }
 
     public static void Cmd(string[] args)
     {

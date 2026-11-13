@@ -1,6 +1,8 @@
 // Своя песня -> куски A/B/C (48 кГц, стерео, 16 бит) -> кодировщик EA (Tool.exe) -> .sps + .sek.
-// A — полная; B — «старт гонки»: 17 с до GO и дальше до конца (GO раньше 17 с — с начала); C — «финиш»: свой отрезок с затуханием 3 с.
+// A — полная; B — «старт гонки»: 17 с катсцены + 3,45 с старта 3-2-1 до GO и дальше до конца (GO раньше 20 с — с начала);
+// C — «финиш»: свой отрезок с затуханием 3 с.
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -8,7 +10,13 @@ using System.Text;
 static class Audio
 {
     public const int SR = 48000;
-    public const double B_INTRO = 17.0;
+    // старт гонки: 17 с катсцены, потом 3 с отсчета 3-2-1, на GO — дроп. До 12.11 было 17 (только катсцена) — дроп бил на «3»
+    // (видео Вани 12.11 + отзыв в Steam: «drop on go не на go, а на начало отсчета»)
+    // старт гонки: катсцена + старт (отсчет 3-2-1), на GO — дроп. 12.11: 17+3 (отзыв MtheAX: при 17 дроп бил на «3»);
+    // 13.11 Ваня в игре: 21+3 — «шляпа», 17+4 — мимо; 20,65 = замер по самой игре: дроп в куске B у треков игры на 20,3-21,1 с,
+    // медиана сильных 20,65 (паспорт игры, «Старт гонки»; tools/frosty-reader/intro_drops.py); 20,65 в игре тоже мимо → Ваня: 20,45
+    // (окно: те же числа в web/index.html B_CUT / B_COUNT; ключ кэша куска B содержит B_INTRO — старые куски перекодируются сами)
+    public const double B_CUT = 17.0, B_COUNT = 3.45, B_INTRO = B_CUT + B_COUNT;
 
     // song.wav пишем сами (из браузера приходит готовый PCM), поэтому заголовок простой: 44 байта
     public static void WriteWav(string path, Stream pcm, long bytes)
@@ -43,70 +51,99 @@ static class Audio
         throw new Exception("no data in " + wav);
     }
 
-    static void Piece(byte[] pcm, double from, double len, double fade, string path)
+    // pad — тишина перед куском (с): старт гонки, если GO в песне раньше 20 с (Ваня 12.11: «да делать на GO») — дроп все равно ровно на GO
+    static void Piece(byte[] pcm, double from, double len, double fade, string path, double pad = 0)
     {
         long total = pcm.Length / 4;
         long a = Math.Max(0, Math.Min(total, (long)Math.Round(from * SR)));
         long n = len < 0 ? total - a : Math.Min(total - a, (long)Math.Round(len * SR));
-        var d = new byte[n * 4]; Buffer.BlockCopy(pcm, (int)(a * 4), d, 0, d.Length);
+        long z = Math.Max(0, (long)Math.Round(pad * SR));
+        var d = new byte[(z + n) * 4]; Buffer.BlockCopy(pcm, (int)(a * 4), d, (int)(z * 4), (int)(n * 4));   // массив — нули: тишина уже есть
         if (fade > 0)
         {
             long fn = Math.Min(n, (long)(fade * SR));
             for (long i = 0; i < fn; i++)
             {
                 double k = 1.0 - (double)i / Math.Max(1, fn - 1);   // от 1 до 0, как np.linspace(1, 0, n)
-                long s = (n - fn + i) * 4;
+                long s = (z + n - fn + i) * 4;
                 for (int c = 0; c < 2; c++) { short v = BitConverter.ToInt16(d, (int)s + 2 * c); short nv = (short)(v * k); d[s + 2 * c] = (byte)nv; d[s + 2 * c + 1] = (byte)(nv >> 8); }
             }
         }
         using (var f = File.Create(path)) { WriteHeader(f, d.Length); f.Write(d, 0, d.Length); }
     }
 
-    // готовит папку enc\ с A/B/C .sps/.sek; если метки не менялись — ничего не делает
+    // готовит папку enc\ с A/B/C .sps/.sek. Кусок перекодируется, только если поменялось то, от чего он зависит:
+    // A — звук; B — звук + GO + длина старта; C — звук + финиш. Двинул GO — кодируется один B (раньше все три, ~4 с на песню).
+    // Ключи — enc\key_A.txt / key_B.txt / key_C.txt (пишутся после удачного кодирования куска).
     public static string Prepare(Song s, Action<string> say)
     {
         string dir = Path.Combine(App.SongsDir, s.id), enc = Path.Combine(dir, "enc");
         string wav = Path.Combine(dir, "song.wav");
         if (!File.Exists(wav)) throw new UserError("songMissing", s.title);
         var wi = new FileInfo(wav);
-        string key = string.Join("|", wi.Length, wi.LastWriteTimeUtc.Ticks, s.drop.ToString("0.00"), s.outro.ToString("0.00"), s.cDur.ToString("0.00"), "v1");
-        string keyFile = Path.Combine(enc, "key.txt");
-        bool ok = File.Exists(keyFile) && File.ReadAllText(keyFile) == key;
-        foreach (string k in new[] { "A", "B", "C" }) ok &= File.Exists(Path.Combine(enc, k + ".sps")) && File.Exists(Path.Combine(enc, k + ".sek"));
-        if (ok) return enc;
-        if (Directory.Exists(enc)) Directory.Delete(enc, true);
+        string w = wi.Length + "|" + wi.LastWriteTimeUtc.Ticks;
+        var keys = new Dictionary<string, string> {
+            { "A", w + "|v1" },
+            { "B", w + "|" + s.drop.ToString("0.00") + "|" + B_INTRO.ToString("0.00") + (s.drop < B_INTRO ? "|pad" : "") + "|v1" },   // pad — тишина перед ранним GO (12.11)
+            { "C", w + "|" + s.outro.ToString("0.00") + "|" + s.cDur.ToString("0.00") + "|v1" } };
+        // кэш до 12.11 (один key.txt на три куска, B — с 17 с): A и C из него годятся, B — перекодировать
+        string oldFile = Path.Combine(enc, "key.txt");
+        string oldKey = string.Join("|", wi.Length, wi.LastWriteTimeUtc.Ticks, s.drop.ToString("0.00"), s.outro.ToString("0.00"), s.cDur.ToString("0.00"), "v1");
+        bool oldOk = File.Exists(oldFile) && File.ReadAllText(oldFile) == oldKey;
         Directory.CreateDirectory(enc);
+        var todo = new List<string>();
+        foreach (var k in keys)
+        {
+            string kf = Path.Combine(enc, "key_" + k.Key + ".txt");
+            bool have = File.Exists(Path.Combine(enc, k.Key + ".sps")) && File.Exists(Path.Combine(enc, k.Key + ".sek"));
+            if (have && File.Exists(kf) && File.ReadAllText(kf) == k.Value) continue;
+            if (have && oldOk && k.Key != "B") { File.WriteAllText(kf, k.Value); continue; }
+            todo.Add(k.Key);
+        }
+        if (File.Exists(oldFile)) File.Delete(oldFile);
+        if (todo.Count == 0) return enc;
+
         byte[] pcm = ReadPcm(wav);
         double dur = pcm.Length / 4.0 / SR;
         double b0 = Math.Max(0, s.drop - B_INTRO);
         double cLen = Math.Min(s.cDur, dur), c0 = Math.Max(0, Math.Min(s.outro, dur - cLen));
-        Piece(pcm, 0, -1, 0, Path.Combine(enc, "A.wav"));
-        Piece(pcm, b0, -1, 0, Path.Combine(enc, "B.wav"));
-        Piece(pcm, c0, cLen, 3.0, Path.Combine(enc, "C.wav"));
+        foreach (string k in todo)
+        {
+            File.Delete(Path.Combine(enc, "key_" + k + ".txt"));
+            foreach (string f in Directory.GetFiles(enc, k + ".*")) File.Delete(f);
+            if (k == "A") Piece(pcm, 0, -1, 0, Path.Combine(enc, "A.wav"));
+            if (k == "B") Piece(pcm, b0, -1, 0, Path.Combine(enc, "B.wav"), Math.Max(0, B_INTRO - s.drop));   // GO раньше B_INTRO — тишина перед песней
+            if (k == "C") Piece(pcm, c0, cLen, 3.0, Path.Combine(enc, "C.wav"));
+        }
         pcm = null;
-        foreach (string k in new[] { "A", "B", "C" })
+        foreach (string k in todo)
         {
             say(k);
             Encode(Path.Combine(enc, k + ".wav"), Path.Combine(enc, k));
             File.Delete(Path.Combine(enc, k + ".wav"));
+            File.WriteAllText(Path.Combine(enc, "key_" + k + ".txt"), keys[k]);
         }
-        File.WriteAllText(keyFile, key);
         return enc;
     }
 
+    public static Process Current;   // кодировщик, который работает сейчас
     static void Encode(string wav, string outBase)
     {
         string tool = Path.Combine(App.EncDir, "Tool.exe");
         if (!File.Exists(tool)) throw new UserError("encoderMissing", tool);
-        var psi = new ProcessStartInfo(tool, "-sndplayer -fileformatversion1 -ealayer3pcm_int -seekable \"" + wav + "\" \"-=" + outBase + "\"")
-        { WorkingDirectory = App.EncDir, UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
+        // кодировщик EA не понимает кириллицу в путях (P2-03: «Мої моди», C:\Users\Іван) — запускаем из папки wav, в аргументах только имена
+        // (wav и outBase всегда в одной папке; сам Tool.exe из папки с кириллицей работает — проверено 12.11)
+        var psi = new ProcessStartInfo(tool, "-sndplayer -fileformatversion1 -ealayer3pcm_int -seekable \"" + Path.GetFileName(wav) + "\" \"-=" + Path.GetFileName(outBase) + "\"")
+        { WorkingDirectory = Path.GetDirectoryName(wav), UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
         using (var p = Process.Start(psi))
         {
+            Current = p;   // программу закрыли посреди кодирования — Worker.WatchParent гасит и его
             string o = p.StandardOutput.ReadToEnd(), e = p.StandardError.ReadToEnd();
             p.WaitForExit();
             if (p.ExitCode != 0 || !File.Exists(outBase + ".sps") || !File.Exists(outBase + ".sek"))
             {
                 App.Log("encoder exit " + p.ExitCode + "\n" + o + "\n" + e);
+                if (p.ExitCode == -1073741515) throw new UserError("vcMissing", "Tool.exe");   // 0xC0000135: нет DLL (VCRUNTIME140 в app\encoder пропала)
                 throw new UserError("encodeFailed", Path.GetFileName(wav));
             }
         }

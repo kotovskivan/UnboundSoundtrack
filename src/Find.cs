@@ -17,13 +17,15 @@ static class Find
     public static bool IsFmm(string d) { return !string.IsNullOrEmpty(d) && File.Exists(Path.Combine(d, FmmExe)); }
     public static string KeyPath(string fmm) { return Path.Combine(fmm, "nfsunbound.key"); }
     public static string ModsDir(string fmm) { return Path.Combine(fmm, "Mods", App.Profile); }
+    // один вид пути: без кавычек и без косой черты на конце (реестр EA отдает «...\Need for Speed Unbound\» — R1-12); корень диска «C:\» как есть
+    public static string Norm(string p) { p = Path.GetFullPath(p.Trim().Trim('"').Trim()); return p.Length > 3 ? p.TrimEnd('\\', '/') : p; }
 
     public static string Game()
     {
         var st = Settings.Get();
         if (IsGame(st.gamePath)) return st.gamePath;
         foreach (string c in GameCandidates())
-            if (IsGame(c)) { string p = Path.GetFullPath(c); Settings.Edit(s => s.gamePath = p); App.Log("игра найдена: " + p); return p; }
+            if (IsGame(c)) { string p = Norm(c); Settings.Edit(s => s.gamePath = p); App.Log("game found: " + p); return p; }
         return null;
     }
 
@@ -118,7 +120,7 @@ static class Find
         lock (fl)
         {
             if (!fmmSearched) { fmmFound = SearchFmm(); fmmSearched = true; }
-            if (fmmFound != null) { string p = fmmFound; Settings.Edit(s => s.fmmPath = p); App.Log("Mod Manager найден: " + p); }
+            if (fmmFound != null) { string p = Norm(fmmFound); Settings.Edit(s => s.fmmPath = p); App.Log("Mod Manager found: " + p); }
             return fmmFound;
         }
     }
