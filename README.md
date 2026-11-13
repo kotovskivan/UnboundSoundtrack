@@ -63,11 +63,20 @@ Output: `out\Unbound Soundtrack\` — the same layout as the release zip.
 
 ## Changelog
 
-- **1.0.1** — songs from YouTube / YT Music (link, playlist, album, many links, .txt list; a music video link takes the same song from YT Music).
-  13 languages. Race start: the drop hits at GO (17 s cutscene + 3.45 s countdown = 20.45 s). Hundreds of songs in one mod (tested with 277).
-  ▶ for your own songs, covers (upload / generate / delete), HIGH / LOW, sorting / filters / list view, drag & drop, browser choice,
-  Stop button for the build (closing the program stops it too). Visual C++ runtime included.
-  Fixed: "Races only" songs also played in the garage; non-Latin titles were empty on the in-game track plate (now written in Latin letters).
+- **1.0.1** — big update.
+  - New: songs from YouTube / YT Music — a song, playlist, album, many links or a .txt list; a music video link takes the same song
+    from YT Music; an unavailable video is replaced by the same song from YT Music. 13 languages (translated with AI), README in each.
+  - Hundreds of songs in one mod (own sound banks; tested with 277).
+  - Race start: the drop hits at GO (17 s cutscene + 3.45 s countdown = 20.45 s); GO is found by the bass drop; songs with an early
+    drop get silence before them.
+  - HIGH / LOW for every track; sorting, filters, list view (remembered); drag & drop and your own song order.
+  - ▶ for your own songs; covers: upload / generate / delete; "leave without saving?" in the song editor.
+  - Build progress for every song, Stop button (closing the program stops the build, a stopped build never leaves a broken mod).
+  - Browser choice; "How it works" help; links to the NFS Unbound Encryption Key and the website; Visual C++ runtime included; log in English.
+  - Fixed: building in a folder with non-Latin letters (the encoder failed — also in 1.0.0a); "FrostyHash.dll" error without
+    Visual C++; "Races only" songs played in the garage; non-Latin titles were empty on the in-game plate; a very long song name
+    broke saving; building again after closing the window mid-build; folder picker (quoted / wrong paths, English system folders);
+    "Open Mod Manager" silent on failure; language on the first screens; window bigger than small screens.
 
 - **1.0.0a** — fix: "Build mod" failed with `FileLoadException: Could not load file or assembly 'FrostySdk' ... (0x80131515)`
   when the zip was downloaded and unpacked with Windows Explorer (Windows marks every unpacked file as "from the internet",
