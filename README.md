@@ -10,7 +10,7 @@ Free fan-made tool by **Kitivski + Claude** (Claude — AI by Anthropic). Not af
 - Builds **one mod** for Frosty Mod Manager. Game files are not changed. Interface in **14 languages**.
 - **Offline only** — mods are for single player.
 
-**Download:** [website](https://kotovskivan.github.io/UnboundSoundtrack/) · [Nexus Mods](https://www.nexusmods.com/needforspeedunbound/mods/671) · [NFSMods](https://nfsmods.xyz/mod/8161) ·
+**Download:** [website](https://kotovskivan.github.io/UnboundSoundtrack/) · [Nexus Mods](https://www.nexusmods.com/needforspeedunbound/mods/671) · [NFSMods](https://nfsmods.xyz/mod/8161) · [NFSAddons](https://www.nfsaddons.com/downloads/unbound/tools/11657/unbound-soundtrack-add-your-own-music.html) ·
 **Guide with screenshots (UA/EN):** [Steam](https://steamcommunity.com/sharedfiles/filedetails/?id=3837419990)
 
 ## How it works
