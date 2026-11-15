@@ -63,6 +63,13 @@ Output: `out\Unbound Soundtrack\` — the same layout as the release zip.
 
 ## Changelog
 
+- **1.0.3**
+  - Fixed: with a lot of your songs (about 100 and more — then the mod adds its own sound banks) the police chase music went silent.
+    When the mod changed the game's music graph, Frosty's writer lost the plugins of the music players, including the chase ones.
+    Now the graph is the game's own bytes plus your sound banks (`src/Graph.cs`), and the build checks it
+    (if the check fails, it falls back to the old way and writes a WARNING to the log).
+  - Window: NFS Own Music tile (your own songs for the whole NFS series), NFSAddons in "Our pages", straight buttons in the top bar.
+
 - **1.0.2**
   - New: **Garage** — a third switch next to Races and City: a song (or a game track) can play only in the garage
     (suggested by Low Rider). Songs and profiles from 1.0.1 keep playing in the garage as before.

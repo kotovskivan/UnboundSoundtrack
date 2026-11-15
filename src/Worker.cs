@@ -312,6 +312,18 @@ static class Worker
         if (File.Exists(tmp)) File.Delete(tmp);
         new Frosty.Core.FrostyProject().WriteToMod(tmp, ms);
         if (!File.Exists(tmp) || new FileInfo(tmp).Length < 1000) throw new Exception("mod was not written");
+        // граф музыки: писатель Frosty теряет плагины проигрывателей -> в игре молчит погоня (15.11). Подменяем граф в моде байтами игры + банки.
+        if (graphFixed != null)
+        {
+            Say("STEP writeMod");
+            Action undo = null;
+            try { undo = GraphPatch.ReplaceInMod(tmp, CONTROL, graphFixed); GraphPatch.Check(tmp, CONTROL, graphOrig, graphWaves); }
+            catch (Exception e)
+            {
+                App.Log("WARNING graph fix in mod failed (pursuit music may be silent): " + e.Message);
+                if (undo != null) undo();   // мод — как записал Frosty (песни играют, погоня может молчать)
+            }
+        }
         Directory.CreateDirectory(Path.GetDirectoryName(outPath));
         // копия рядом (.part — Mod Manager его не видит) и подмена одним шагом: остановили / вышли посреди копирования — старый мод в Mods цел (Ваня 13.11: «Стоп»)
         string part = outPath + ".part";
@@ -458,8 +470,16 @@ static class Worker
         App.Log("own bank " + w.Name + ": " + nb.Length + " B, key " + check.Key.ToString("X8") + ", rows " + check.SelRows() + ", songs " + w.Songs + ", numbers " + check.MinTrack() + "-" + check.MaxTrack() + ", file " + w.FileGuid);
     }
     // граф музыки: свои банки — в список узла WaveSwitcherNodeData рядом с ev01 / ev02 / титрами (узел держит банки загруженными)
+    static byte[] graphOrig, graphFixed; static int graphWaves;   // 15.11: граф в мод — байтами игры + банки (Graph.cs), не писателем Frosty
     static void AddToGraph(List<BankWork> mine)
     {
+        graphOrig = graphFixed = null;
+        try
+        {
+            using (Stream s = am.GetEbxStream(am.GetEbxEntry(CONTROL))) using (var ms = new MemoryStream()) { s.CopyTo(ms); graphOrig = ms.ToArray(); }
+            graphFixed = GraphPatch.Patch(graphOrig, mine.Select(w => Tuple.Create(w.FileGuid, w.Root)).ToList());
+        }
+        catch (Exception e) { graphFixed = null; App.Log("WARNING graph patch failed, Frosty writes the graph (pursuit music may be silent): " + e.Message); }
         EbxAsset g = am.GetEbx(am.GetEbxEntry(CONTROL));
         object sw = g.Objects.FirstOrDefault(o => o.GetType().Name == "WaveSwitcherNodeData");
         if (sw == null) throw new UserError("gameChanged", "no WaveSwitcherNodeData");
@@ -480,6 +500,7 @@ static class Worker
             rd.Add(e);
         }
         am.ModifyEbx(CONTROL, g);
+        graphWaves = waves.Count;
         App.Log("graph " + CONTROL + ": banks in WaveSwitcherNodeData " + waves.Count + ", ReferencedData " + rd.Count);
     }
 

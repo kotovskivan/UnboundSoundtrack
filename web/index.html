@@ -380,6 +380,14 @@ body.wv-drag, body.wv-drag * { cursor: grabbing !important; }   /* тянут GO
 .mine-tag { transform: rotate(-4deg); }
 .wv-go b { transform: translateX(-50%); }
 .note { transform: translateY(30px); } .note.show { transform: none; }
+.lang span, .lang button { transform: none; }   /* шапка (язык, Папки, Браузер, Подяки) — тоже прямые (Ваня 15.11: «раз уже у нас все квадратное») */
+/* хаб NFS Own Music (Ваня 15.11): выше «Зробили», стиль общего сайта (не Unbound) — Bahnschrift наклонный, белое NFS + оранжевое Own Music; строка — музыка для всех частей */
+/* Ваня 15.11 поздно: «пусть будет в дизайн как наши плитки разработчиков» → та же плитка .cr (значок с подложкой + название + строка капсом);
+   значок — нота сайта хаба (favicon NFSOwnMusic) на оранжевом, Own Music — оранжевым. Длинная строка hubSub больше не показывается (ключ остался в i18n) */
+.hub { margin-bottom: 22px; }
+.cr .ic.own { background: #ff5a1f; box-shadow: 3px 3px 0 #eef1f6; }
+.cr .ic.own svg { width: 30px; height: 30px; }
+.hub b span { color: #ff5a1f; }
 .menu li.on .item { background: #fff; color: #000; box-shadow: 5px 5px 0 rgba(0,0,0,.5); }
 .menu .sub { background: #fff; color: #000; }
 .pf.on { background: #fff; border-color: #fff; color: #000; box-shadow: none; }
@@ -425,6 +433,10 @@ body.wv-drag, body.wv-drag * { cursor: grabbing !important; }   /* тянут GO
     <div class="prof"><div class="cr-h" data-i18n="profiles"></div><div class="prof-list" id="profList"></div>
       <button class="pf-new" id="pfNew" data-i18n="newProfile"></button></div>
     <div class="credits">
+      <a class="cr hub" href="https://kotovskivan.github.io/NFSOwnMusic/">
+        <span class="ic own"><svg viewBox="10 6 52 52" aria-hidden="true"><path fill="#0b0c10" d="M24 14v26.5a8 8 0 1 0 5 7.4V24l20-5v16.5a8 8 0 1 0 5 7.4V8z"/></svg></span>
+        <span><b translate="no">NFS <span>Own Music</span></b><i><span data-i18n="hubRole"></span> · <span data-i18n="site"></span> ↗</i></span>
+      </a>
       <div class="cr-h" data-i18n="madeBy"></div>
       <a class="cr" href="https://claude.ai">
         <span class="ic claude"><svg viewBox="-24 -24 48 48" aria-hidden="true"><g fill="#d97757">
@@ -457,7 +469,7 @@ body.wv-drag, body.wv-drag * { cursor: grabbing !important; }   /* тянут GO
         <button class="frosty" id="logBtn" data-i18n="log"></button>
         <a class="frosty" href="https://forms.gle/StNa4GFZRHckFVpi8"><b data-i18n="bugReport"></b> ↗</a>
         <span class="brk"></span>
-        <span class="foot-l" data-i18n="ourPages"></span><a class="frosty" href="https://kotovskivan.github.io/UnboundSoundtrack/"><b data-i18n="site"></b> ↗</a><a class="frosty" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3837419990"><b>Steam</b> ↗</a><a class="frosty" href="https://www.nexusmods.com/needforspeedunbound/mods/671"><b>Nexus</b> ↗</a><a class="frosty" href="https://www.youtube.com/@kitivski"><b>YouTube</b> ↗</a>
+        <span class="foot-l" data-i18n="ourPages"></span><a class="frosty" href="https://kotovskivan.github.io/UnboundSoundtrack/"><b data-i18n="site"></b> ↗</a><a class="frosty" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3837419990"><b>Steam</b> ↗</a><a class="frosty" href="https://www.nexusmods.com/needforspeedunbound/mods/671"><b>Nexus</b> ↗</a><a class="frosty" href="https://www.youtube.com/@kitivski"><b>YouTube</b> ↗</a><a class="frosty" href="https://www.nfsaddons.com/downloads/unbound/tools/11657/unbound-soundtrack-add-your-own-music.html"><b>NFSAddons</b> ↗</a>
       </div>
     </div>
   </aside>

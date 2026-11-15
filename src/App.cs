@@ -13,7 +13,7 @@ using System.Web.Script.Serialization;
 
 static class App
 {
-    public const string Version = "1.0.2";
+    public const string Version = "1.0.3";
     public const string Profile = "NeedForSpeedUnbound";
     public static string Root, AppDir, WebDir, FrostyDir, EncDir, DataDir, SongsDir, UiDir, LogPath, MusicDir;
     public static readonly JavaScriptSerializer Json = new JavaScriptSerializer { MaxJsonLength = int.MaxValue, RecursionLimit = 64 };
