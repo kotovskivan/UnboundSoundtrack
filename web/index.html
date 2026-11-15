@@ -127,6 +127,13 @@ body { font-variation-settings: "wdth" 85, "wght" 500; }
   transform: skewX(-10deg); font-variation-settings: "wdth" 100, "wght" 600; border-bottom: 1px solid transparent; }
 .frosty b { color: var(--paper); font-weight: normal; font-variation-settings: "wdth" 100, "wght" 700; }
 .frosty:hover { color: var(--acid); border-bottom-color: var(--acid); }
+/* LOG — кнопка, а не ссылка: у кнопки свои отступы и высота строки → стояла выше соседей и серой (Ваня 15.11: «так и не поправил») */
+button.frosty { padding: 0; margin: 0; line-height: inherit; }
+.foot { align-items: baseline; }   /* по линии текста: у ссылок ↗ из запасного шрифта делает строку выше, кнопка LOG центрует текст → была на 2 px выше */
+/* версия возле MY SOUNDTRACK (Ваня 15.11) — тихая, как подписи низа */
+.title .ver { margin-left: 10px; padding: 1px 5px; border: 1px solid var(--line); font-size: 10px; letter-spacing: .12em; color: var(--mute);
+  vertical-align: 2px; text-transform: none; font-variation-settings: "wdth" 100, "wght" 600; }
+.title .ver:empty { display: none; }
 
 /* ---------- правая часть ---------- */
 .main { display: flex; flex-direction: column; min-width: 0; min-height: 0; height: 100vh; padding: 44px 34px 0 10px; }
@@ -417,7 +424,7 @@ body.wv-drag, body.wv-drag * { cursor: grabbing !important; }   /* тянут GO
 <div class="app">
   <aside class="side">
     <div class="brand" translate="no"><b>UNBOUND</b><i>Soundtrack</i></div>
-    <div class="title"><span data-i18n="titleA"></span> <em data-i18n="titleB"></em></div>
+    <div class="title"><span data-i18n="titleA"></span> <em data-i18n="titleB"></em><small class="ver" id="ver" translate="no"></small></div>
     <ul class="menu" id="menu">
       <li data-f="all" class="on"><span class="item"><span data-i18n="all"></span><span class="cnt" id="c-all"></span></span><div class="sub" data-i18n="allSub"></div></li>
       <li data-f="mine"><span class="item"><span data-i18n="mine"></span><span class="cnt" id="c-mine"></span></span><div class="sub" data-i18n="mineSub"></div></li>
@@ -466,7 +473,7 @@ body.wv-drag, body.wv-drag * { cursor: grabbing !important; }   /* тянут GO
         <a class="frosty" href="https://github.com/HarGabt/FrostyToolsuite"><span data-i18n="poweredBy"></span> <b>Frosty Mod Manager</b> ↗</a>
         <a class="frosty" href="https://www.nexusmods.com/needforspeedunbound/mods/97?tab=description">+ <b>NFS Unbound Encryption Key</b> ↗</a>
         <span class="brk"></span>
-        <button class="frosty" id="logBtn" data-i18n="log"></button>
+        <button class="frosty" id="logBtn"><b data-i18n="log"></b></button>
         <a class="frosty" href="https://forms.gle/StNa4GFZRHckFVpi8"><b data-i18n="bugReport"></b> ↗</a>
         <span class="brk"></span>
         <span class="foot-l" data-i18n="ourPages"></span><a class="frosty" href="https://kotovskivan.github.io/UnboundSoundtrack/"><b data-i18n="site"></b> ↗</a><a class="frosty" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3837419990"><b>Steam</b> ↗</a><a class="frosty" href="https://www.nexusmods.com/needforspeedunbound/mods/671"><b>Nexus</b> ↗</a><a class="frosty" href="https://www.youtube.com/@kitivski"><b>YouTube</b> ↗</a><a class="frosty" href="https://www.nfsaddons.com/downloads/unbound/tools/11657/unbound-soundtrack-add-your-own-music.html"><b>NFSAddons</b> ↗</a>
@@ -574,6 +581,7 @@ const KEY_LINK = '<a href="https://www.nexusmods.com/needforspeedunbound/mods/97
 // ---------- старт: язык → соглашение → игра → Mod Manager → подготовка ----------
 async function boot() {
   try { S = await api("/api/state"); } catch (e) { await showError(e); return; }
+  $("ver").textContent = S.version ? "v" + S.version : "";   // версия возле MY SOUNDTRACK (Ваня 15.11), одна — из src/App.cs
   if (I18N[S.lang]) setLang(S.lang);
   else {   // первый запуск: сверху крупно ВСЕГДА English (международный, Ваня 13.11 — не язык Windows), остальные — сеткой в порядке LANGS;
            // заголовок, подсказка и строка «переводы сделаны ИИ» — на том языке, на котором стоит выбор (мышь / стрелки)

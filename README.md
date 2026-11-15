@@ -68,7 +68,8 @@ Output: `out\Unbound Soundtrack\` — the same layout as the release zip.
     When the mod changed the game's music graph, Frosty's writer lost the plugins of the music players, including the chase ones.
     Now the graph is the game's own bytes plus your sound banks (`src/Graph.cs`), and the build checks it
     (if the check fails, it falls back to the old way and writes a WARNING to the log).
-  - Window: NFS Own Music tile (your own songs for the whole NFS series), NFSAddons in "Our pages", straight buttons in the top bar.
+  - Window: NFS Own Music tile (your own songs for the whole NFS series), NFSAddons in "Our pages", straight buttons in the top bar,
+    the version next to MY SOUNDTRACK, LOG in line with the other links.
 
 - **1.0.2**
   - New: **Garage** — a third switch next to Races and City: a song (or a game track) can play only in the garage
