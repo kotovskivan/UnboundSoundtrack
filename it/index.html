@@ -132,6 +132,8 @@ img { max-width: 100%; height: auto; display: block; }
 .langs { position: relative; margin-left: auto; }
 .langs summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; font: 600 13px/1 var(--font); letter-spacing: .08em; color: var(--paper); border: 1px solid var(--line); padding: 9px 12px; user-select: none; }
 .langs summary::-webkit-details-marker { display: none; }
+.langs summary > span { white-space: nowrap; }
+@media (max-width: 639px) { .langs summary .ln { display: none; } } /* 16.11 (Ваня): на телефоне только «UA ▼», шапка не растягивается */
 .langs summary:hover, .langs[open] summary { border-color: var(--acid); }
 .langs summary .ar { color: var(--acid); font-size: 10px; transition: transform .15s; }
 .langs[open] summary .ar { transform: rotate(180deg); }
@@ -202,10 +204,36 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
 .ticker-track { display: inline-block; animation: tick 45s linear infinite; }
 @keyframes tick { to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } }
-/* 16.11 (Ваня): вторая полоса — ссылка на хаб NFS Own Music; кислотная, едет навстречу первой */
-.ticker.hub { display: block; margin-top: 10px; background: var(--acid); color: var(--ink); text-decoration: none; text-transform: uppercase; transition: background .15s; }
+/* 16.11 (Ваня): белая строка и кислотная полоса — разделители, между ними блок про общий сайт серии NFS Own Music.
+   Лого и оранжевый — как на хабе (outputs/nfs-own-music), статусы — его же цвета. Полоса едет навстречу белой, наклон в другую сторону. */
+.ticker.hub { display: block; background: var(--acid); color: var(--ink); text-decoration: none; text-transform: uppercase; transform: rotate(1.2deg); transition: background .15s; }
 .ticker.hub:hover, .ticker.hub:focus-visible { background: var(--sun); color: var(--ink); }
 .ticker.hub .ticker-track { animation-direction: reverse; }
+.hubx { --hub: #ff5a1f; padding: 60px 0 56px; background: radial-gradient(640px 340px at 18% 45%, rgba(255,90,31,.14), transparent 70%); }
+.hubx-in { display: grid; gap: 34px; align-items: center; }
+@media (min-width: 980px) { .hubx-in { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 48px; } }
+.hubx-tag { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; color: var(--mute); font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+.eq4 { display: inline-flex; align-items: flex-end; gap: 2px; height: 15px; flex: none; }
+.eq4 i { width: 3px; background: var(--hub); }
+.eq4 i:nth-child(1) { height: 50%; } .eq4 i:nth-child(2) { height: 100%; } .eq4 i:nth-child(3) { height: 30%; } .eq4 i:nth-child(4) { height: 72%; }
+.hubx-logo { margin: 0 0 18px; font: italic 700 clamp(40px, 4.4vw, 62px)/.95 var(--font); letter-spacing: -.01em; white-space: nowrap; }
+.hubx-logo b { color: var(--hub); font-weight: inherit; }
+.hubx-lead { margin: 0 0 8px; color: var(--soft); font-size: clamp(18px, 2vw, 21px); line-height: 1.45; max-width: 40ch; }
+.hubx-sub { margin: 0 0 26px; color: var(--mute); font-size: 15px; max-width: 46ch; }
+.btn.hubx-go { background: var(--hub); border-color: var(--hub); color: #1a0800; font-size: 15px; padding: 13px 22px; transform: rotate(-1.5deg); box-shadow: 5px 5px 0 var(--paper); }
+.btn.hubx-go:hover { color: #1a0800; border-color: var(--hub); transform: rotate(-1.5deg) translate(-2px,-2px); box-shadow: 8px 8px 0 var(--paper); }
+.hubx-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.hubx-card { position: relative; display: block; aspect-ratio: 16 / 10; overflow: hidden; background: #000; border: 1px solid var(--line); color: var(--paper); text-decoration: none; }
+.hubx-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+.hubx-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; z-index: 2; }
+.hubx-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 45%, rgba(10,10,10,.9) 100%); }
+.hubx-card:hover { color: var(--paper); } .hubx-card:hover img { transform: scale(1.04); }
+.hubx-card.ready { border-color: rgba(61,255,143,.45); } .hubx-card.ready::before, .hubx-card.ready .st { background: #3dff8f; }
+.hubx-card.soon { border-color: rgba(255,210,63,.4); } .hubx-card.soon::before, .hubx-card.soon .st { background: #ffd23f; }
+.hubx-card .st { position: absolute; top: 10px; left: 14px; z-index: 1; color: var(--ink); font: italic 700 11px/1 var(--font); letter-spacing: .12em; text-transform: uppercase; padding: 5px 8px; }
+.hubx-meta { position: absolute; left: 16px; right: 12px; bottom: 10px; z-index: 1; display: flex; align-items: baseline; gap: 8px; }
+.hubx-meta b { font: italic 700 clamp(20px, 2.4vw, 30px)/1 var(--font); text-transform: uppercase; }
+.hubx-meta small { color: var(--soft); font-size: 13px; }
 
 /* ---------- разделы ---------- */
 .block { padding: 72px 0 0; }
@@ -259,16 +287,45 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
 .log dt small { display: block; font-style: normal; font-weight: 400; font-size: 12px; color: var(--mute); letter-spacing: .05em; }
 .log dd { margin: 0; color: var(--soft); align-self: center; }
 
+/* 16.11 (Ваня): телефон / узкое окно — первый экран и блок хаба по центру, цифры шагов ближе к тексту, «Що нового» компактнее */
+@media (max-width: 979px) {
+  .hero > div:first-child, .hubx-txt { text-align: center; }
+  .hero h1 .sig { margin-left: 0; transform-origin: center; }
+  .hero .lead, .hubx-lead, .hubx-sub { margin-left: auto; margin-right: auto; }
+  .cta { justify-content: center; margin-left: auto; margin-right: auto; }
+  .cta-more { margin-left: auto; margin-right: auto; }
+  .hero .btn { text-align: center; }
+  .hubx-tag { justify-content: center; }
+}
+@media (max-width: 639px) {
+  .steps li { padding-left: 42px; min-height: 0; }
+  .steps li::before { font-size: 34px; top: -4px; }
+  .log > div { grid-template-columns: 1fr; gap: 6px; padding: 14px 16px; }
+  .log dt { display: flex; align-items: baseline; gap: 10px; font-size: 18px; }
+  .log dt small { display: inline; }
+  .log dd { font-size: 15px; line-height: 1.5; }
+}
+
 /* ---------- низ ---------- */
 footer { margin-top: 96px; border-top: 1px solid var(--line); background: rgba(255,255,255,.015); padding: 48px 0 40px; }
 .foot { display: grid; gap: 36px; }
 @media (min-width: 900px) { .foot { grid-template-columns: 1fr 1fr; } }
 .foot h2 { margin: 0 0 14px; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--mute); font-weight: 600; }
-.makers { display: grid; gap: 10px; }
-.maker { display: flex; flex-direction: column; gap: 2px; text-decoration: none; color: var(--paper); border: 1px solid var(--line); background: var(--panel); padding: 12px 16px; }
-.maker:hover { border-color: var(--acid); color: var(--paper); }
-.maker strong { font-style: italic; text-transform: uppercase; font-size: 22px; letter-spacing: .04em; }
-.maker span { font-size: 12px; color: var(--mute); letter-spacing: .1em; text-transform: uppercase; }
+/* 16.11 (Ваня): плитки как в окне программы — значок на подложке + название + строка капсом; сверху хаб NFS Own Music, потом «Зробили» */
+.foot h2.h2b { margin-top: 26px; }
+.makers { display: grid; gap: 12px; max-width: 420px; }
+.maker { display: flex; align-items: center; gap: 16px; text-decoration: none; color: var(--paper); border: 1px solid var(--line); background: var(--panel); padding: 9px 16px 9px 9px; transition: border-color .15s, transform .15s, box-shadow .15s; }
+.maker:hover { border-color: var(--acid); color: var(--paper); transform: translate(-2px,-2px); box-shadow: 5px 5px 0 rgba(182,255,26,.25); }
+.maker .ic { flex: none; width: 52px; height: 52px; display: grid; place-items: center; }
+.maker .ic svg { width: 42px; height: 42px; }
+.maker .ic.own { background: #ff5a1f; box-shadow: 4px 4px 0 #eef1f6; } .maker .ic.own svg { width: 32px; height: 32px; }
+.maker .ic.claude { background: #f0eee6; box-shadow: 4px 4px 0 #d97757; }
+.maker .ic.cat { background: var(--acid); box-shadow: 4px 4px 0 var(--sun); }
+.maker .mk { min-width: 0; }
+.maker strong { display: block; font-size: 24px; line-height: 1; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; }
+.maker strong b { color: #ff5a1f; font-weight: inherit; }
+.maker .mk > span { display: block; margin-top: 6px; font-size: 12px; font-weight: 600; color: var(--mute); letter-spacing: .12em; text-transform: uppercase; }
+.maker:hover .mk > span { color: var(--acid); }
 .foot p { margin: 0 0 12px; color: var(--soft); font-size: 15px; }
 .legal { margin-top: 36px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--mute); font-size: 13px; }
 
@@ -299,7 +356,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
   <div class="wrap">
     <a class="brand" href="../it/" aria-label="Unbound Soundtrack" translate="no"><b>UNBOUND</b><span class="sig">Soundtrack</span></a>
     <details class="langs" id="langs">
-      <summary title="Lingua"><span>IT · Italiano</span><span class="ar" aria-hidden="true">▼</span></summary>
+      <summary title="Lingua"><span>IT<span class="ln"> · Italiano</span></span><span class="ar" aria-hidden="true">▼</span></summary>
       <nav class="menu" aria-label="Lingua"><a href="../" hreflang="uk" lang="uk"><b>UA</b>Українська</a><a href="../en/" hreflang="en" lang="en"><b>EN</b>English</a><a href="../de/" hreflang="de" lang="de"><b>DE</b>Deutsch</a><a href="../es/" hreflang="es" lang="es"><b>ES</b>Español</a><a href="../fr/" hreflang="fr" lang="fr"><b>FR</b>Français</a><a href="../it/" hreflang="it" lang="it" aria-current="page"><b>IT</b>Italiano</a><a href="../pl/" hreflang="pl" lang="pl"><b>PL</b>Polski</a><a href="../pt/" hreflang="pt" lang="pt"><b>PT</b>Português</a><a href="../tr/" hreflang="tr" lang="tr"><b>TR</b>Türkçe</a><a href="../ru/" hreflang="ru" lang="ru"><b>RU</b>Русский</a><a href="../zh/" hreflang="zh" lang="zh-Hans"><b>ZH</b>简体中文</a><a href="../ja/" hreflang="ja" lang="ja"><b>JA</b>日本語</a><a href="../ko/" hreflang="ko" lang="ko"><b>KO</b>한국어</a><a href="../fi/" hreflang="fi" lang="fi"><b>FI</b>Suomi</a><p class="ai">Traduzioni fatte con l'IA (Claude)</p></nav>
     </details>
     <a class="dl-mini" href="https://drive.google.com/drive/folders/1xj2YBqJ-sqB53Azt__dZNrsfP8iMbS_a?usp=sharing" target="_blank" rel="noopener">Scarica</a>
@@ -341,6 +398,27 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
   </div>
 
   <div class="ticker" aria-hidden="true"><div class="ticker-track">UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / UNBOUND SOUNDTRACK / FAN-MADE / NOT AFFILIATED WITH EA / KITIVSKI + CLAUDE / </div></div>
+  <section class="hubx" aria-labelledby="hubx-h">
+    <div class="wrap hubx-in">
+      <div class="hubx-txt">
+        <p class="hubx-tag"><span class="eq4" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Il nostro sito per tutta la serie</p>
+        <h2 class="hubx-logo" id="hubx-h" translate="no">NFS <b>Own Music</b></h2>
+        <p class="hubx-lead">Le tue canzoni in <b>Need for Speed</b>, come nuove tracce accanto alla musica del gioco.</p>
+        <p class="hubx-sub">Strumenti gratuiti e open source. Abbiamo iniziato con Unbound; poi Heat e tutta la serie.</p>
+        <a class="btn hubx-go" href="https://kotovskivan.github.io/NFSOwnMusic/it/" target="_blank" rel="noopener"><span>Vai al sito →</span></a>
+      </div>
+      <div class="hubx-cards">
+        <a class="hubx-card ready" href="https://kotovskivan.github.io/NFSOwnMusic/it/#unbound" target="_blank" rel="noopener">
+          <img src="../img/hub-unbound.jpg" alt="Need for Speed Unbound" width="1200" height="600" loading="lazy">
+          <span class="st">Disponibile</span><span class="hubx-meta"><b translate="no">Unbound</b><small>2022</small></span>
+        </a>
+        <a class="hubx-card soon" href="https://kotovskivan.github.io/NFSOwnMusic/it/#heat" target="_blank" rel="noopener">
+          <img src="../img/hub-heat.jpg" alt="Need for Speed Heat" width="1200" height="600" loading="lazy">
+          <span class="st">Presto</span><span class="hubx-meta"><b translate="no">Heat</b><small>2019</small></span>
+        </a>
+      </div>
+    </div>
+  </section>
   <a class="ticker hub" href="https://kotovskivan.github.io/NFSOwnMusic/it/" target="_blank" rel="noopener" aria-label="NFS Own Music — Le tue canzoni in tutta la serie NFS"><span class="ticker-track" aria-hidden="true">NFS OWN MUSIC → Le tue canzoni in tutta la serie NFS / NFS OWN MUSIC → Le tue canzoni in tutta la serie NFS / NFS OWN MUSIC → Le tue canzoni in tutta la serie NFS / NFS OWN MUSIC → Le tue canzoni in tutta la serie NFS / NFS OWN MUSIC → Le tue canzoni in tutta la serie NFS / NFS OWN MUSIC → Le tue canzoni in tutta la serie NFS / NFS OWN MUSIC → Le tue canzoni in tutta la serie NFS / NFS OWN MUSIC → Le tue canzoni in tutta la serie NFS / NFS OWN MUSIC → Le tue canzoni in tutta la serie NFS / NFS OWN MUSIC → Le tue canzoni in tutta la serie NFS / NFS OWN MUSIC → Le tue canzoni in tutta la serie NFS / NFS OWN MUSIC → Le tue canzoni in tutta la serie NFS / </span></a>
 
   <div class="wrap">
@@ -441,10 +519,39 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
   <div class="wrap">
     <div class="foot">
       <div>
-        <h2>Fatto da</h2>
+        <h2>Il nostro sito per tutta la serie</h2>
         <div class="makers">
-          <a class="maker" href="https://steamcommunity.com/id/kitivski/" target="_blank" rel="noopener"><strong>Kitivski</strong><span>sviluppatore · Steam ↗</span></a>
-          <a class="maker" href="https://claude.ai" target="_blank" rel="noopener"><strong>Claude</strong><span>IA di Anthropic · claude.ai ↗</span></a>
+          <a class="maker" href="https://kotovskivan.github.io/NFSOwnMusic/it/" target="_blank" rel="noopener">
+            <span class="ic own"><svg viewBox="10 6 52 52" aria-hidden="true"><path fill="#0b0c10" d="M24 14v26.5a8 8 0 1 0 5 7.4V24l20-5v16.5a8 8 0 1 0 5 7.4V8z"/></svg></span>
+            <span class="mk"><strong translate="no">NFS <b>Own Music</b></strong><span>tutti gli NFS · Sito ↗</span></span>
+          </a>
+        </div>
+        <h2 class="h2b">Fatto da</h2>
+        <div class="makers">
+          <a class="maker" href="https://claude.ai" target="_blank" rel="noopener">
+            <span class="ic claude"><svg viewBox="-24 -24 48 48" aria-hidden="true"><g fill="#d97757">
+              <rect x="-1.9" y="-20" width="3.8" height="20" rx="1.9"/><rect x="-1.6" y="-15" width="3.2" height="15" rx="1.6" transform="rotate(29)"/>
+              <rect x="-1.9" y="-18.5" width="3.8" height="18.5" rx="1.9" transform="rotate(61)"/><rect x="-1.6" y="-14" width="3.2" height="14" rx="1.6" transform="rotate(90)"/>
+              <rect x="-1.9" y="-19.5" width="3.8" height="19.5" rx="1.9" transform="rotate(119)"/><rect x="-1.6" y="-15" width="3.2" height="15" rx="1.6" transform="rotate(151)"/>
+              <rect x="-1.9" y="-17.5" width="3.8" height="17.5" rx="1.9" transform="rotate(180)"/><rect x="-1.6" y="-14" width="3.2" height="14" rx="1.6" transform="rotate(209)"/>
+              <rect x="-1.9" y="-19.5" width="3.8" height="19.5" rx="1.9" transform="rotate(241)"/><rect x="-1.6" y="-15" width="3.2" height="15" rx="1.6" transform="rotate(270)"/>
+              <rect x="-1.9" y="-18.5" width="3.8" height="18.5" rx="1.9" transform="rotate(299)"/><rect x="-1.6" y="-14" width="3.2" height="14" rx="1.6" transform="rotate(331)"/>
+              <circle r="4.2"/></g></svg></span>
+            <span class="mk"><strong translate="no">Claude</strong><span>IA di Anthropic · claude.ai ↗</span></span>
+          </a>
+          <a class="maker" href="https://steamcommunity.com/id/kitivski/" target="_blank" rel="noopener">
+            <span class="ic cat"><svg viewBox="0 0 48 48" aria-hidden="true">
+              <path fill="#0a0a0a" d="M6 30C6 22 9 17 11 15L10 4l9 7c3-1 7-1 10 0l9-7-1 11c2 2 5 7 5 15 0 9-8 14-18 14S6 39 6 30z"/>
+              <path fill="#ff6fa8" d="M12.3 8.2l.8 5.6 3.6-2.6zM35.7 8.2l-.8 5.6-3.6-2.6z"/>
+              <ellipse cx="17" cy="25.5" rx="4.3" ry="3.4" fill="#ffe600"/><ellipse cx="31" cy="25.5" rx="4.3" ry="3.4" fill="#ffe600"/>
+              <ellipse cx="17" cy="25.5" rx="1.1" ry="3" fill="#0a0a0a"/><ellipse cx="31" cy="25.5" rx="1.1" ry="3" fill="#0a0a0a"/>
+              <circle cx="18.4" cy="24.3" r=".9" fill="#fff"/><circle cx="32.4" cy="24.3" r=".9" fill="#fff"/>
+              <path fill="#ff6fa8" d="M21.8 31.4h4.4L24 34z"/>
+              <path fill="none" stroke="#f4f4f0" stroke-opacity=".6" stroke-width=".9" stroke-linecap="round"
+                d="M24 34q-1.4 2.6-4 1.6M24 34q1.4 2.6 4 1.6M17 32.5l-8.5-1.6M17 34.3l-8.5 1M31 32.5l8.5-1.6M31 34.3l8.5 1"/>
+            </svg></span>
+            <span class="mk"><strong translate="no">Kitivski</strong><span>sviluppatore · Steam ↗</span></span>
+          </a>
         </div>
       </div>
       <div>
@@ -483,9 +590,9 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
 
   /* 13.11: видео фоном — качаем только после полной загрузки страницы (Ваня: «сначала сайт, потом видео»);
      телефон, «меньше движения», «экономия трафика» — не качаем вовсе; ушло с экрана — пауза */
-  var bv = document.querySelector(".hero-bg"), net = navigator.connection, ytOn = false;
+  var bv = document.querySelector(".hero-bg"), net = navigator.connection;
 
-  /* 13.11: видео YouTube на первом экране — плеер (youtube-nocookie) только по клику; фон первого экрана — на паузу */
+  /* 13.11: видео YouTube на первом экране — плеер (youtube-nocookie) только по клику; фон первого экрана больше НЕ ставится на паузу (16.11, Ваня) */
   var yt = document.querySelector(".yt");
   if (yt) yt.querySelector(".yt-btn").addEventListener("click", function () {
     var f = document.createElement("iframe");
@@ -494,8 +601,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
     f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
     f.allowFullscreen = true;
     f.referrerPolicy = "strict-origin-when-cross-origin";
-    yt.replaceChildren(f); yt.classList.add("on");
-    ytOn = true; if (bv) bv.pause();
+    yt.replaceChildren(f); yt.classList.add("on");   // 16.11 (Ваня): фон под видео крутится дальше — «он не мешает»
   });
 
   if (bv && matchMedia("(min-width: 980px)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches && !(net && net.saveData)) {
@@ -504,8 +610,8 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
       bv.muted = true;
       bv.addEventListener("playing", function () { bv.parentNode.classList.add("vid"); }, { once: true });
       bv.src = bv.dataset.src;
-      if (!ytOn) play();
-      if ("IntersectionObserver" in window) new IntersectionObserver(function (e) { if (e[0].isIntersecting && !ytOn) play(); else bv.pause(); }).observe(bv);
+      play();
+      if ("IntersectionObserver" in window) new IntersectionObserver(function (e) { if (e[0].isIntersecting) play(); else bv.pause(); }).observe(bv);
     };
     if (document.readyState === "complete") go(); else window.addEventListener("load", go);
   }
