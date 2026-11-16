@@ -1,4 +1,4 @@
-﻿UNBOUND SOUNDTRACK  v1.0.1
+﻿UNBOUND SOUNDTRACK  v1.0.4
 Need for Speed Unbound oyununda kendi şarkıların — kendi kapaklarınla, yeni parçalar olarak.
 Kitivski + Claude tarafından yapılmış ücretsiz bir hayran aracı. Electronic Arts veya Criterion Games ile bağlantılı DEĞİLDİR.
 Web sitesi: https://kotovskivan.github.io/UnboundSoundtrack/
@@ -13,6 +13,9 @@ NE YAPAR
     Oyunun parçaları olduğu gibi kalır.
   - YouTube / YT Music'ten şarkılar: bir şarkının, çalma listesinin ya da albümün linki, aynı anda birçok link ya da bir .txt listesi.
     Link bir müzik videosuysa program aynı şarkıyı YT Music'ten alır — videodaki girişler ve skeçler olmadan.
+  - Spotify: bir şarkının, albümün ya da çalma listesinin linki (link başına 100 şarkıya kadar; daha büyük liste — exportify.app'ten .csv dosyası olarak).
+    Spotify'dan sadece liste alınır — şarkıların kendisi YT Music'ten indirilir.
+  - Şarkı editörü: dalga formunu yakınlaştır, GO ve bitişi 0,1 sn hassasiyetle ayarla (ok tuşları), GO'dan önce yumuşak giriş, bitişte kendi kısılman.
   - Her şarkı için yarış başlangıcını (17 sn ara sahne + 3,45 sn geri sayım, drop tam GO'da gelir) ve bitiş bölümünü ayarla.
   - Karttaki HIGH / LOW — parçanın ne sıklıkla çaldığı (oyun önce HIGH olanları seçer).
   - Profiller: farklı parça setleri, tek tıkla geçiş.

@@ -1,4 +1,4 @@
-﻿UNBOUND SOUNDTRACK  v1.0.1
+﻿UNBOUND SOUNDTRACK  v1.0.4
 把你自己的歌曲放进 Need for Speed Unbound —— 作为新曲目，配上你自己的封面。
 由 Kitivski + Claude 制作的免费粉丝工具。与 Electronic Arts 或 Criterion Games 没有任何关系。
 网站：https://kotovskivan.github.io/UnboundSoundtrack/
@@ -13,6 +13,9 @@
     游戏原有的曲目保持不变。
   - 来自 YouTube / YT Music 的歌曲：单曲、播放列表或专辑的链接，一次粘贴多个链接，或一个 .txt 列表。
     如果链接是 MV，程序会从 YT Music 获取同一首歌 —— 没有 MV 里的片头和小剧情。
+  - Spotify：单曲、专辑或播放列表的链接（每个链接最多 100 首；更大的播放列表可用 exportify.app 导出的 .csv 文件）。
+    只从 Spotify 获取歌曲列表 —— 歌曲本身从 YT Music 下载。
+  - 歌曲编辑器：放大波形，GO 和终点精确到 0.1 秒（方向键），GO 前平滑渐强，终点淡出可自定。
   - 为每首歌设置比赛起步（17 秒过场动画 + 3.45 秒倒计时，Drop 正好落在 GO）和终点片段。
   - 卡片上的 HIGH / LOW —— 曲目的播放频率（游戏优先选择 HIGH）。
   - 配置：不同的曲目组合，一键切换。

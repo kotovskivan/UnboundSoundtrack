@@ -347,6 +347,39 @@ body.wv-drag, body.wv-drag * { cursor: grabbing !important; }   /* тянут GO
 .wv-cd { position: absolute; inset: 0; display: grid; place-items: center; font-size: 72px; color: var(--acid); text-shadow: 4px 4px 0 rgba(0,0,0,.8); pointer-events: none;
   font-variation-settings: "wdth" 75, "wght" 700; transform: skewX(-10deg); }
 .wv-msg { position: absolute; inset: 0; display: grid; place-items: center; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); pointer-events: none; /* только надпись — мышь сквозь нее к GO / финишу (иначе над GO был крестик, 13.11) */ }
+/* 16.11 зум и точное время (идея MtheAX): время на флажке GO, у края — флажок внутрь; выбранная метка (стрелки ← →) — белая рамка; время под курсором */
+.wv-go b { white-space: nowrap; } .wv-go b span { font-variant-numeric: tabular-nums; font-variation-settings: "wdth" 85, "wght" 600; }
+.wv-go.l b { left: -1px; transform: none; } .wv-go.r b { left: auto; right: -1px; transform: none; }
+.wv-go.sel b, .wv-c.sel { box-shadow: 0 0 0 2px #fff; }
+.wv-t { position: absolute; bottom: 4px; padding: 1px 5px; background: rgba(0,0,0,.78); color: #fff; font-size: 11px; font-variant-numeric: tabular-nums; white-space: nowrap; pointer-events: none; transform: translateX(-50%); display: none; z-index: 2; }
+.wv-rul { display: block; width: 100%; height: 18px; }
+.wv-bar { display: flex; gap: 6px; align-items: center; margin-top: 2px; }
+.wv-ov { position: relative; flex: 1; height: 28px; background: rgba(255,255,255,.03); border: 1px solid var(--line); user-select: none; }
+.wv-ov.z { cursor: pointer; }
+.wv-ov canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.wv-of { position: absolute; top: -1px; bottom: -1px; min-width: 6px; box-sizing: border-box; border: 2px solid var(--acid); background: rgba(182,255,26,.08); pointer-events: none; }
+.wv-bar .cb { flex: 0 0 34px; height: 30px; }
+.wv-hint { margin: 6px 0 0; font-size: 11px; line-height: 1.35; color: var(--mute); }
+/* 16.11 блок кусков (Ваня: «по нормальному»): правая колонка одной ширины у всех строк — края совпадают; в ней сетка: подпись | поле 96 px,
+   строка «от → до» — во всю ширину мелким серым. label — display: contents: подпись и поле сами встают в сетку, клик по подписи — в поле */
+.part { grid-template-columns: 46px minmax(0, 1fr) 224px; }
+.tt { display: grid; grid-template-columns: minmax(0, 1fr) 96px; column-gap: 10px; row-gap: 6px; align-items: center; }
+.tt .tin { display: contents; }
+.part .tt .tin b { grid-column: 1; justify-self: end; text-align: right; font-size: 12px; line-height: 1.2; letter-spacing: .02em; text-transform: none; color: var(--mute); font-weight: normal; font-variation-settings: normal; }
+.part.b .tt .tin.main b { color: var(--acid); } .part.c .tt .tin.main b { color: var(--sun); }
+.part .tt .tin.main b { font-size: 13px; letter-spacing: .1em; text-transform: uppercase; font-variation-settings: "wdth" 100, "wght" 700; }
+.tt input { grid-column: 2; width: 100%; box-sizing: border-box; height: 30px; background: rgba(255,255,255,.05); border: 1px solid var(--line); color: var(--paper); font: inherit; font-size: 15px; padding: 0 9px; text-align: right; font-variant-numeric: tabular-nums; outline: none; }
+.part.b .tt input:focus { border-color: var(--acid); } .part.c .tt input:focus { border-color: var(--sun); }
+.tt input.bad { border-color: #ff3b3b !important; }
+.part .tt em { grid-column: 1 / -1; justify-self: end; text-align: right; font-size: 12px; line-height: 1.35; color: var(--mute); white-space: normal; font-variant-numeric: tabular-nums; }
+/* 16.11 нарастание старта (поле или зеленая ручка на волне) и затухание финиша 3 с (всегда): наклон по краю куска; затемнено то, что тише */
+.wv-clip { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.wv-fi { position: absolute; inset: 0; width: 100%; height: 100%; } .wv-fi .dim { fill: rgba(0,0,0,.6); } .wv-fi .ln { fill: none; stroke: var(--acid); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.wv-fo { position: absolute; inset: 0; width: 100%; height: 100%; } .wv-fo .dim { fill: rgba(0,0,0,.6); } .wv-fo .ln { fill: none; stroke: var(--sun); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.wv-fh.fo { background: var(--sun); }   /* желтая ручка затухания финиша: влево — дольше, вниз — мягче (16.11) */
+.wv-ce { position: absolute; top: 0; bottom: 0; width: 12px; margin-left: -6px; cursor: ew-resize; z-index: 1; }   /* правый край финиша — длина куска (16.11) */
+.wv-ce::after { content: ""; position: absolute; top: 50%; left: 4px; width: 4px; height: 30px; margin-top: -15px; background: var(--sun); box-shadow: 0 0 0 2px #0b0b0b; }
+.wv-fh { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; box-sizing: border-box; background: var(--acid); border: 2px solid #0b0b0b; cursor: move; z-index: 1; }   /* ручка: вправо — дольше, вниз — мягче (16.11) */
 .parts { margin-top: 16px; }
 .part { display: grid; grid-template-columns: 46px 1fr auto; gap: 14px; align-items: center; padding: 10px 12px; margin-bottom: 8px; border: 1px solid var(--line); border-left: 4px solid var(--paper); }
 .part.b { border-left-color: var(--acid); } .part.c { border-left-color: var(--sun); }
@@ -525,11 +558,18 @@ body.wv-drag, body.wv-drag * { cursor: grabbing !important; }   /* тянут GO
         </div>
       </div>
       <div class="wave" id="wave"><canvas id="wc"></canvas><div class="wv-b" id="wvB"><i>17 s</i></div><div class="wv-n" id="wvN"><i>3·2·1</i></div><div class="wv-c" id="wvC"></div>
-        <div class="wv-go" id="wvGo"><b>GO</b></div><div class="wv-ph" id="wvPh"></div><div class="wv-cd" id="wvCd"></div><div class="wv-msg" id="wvMsg"></div></div>
+        <div class="wv-clip"><svg class="wv-fi" id="wvFi" viewBox="0 0 100 100" preserveAspectRatio="none"><path class="dim" id="wvFiD"/><path class="ln" id="wvFiL"/></svg><svg class="wv-fo" id="wvFo" viewBox="0 0 100 100" preserveAspectRatio="none"><path class="dim" id="wvFoD"/><path class="ln" id="wvFoL"/></svg></div><div class="wv-fh" id="wvFh" data-i18n-title="fadeTip"></div><div class="wv-fh fo" id="wvFoh" data-i18n-title="foTip"></div><div class="wv-ce" id="wvCe"></div>
+        <div class="wv-go" id="wvGo"><b>GO <span id="wvGoT"></span></b></div><div class="wv-ph" id="wvPh"></div><div class="wv-cd" id="wvCd"></div><div class="wv-msg" id="wvMsg"></div><div class="wv-t" id="wvT"></div></div>
+      <!-- 16.11 зум (идея MtheAX): линейка времени, полоса-обзор всей песни (рамка — что видно), −/+/вся песня, подсказка -->
+      <div id="wvTools"><canvas class="wv-rul" id="wvR"></canvas>
+        <div class="wv-bar"><div class="wv-ov" id="wvO"><canvas id="wvOc"></canvas><div class="wv-of" id="wvOf"></div></div>
+          <button class="cb" id="zOut" data-i18n-title="zoomOut"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8M7.5 10.5h6"/></svg></button><button class="cb" id="zIn" data-i18n-title="zoomIn"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8M7.5 10.5h6M10.5 7.5v6"/></svg></button><button class="cb" id="zAll" data-i18n-title="zoomAll"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button></div>
+        <p class="wv-hint" data-i18n="wvHint"></p></div>
       <div class="parts">
-        <div class="part" data-p="A"><button class="pp">▶</button><div><b data-i18n="partA"></b><span data-i18n="partAsub"></span></div><em id="tA"></em></div>
-        <div class="part b" data-p="B"><button class="pp">▶</button><div><b data-i18n="partB"></b><span data-i18n="partBsub"></span></div><em id="tB"></em></div>
-        <div class="part c" data-p="C"><button class="pp">▶</button><div><b data-i18n="partC"></b><span data-i18n="partCsub"></span></div><em id="tC"></em></div>
+        <!-- 16.11 Ваня: «переделай, чтоб было по нормальному» — справа у всех трех кусков одна колонка: подписи | поля одной ширины, под ними «от → до» -->
+        <div class="part" data-p="A"><button class="pp">▶</button><div><b data-i18n="partA"></b><span data-i18n="partAsub"></span></div><div class="tt"><em id="tA"></em></div></div>
+        <div class="part b" data-p="B"><button class="pp">▶</button><div><b data-i18n="partB"></b><span data-i18n="partBsub"></span></div><div class="tt"><label class="tin main"><b>GO</b><input id="inB" autocomplete="off" spellcheck="false" data-i18n-title="timeTip"></label><label class="tin" data-i18n-title="fadeTip"><b data-i18n="fadeIn"></b><input id="inF" autocomplete="off" spellcheck="false"></label><em id="tB"></em></div></div>
+        <div class="part c" data-p="C"><button class="pp">▶</button><div><b data-i18n="partC"></b><span data-i18n="partCsub"></span></div><div class="tt"><label class="tin main"><b data-i18n="fromL"></b><input id="inC" autocomplete="off" spellcheck="false" data-i18n-title="timeTip"></label><label class="tin" data-i18n-title="foTip"><b data-i18n="foLabel"></b><input id="inO" autocomplete="off" spellcheck="false"></label><em id="tC"></em></div></div>
       </div>
       <!-- 13.11 Ваня: старт 20,45 может слегка не попадать — знаешь лучше, пиши в баг-репорт (та же форма, что в подвале) -->
       <p class="parts-note"><span data-i18n="startNote"></span> <a href="https://forms.gle/StNa4GFZRHckFVpi8"><span data-i18n="bugReport"></span> ↗</a></p>
@@ -836,7 +876,8 @@ function render() {
   let h = "";
   if (withAdd || mineV.length) h += sep("mine", "secMine", mineV.length).replace("</div>", `<button class="mbtn" id="musicHelp" title="${esc(t("musicT"))}">?</button><button class="mbtn" id="musicBtn">${t("musicBtn")}</button></div>`)
     + (withAdd ? `<div class="card add" id="addCard" tabindex="0"><div class="plus">+</div><b>${t("addSong")}</b><span>${t("addSongSub")}</span></div>`
-      + `<div class="card add ytadd" id="ytCard" tabindex="0"><div class="plus">▶</div><b>${t("ytAdd")}</b><span>${t("ytAddSub")}</span></div>` : "")
+      + `<div class="card add ytadd" id="ytCard" tabindex="0"><div class="plus">▶</div><b>${t("ytAdd")}</b><span>${t("ytAddSub")}</span></div>`
+      + `<div class="card add ytadd" id="spCard" tabindex="0"><div class="plus">♫</div><b>${t("spAdd")}</b><span>${t("spAddSub")}</span></div>` : "")   // Ваня 16.11: «Спотифай лучше отдельно», рядом с YT Music
     + mineV.map(card).join("");
   if (gameV.length && filter !== "mine") h += sep("game", "secGame", gameV.length) + gameV.map(card).join("");
   $("grid").innerHTML = h;
@@ -849,6 +890,8 @@ function render() {
   }
   const yc = $("ytCard");
   if (yc) { yc.onclick = () => ytAsk(); yc.onkeydown = e => { if (e.key === "Enter") ytAsk(); }; }
+  const sc = $("spCard");
+  if (sc) { sc.onclick = () => spAsk(); sc.onkeydown = e => { if (e.key === "Enter") spAsk(); }; }
 }
 // ---------- превью 30 с (Deezer / iTunes) прямо в окне ----------
 let playing = null;
@@ -1005,9 +1048,11 @@ async function dropAny(e) {
   if (files.length === 1) { openSong(null, files[0]); return; }
   if (files.length > 1) { addFiles(files); return; }
   const txt = all.find(f => /\.(txt|csv|tsv)$/i.test(f.name));
-  if (txt) { ytAsk(await readTxt(txt)); return; }
+  if (txt) { const s = await readTxt(txt); if (spCsv(s)) spAsk(s); else ytAsk(s); return; }   // .csv-выгрузка плейлиста — в окно Spotify
   const u = e.dataTransfer.getData("text/uri-list") || e.dataTransfer.getData("text/plain") || "";
-  if ((u.match(YT_RE) || []).some(isYt)) ytAsk(u);
+  const links = u.match(YT_RE) || [];
+  if (links.some(isSp) && !links.some(isYt)) spAsk(u);   // ссылку Spotify — сразу в окно Spotify
+  else if (links.some(isLink)) ytAsk(u);
 }
 // несколько файлов: как импорт из папки Music — имена из тегов / имени файла, GO и финиш сами, обложка нарисована, файл — в Music\<номер>\
 async function addFiles(list) {
@@ -1046,7 +1091,10 @@ items.forEach(li => li.onclick = () => pickMenu(li));
 document.addEventListener("keydown", e => {
   if (document.querySelector(".dlg-back")) return;
   if (e.key === "Escape" && rp.open) { tryCloseSong(); return; }
-  if (rp.open) return;
+  if (rp.open) {   // ← → — выбранная метка на волне (GO / финиш) на 0,1 с, Shift — 0,01 с; в полях имени — курсор, как обычно
+    if ((e.key === "ArrowLeft" || e.key === "ArrowRight") && !e.target.closest("input, textarea")) { e.preventDefault(); nudge((e.key === "ArrowRight" ? 1 : -1) * (e.shiftKey ? 0.01 : 0.1)); }
+    return;
+  }
   if (e.ctrlKey && e.key.toLowerCase() === "f") { e.preventDefault(); $("q").focus(); return; }
   if (e.ctrlKey && e.key.toLowerCase() === "s") { e.preventDefault(); build(); return; }
   if (document.activeElement === $("q")) return;
@@ -1114,7 +1162,8 @@ function showThanks() {
   askYesNo({ title: t("thanksT"), yes: t("close"), no: null, tall: true, cls: "dlg-thanks", onOpen: box => fitThanks(box.closest(".dlg-back")), html: `
 <div class="thanks"><div>
   <h3>${t("cMade")}</h3><p>Kitivski + Claude <small>(Claude — AI by Anthropic)</small></p>
-  <h3>${t("cSpecial")}</h3><ul><li><b>Low Rider</b> — ${t("cLowRider")} · ${L("https://steamcommunity.com/profiles/76561198421221810", "Steam")}</li></ul>
+  <h3>${t("cSpecial")}</h3><ul><li><b>Low Rider</b> — ${t("cLowRider")} · ${L("https://steamcommunity.com/profiles/76561198421221810", "Steam")}</li>
+   <li><b>MtheAX</b> — ${t("cMtheAX")} · ${L("https://steamcommunity.com/profiles/76561199074624815", "Steam")}</li></ul>
   <h3>${t("cInside")}</h3><ul>
    <li><b>Frosty Toolsuite</b> — ${t("cFrosty")}. ${L("https://github.com/CadeEvs/FrostyToolsuite", "CadeEvs/FrostyToolsuite")}, ${t("cFork")}: ${L("https://github.com/HarGabt/FrostyToolsuite", "HarGabt/FrostyToolsuite")}</li>
    <li><b>EA audio encoder</b> — ${t("cEnc")}: ${L("https://lame.sourceforge.io", "LAME")}, ${L("https://github.com/Thealexbarney/LibAtrac9", "LibAtrac9")}</li>
@@ -1132,13 +1181,18 @@ function showThanks() {
 }
 
 // ---------- своя песня: окно «гонка» (волна, GO, финиш), обложка ----------
-const rp = { open: false, song: null, id: null, file: "", fileObj: null, dur: 0, drop: 0, outro: 0, cDur: C_DUR, peaks: null, audio: null, img: null, imgChanged: false, race: true, city: true, garage: true };
+const rp = { open: false, song: null, id: null, file: "", fileObj: null, dur: 0, drop: 0, outro: 0, cDur: C_DUR, peaks: null, audio: null, img: null, imgChanged: false, race: true, city: true, garage: true, zv: null, sel: "go", bFade: 0, bLevel: 1, cFade: 3, cLevel: 1 };
 const fmt = s => { s = Math.max(0, s || 0); return Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0"); };
+// время с долями секунды: 1:23,45 (d — знаков после запятой; en/zh/ja/ko — точка, как в размере сборки)
+const dsep = () => ["en", "zh", "ja", "ko"].includes(LANG) ? "." : ",";
+const fmtT = (s, d) => { const f = 10 ** d, c = Math.round(Math.max(0, s || 0) * f), sec = Math.floor(c / f);
+  return Math.floor(sec / 60) + ":" + String(sec % 60).padStart(2, "0") + (d ? dsep() + String(c % f).padStart(d, "0") : ""); };
+const fmtP = s => fmtT(s, 2);
 
 function openSong(song, file) {
   stopPanel(); if (playing) stopPreview();
   Object.assign(rp, { open: true, song, id: song ? song.id : null, file: song ? song.file : "", fileObj: null, dur: song ? song.dur : 0, drop: song ? song.drop : 0,
-    outro: song ? song.outro : 0, cDur: song ? song.cDur || C_DUR : C_DUR, peaks: null, audio: song ? song.audio : null, img: null, imgChanged: false, covMode: song && song.cover ? "img" : "gen",
+    outro: song ? song.outro : 0, cDur: song ? song.cDur || C_DUR : C_DUR, bFade: song ? song.bFade || 0 : 0, bLevel: song && song.bLevel != null ? song.bLevel : 1, cFade: song && song.cFade != null ? song.cFade : 3, cLevel: song && song.cLevel != null ? song.cLevel : 1, peaks: null, zv: null, sel: "go", audio: song ? song.audio : null, img: null, imgChanged: false, covMode: song && song.cover ? "img" : "gen",
     race: song ? song.race : true, city: song ? song.city : true, garage: song ? song.garage : true });
   $("rpH").textContent = t(song ? "panelEdit" : "panelNew");
   $("rpArtist").value = song ? song.artist : ""; $("rpTitle").value = song ? song.title : "";
@@ -1156,7 +1210,7 @@ function openSong(song, file) {
 }
 function closeSong() { stopPanel(); rp.open = false; $("rpan").classList.remove("show"); $("rpDim").classList.remove("show"); }
 // всё, что сохраняет кнопка «Зберегти»: имя, звук (id/файл), GO, финиш, где играет, обложка
-const rpSnap = () => JSON.stringify([$("rpArtist").value, $("rpTitle").value, rp.id, rp.file, +(rp.drop || 0).toFixed(2), +(rp.outro || 0).toFixed(2), rp.cDur, rp.race, rp.city, rp.garage, rp.covMode, rp.imgChanged]);
+const rpSnap = () => JSON.stringify([$("rpArtist").value, $("rpTitle").value, rp.id, rp.file, +(rp.drop || 0).toFixed(2), +(rp.outro || 0).toFixed(2), rp.cDur, +(rp.bFade || 0).toFixed(2), +(rp.bLevel ?? 1).toFixed(2), +(rp.cFade ?? 3).toFixed(2), +(rp.cLevel ?? 1).toFixed(2), rp.race, rp.city, rp.garage, rp.covMode, rp.imgChanged]);
 // закрыть руками (✕, клик мимо, Esc): есть несохраненное — спросить; после «Зберегти» / «Видалити» закрывается без вопроса (closeSong)
 async function tryCloseSong() {
   if (!rp.open) return;
@@ -1189,7 +1243,7 @@ async function takeFile(f) {
   const ext = (f.name.match(/\.[^.]+$/) || [""])[0].toLowerCase();
   if (!AUDIO_EXT.includes(ext) && !(f.type || "").startsWith("audio/")) { note(esc(t("badFile")) + ": " + esc(f.name)); return; }
   stopPanel();
-  Object.assign(rp, { audio: null, file: f.name, fileObj: f, dur: 0, peaks: null });
+  Object.assign(rp, { audio: null, file: f.name, fileObj: f, dur: 0, peaks: null, zv: null });
   showBody(); $("rpBody").style.display = ""; $("rpOk").disabled = true; layout(); wvMsg(t("decoding"));
   try {
     const buf = await f.arrayBuffer(), tg = id3(buf), a = await decode(buf);
@@ -1237,12 +1291,14 @@ function toPcm(a) {
   return pcm;
 }
 
+// пики волны: PPS на секунду (16.11; было 1600 на всю песню — в зуме была лесенка вместо удара)
+const PPS = 200, Z_MIN = 3;   // Z_MIN — самый крупный зум: 3 с на всю ширину волны
 function peaksFrom(a) {
-  const N = 1600, d0 = a.getChannelData(0), d1 = a.numberOfChannels > 1 ? a.getChannelData(1) : d0;
-  const step = Math.max(1, Math.floor(d0.length / N)), pk = new Float32Array(N);
+  const d0 = a.getChannelData(0), d1 = a.numberOfChannels > 1 ? a.getChannelData(1) : d0;
+  const step = a.sampleRate / PPS, N = Math.ceil(d0.length / step), pk = new Float32Array(N);
   for (let i = 0; i < N; i++) {
-    let m = 0; const e = Math.min(d0.length, (i + 1) * step);
-    for (let j = i * step; j < e; j += 8) { const v = Math.abs(d0[j]) + Math.abs(d1[j]); if (v > m) m = v; }
+    let m = 0; const e = Math.min(d0.length, Math.round((i + 1) * step));
+    for (let j = Math.round(i * step); j < e; j += 4) { const v = Math.abs(d0[j]) + Math.abs(d1[j]); if (v > m) m = v; }
     pk[i] = m / 2;
   }
   rp.peaks = pk;
@@ -1321,95 +1377,310 @@ function guessDropRms(a) {
   return best;
 }
 
-function drawWave() {
-  const c = $("wc"), dpr = devicePixelRatio || 1, w = Math.round(c.clientWidth * dpr), h = Math.round(c.clientHeight * dpr);
-  if (!w) return;
+// ---------- зум и точное время (16.11, идея MtheAX из Steam: «зазумить дорожку и править до 0,1 с, сейчас только 0,3») ----------
+// 0,3 с — это был один пиксель: волна ~610 px на всю песню. rp.zv = [от, до] видимого куска в секундах, null — вся песня.
+const view = () => rp.zv || [0, rp.dur];
+const xp = s => { const [a, b] = view(); return 100 * (s - a) / (b - a); };   // секунда → % ширины волны (вне куска — < 0 или > 100)
+function setView(a, span) {
+  span = Math.max(Z_MIN, span);
+  if (!rp.dur || span >= rp.dur) { rp.zv = null; return; }
+  a = Math.max(0, Math.min(rp.dur - span, a)); rp.zv = [a, a + span];
+}
+function zoomAt(s, k) { const [a, b] = view(), span = (b - a) * k; setView(s - (s - a) * k, span); layout(); }   // точка s остается под курсором
+function panBy(ds) { const [a, b] = view(); setView(a + ds, b - a); layout(); }
+const selSec = () => rp.sel === "c" ? rp.outro : rp.drop;
+function keepVisible(s) { const [a, b] = view(); if (rp.zv && (s < a || s > b)) setView(s - (b - a) / 2, b - a); }
+
+// волна куска [a, b] секунд: столбик — самый громкий пик под ним
+function drawPeaks(c, a, b, col) {
+  const dpr = devicePixelRatio || 1, w = Math.round(c.clientWidth * dpr), h = Math.round(c.clientHeight * dpr);
+  if (!w) return null;
   c.width = w; c.height = h; const g = c.getContext("2d"); g.clearRect(0, 0, w, h);
-  if (!rp.peaks) return;
-  g.fillStyle = "rgba(244,244,240,.6)";
-  const N = rp.peaks.length, bw = Math.max(1, Math.round(2 * dpr)), st = bw + Math.round(dpr);
+  if (!rp.peaks || b <= a) return g;
+  g.fillStyle = col;
+  const P = rp.peaks, N = P.length, bw = Math.max(1, Math.round(2 * dpr)), st = bw + Math.round(dpr), k = (b - a) * PPS / w;
   for (let x = 0; x < w; x += st) {
-    let m = 0; const i1 = Math.floor(x / w * N), i2 = Math.min(N, Math.floor((x + st) / w * N) + 1);
-    for (let k = i1; k < i2; k++) m = Math.max(m, rp.peaks[k]);
+    const i1 = Math.max(0, Math.floor(a * PPS + x * k)), i2 = Math.min(N, Math.floor(a * PPS + (x + st) * k) + 1);
+    let m = 0; for (let i = i1; i < i2; i++) if (P[i] > m) m = P[i];
     const bh = Math.max(dpr, m * h * .92); g.fillRect(x, (h - bh) / 2, bw, bh);
   }
+  return g;
 }
+// линейка под волной: подписи не теснее 64 px, мелкие риски между; чем крупнее зум — тем больше знаков после запятой
+const RUL = [[0.01, 0.002], [0.02, 0.005], [0.05, 0.01], [0.1, 0.02], [0.2, 0.05], [0.5, 0.1], [1, 0.2], [2, 0.5], [5, 1], [10, 2], [15, 5], [30, 5], [60, 10]];
+function drawRuler(a, b) {
+  const c = $("wvR"), dpr = devicePixelRatio || 1, w = Math.round(c.clientWidth * dpr), h = Math.round(c.clientHeight * dpr);
+  if (!w) return;
+  c.width = w; c.height = h; const g = c.getContext("2d"); g.clearRect(0, 0, w, h);
+  if (!rp.dur || b <= a) return;
+  const pps = c.clientWidth / (b - a), [st, mi] = RUL.find(([s]) => s * pps >= 64) || RUL[RUL.length - 1];
+  const R = Math.round(st / mi), d = st >= 1 ? 0 : st >= 0.1 ? 1 : 2;
+  g.font = `${11 * dpr}px ${getComputedStyle(document.body).fontFamily}`; g.textBaseline = "top";
+  for (let i = Math.ceil(a / mi - 1e-6); i * mi <= b + 1e-6; i++) {
+    const big = i % R === 0, x = Math.round((i * mi - a) / (b - a) * w);
+    g.fillStyle = big ? "rgba(244,244,240,.55)" : "rgba(244,244,240,.22)"; g.fillRect(x, 0, Math.max(1, Math.round(dpr)), (big ? 6 : 3) * dpr);
+    if (big) { const s = fmtT(i * mi, d); if (x + 3 * dpr + g.measureText(s).width < w) { g.fillStyle = "rgba(244,244,240,.5)"; g.fillText(s, x + 3 * dpr, 6 * dpr); } }
+  }
+}
+// полоса-обзор: вся песня мелко + желтый финиш + зеленая черта GO; рамка — что сейчас на волне
+function drawOverview() {
+  const g = drawPeaks($("wvOc"), 0, rp.dur, "rgba(244,244,240,.32)");
+  if (g && rp.dur) {
+    const w = g.canvas.width, h = g.canvas.height, X = s => s / rp.dur * w, dpr = devicePixelRatio || 1;
+    g.fillStyle = "rgba(255,230,0,.35)"; g.fillRect(X(rp.outro), 0, Math.max(1, X(Math.min(rp.cDur, rp.dur))), h);
+    g.fillStyle = "#b6ff1a"; g.fillRect(Math.round(X(rp.drop)), 0, Math.max(1, Math.round(2 * dpr)), h);
+  }
+  const [a, b] = view(), D = rp.dur || 1;
+  $("wvOf").style.left = (100 * a / D) + "%"; $("wvOf").style.width = (100 * (b - a) / D) + "%";
+  $("wvO").classList.toggle("z", !!rp.zv);
+}
+function drawWave() { const [a, b] = view(); drawPeaks($("wc"), a, b, "rgba(244,244,240,.6)"); drawRuler(a, b); drawOverview(); }
 
 function layout() {
   const ready = rp.dur > 0 && !!rp.peaks;
-  $("wvGo").style.display = $("wvB").style.display = $("wvN").style.display = $("wvC").style.display = ready ? "" : "none";
+  $("wvGo").style.display = $("wvB").style.display = $("wvN").style.display = $("wvC").style.display = $("wvTools").style.display = ready ? "" : "none";
   if (!rp.dur) { drawWave(); return; }
-  const p = s => (100 * Math.max(0, Math.min(rp.dur, s)) / rp.dur) + "%";
+  if (rp.zv && rp.zv[1] > rp.dur) rp.zv = null;
+  // кусок [s0, s1] на волне: обрезан по краям видимого, целиком за краем — спрятан
+  const span = (el, s0, s1) => { const l = Math.max(0, xp(s0)), r = Math.min(100, xp(s1)); el.style.left = l + "%"; el.style.width = Math.max(0, r - l) + "%"; if (ready && r <= l) el.style.display = "none"; };
   const b0 = Math.max(0, rp.drop - B_INTRO), cd = Math.min(rp.cDur, rp.dur);
-  $("wvGo").style.left = p(rp.drop);
   const n0 = Math.max(0, rp.drop - B_COUNT);   // начало отсчета
-  $("wvB").style.left = p(b0); $("wvB").style.width = (100 * Math.max(0, n0 - b0) / rp.dur) + "%";
-  $("wvN").style.left = p(n0); $("wvN").style.width = (100 * (rp.drop - n0) / rp.dur) + "%";
-  $("wvC").style.left = p(rp.outro); $("wvC").style.width = (100 * cd / rp.dur) + "%";
-  $("tA").textContent = fmt(rp.dur);
-  $("tB").textContent = (rp.drop < B_INTRO ? t("bPad", { s: (B_INTRO - rp.drop).toFixed(1) }) : "") + `${fmt(b0)} → ${fmt(rp.dur)}`;   // GO раньше 20 с — тишина перед песней
-  $("tC").textContent = `${fmt(rp.outro)} – ${fmt(rp.outro + cd)}`;
+  span($("wvB"), b0, n0); span($("wvN"), n0, rp.drop); span($("wvC"), rp.outro, rp.outro + cd);
+  const go = $("wvGo"), gx = xp(rp.drop);
+  go.style.left = gx + "%"; if (ready && (gx < 0 || gx > 100)) go.style.display = "none";
+  go.classList.toggle("l", gx < 12); go.classList.toggle("r", gx > 88);   // флажок с временем у края — внутрь волны
+  go.classList.toggle("sel", rp.sel !== "c"); $("wvC").classList.toggle("sel", rp.sel === "c");
+  $("wvGoT").textContent = fmtP(rp.drop);
+  $("tA").textContent = `${fmtP(0)} → ${fmtP(rp.dur)}`;
+  $("tB").textContent = (rp.drop < B_INTRO ? t("bPad", { s: (B_INTRO - rp.drop).toFixed(2).replace(".", dsep()) }) : "") + `${fmtP(b0)} → ${fmtP(rp.dur)}`;   // GO раньше 20 с — тишина перед песней
+  $("tC").textContent = `${fmtP(rp.outro)} → ${fmtP(rp.outro + cd)}`;
+  // поля времени: пока в поле пишут — не трогаем
+  if (document.activeElement !== $("inB")) $("inB").value = fmtP(rp.drop);
+  if (document.activeElement !== $("inC")) $("inC").value = fmtP(rp.outro);
+  if (document.activeElement !== $("inF")) $("inF").value = fmtF(rp.bFade);
+  // наклоны: нарастание старта — от начала музыки куска (b0) на bFade; затухание финиша — последние 3 с. Слой .wv-clip обрезает их по краю волны
+  const ramp = (el, s0, s1) => { const l = xp(s0), r = xp(s1); el.style.left = l + "%"; el.style.width = Math.max(0, r - l) + "%"; el.style.display = r > l ? "" : "none"; };
+  // затухание финиша (16.11): ручка за fo с до конца на высоте Lo; Lo < 1 — тише становится уже с начала куска. Темное — то, что тише
+  const fo = Math.min(rp.cFade ?? 3, cd), Lo = rp.cLevel ?? 1, xs = xp(rp.outro), xh = xp(rp.outro + cd - fo), yh = (1 - Lo) * 100, xe = xp(rp.outro + cd);
+  const foL = Lo < 1 ? `M${xs} 0 L${xh} ${yh} L${xe} 100` : `M${xh} 0 L${xe} 100`;
+  $("wvFo").style.display = fo > 0 || Lo < 1 ? "" : "none"; $("wvFoL").setAttribute("d", foL); $("wvFoD").setAttribute("d", foL + ` L${xe} 0 Z`);
+  $("wvFoh").style.left = xh + "%"; $("wvFoh").style.top = yh + "%"; $("wvFoh").style.display = ready && xh >= 0 && xh <= 100 ? "" : "none";
+  $("wvCe").style.left = xe + "%"; $("wvCe").style.display = ready && xe >= 0 && xe <= 100 ? "" : "none";
+  if (document.activeElement !== $("inO")) $("inO").value = fmtF(fo);
+  const g = gSpan(), f = Math.min(rp.bFade || 0, g), L = rp.bLevel ?? 1, x0 = xp(b0), x1 = xp(b0 + f), y1 = (1 - L) * 100, x2 = xp(b0 + g);
+  $("wvFi").style.display = f > 0 ? "" : "none";   // ломаная: тишина -> ручка -> (ручка ниже верха) полная на GO; темное — то, что тише
+  $("wvFiL").setAttribute("d", `M${x0} 100 L${x1} ${y1}` + (L < 1 ? ` L${x2} 0` : ""));
+  $("wvFiD").setAttribute("d", `M${x0} 0 L${x0} 100 L${x1} ${y1}` + (L < 1 ? ` L${x2} 0` : ` L${x1} 0`) + " Z");
+  $("wvFh").style.left = x1 + "%"; $("wvFh").style.top = y1 + "%";   // ручка — точка перегиба (при 0 — в начале куска старта, наверху)
+  $("wvFh").style.display = ready && x1 >= 0 && x1 <= 100 ? "" : "none";
   drawWave();
 }
 
-// мышь по волне: тянуть GO, тянуть желтый блок, клик — слушать с этого места
+// мышь по волне: тянуть GO, тянуть желтый блок, клик — слушать с этого места; что тянули последним — двигают стрелки
 let drag = null;
-const waveSec = e => { const r = $("wave").getBoundingClientRect(); return [(e.clientX - r.left) / r.width * rp.dur, rp.dur / r.width]; };
+const waveSec = e => { const r = $("wave").getBoundingClientRect(), [a, b] = view(); return [a + (e.clientX - r.left) / r.width * (b - a), (b - a) / r.width]; };
+// время под курсором / у блока, который тянут (txt null — спрятать)
+function showT(x, txt) { const el = $("wvT"); el.style.display = txt == null ? "none" : "block"; if (txt != null) { el.style.left = Math.max(5, Math.min(95, x)) + "%"; el.textContent = txt; } }
+const cRange = () => `${fmtP(rp.outro)} → ${fmtP(rp.outro + Math.min(rp.cDur, rp.dur))}`;
+function replay(k) {
+  stopPanel(); const cl = Math.min(rp.cDur, rp.dur), end = rp.outro + cl;
+  if (k === "c") pplay("C");
+  else if (k === "fo") pplay("C", (rp.cLevel ?? 1) < 1 ? rp.outro : Math.max(rp.outro, end - Math.min(rp.cFade ?? 3, cl) - 2));   // слышно затухание, а не весь кусок
+  else if (k === "ce") pplay("C", Math.max(rp.outro, end - 5));   // конец финиша
+  else if (k === "fi") pplay("B");
+  else pplay("B", Math.max(0, rp.drop - 4));
+}   // сразу слышно 3-2-1-GO / финиш / нарастание с начала старта
+const fmtF = v => String(+(v || 0).toFixed(1)).replace(".", dsep());   // секунды нарастания: 0 / 2,5 / 17
 $("wave").addEventListener("mousedown", e => {
   if (!rp.dur || !rp.audio) return;
+  if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();   // стрелки ← → — метке, а не полю имени
   const [s, px] = waveSec(e);
   if (Math.abs(s - rp.drop) < 10 * px) drag = { k: "go" };
+  else if (e.target === $("wvFh")) drag = { k: "fi" };
+  else if (e.target === $("wvFoh")) drag = { k: "fo" };   // ручка затухания финиша
+  else if (e.target === $("wvCe")) drag = { k: "ce" };    // правый край финиша — длина   // ручка нарастания — только за сам квадратик (раньше ловила клики рядом и все играло с начала)
   else if (s >= rp.outro && s <= rp.outro + rp.cDur) drag = { k: "c", off: s - rp.outro };
-  else { pplay("A", s); return; }
+  else {   // клик (16.11 Ваня): зеленая зона — старт гонки с начала, оранжевая — отсчет 3-2-1-GO и дальше, остальное — песня с этого места
+    const b0 = Math.max(0, rp.drop - B_INTRO), n0 = Math.max(0, rp.drop - B_COUNT);
+    if (s >= n0 && s < rp.drop) { stopPanel(); pplay("B", n0); }
+    else if (s >= b0 && s < n0) { stopPanel(); pplay("B"); }
+    else pplay("A", s);
+    return;
+  }
+  if (drag.k === "go" || drag.k === "c") rp.sel = drag.k; else if (drag.k !== "fi") rp.sel = "c";   // ручка затухания / край — это финиш
+  layout();
   document.body.classList.add("wv-drag");
   e.preventDefault();
 });
+$("wave").addEventListener("mousemove", e => { if (drag || !rp.dur || !rp.peaks) return; const [s] = waveSec(e); showT(xp(s), fmtP(s)); });
+$("wave").addEventListener("mouseleave", () => { if (!drag) showT(0, null); });
 addEventListener("mousemove", e => {
   if (!drag) return;
-  const [s] = waveSec(e);
-  if (drag.k === "go") rp.drop = Math.max(0, Math.min(rp.dur - 5, s));
-  else rp.outro = Math.max(0, Math.min(rp.dur - Math.min(rp.cDur, rp.dur), s - drag.off));
+  const [s0] = waveSec(e), [a, b] = view(), s = Math.max(a, Math.min(b, s0));   // в зуме метка не уезжает за край волны
+  if (drag.k === "go") { rp.drop = Math.max(0, Math.min(rp.dur - 5, s)); showT(0, null); }
+  else if (drag.k === "fo") {   // вниз — громкость в точке ручки ниже (у верха прилипает к полной), влево — затухание дольше
+    const cl = Math.min(rp.cDur, rp.dur), end = rp.outro + cl, wr = $("wave").getBoundingClientRect(), lv = 1 - (e.clientY - wr.top) / wr.height;
+    rp.cFade = Math.round(Math.max(0, Math.min(cl, end - s)) * 10) / 10;
+    rp.cLevel = lv >= 0.95 ? 1 : Math.round(Math.max(0, lv) * 100) / 100;
+    showT(xp(end - rp.cFade), "↘ " + fmtF(rp.cFade) + (rp.cLevel < 1 ? " · " + Math.round(rp.cLevel * 100) + " %" : ""));
+  }
+  else if (drag.k === "ce") { rp.cDur = Math.round(Math.max(5, Math.min(rp.dur - rp.outro, s - rp.outro)) * 10) / 10; showT(xp(rp.outro + rp.cDur), cRange()); }
+  else if (drag.k === "fi") {
+    const b0 = Math.max(0, rp.drop - B_INTRO), wr = $("wave").getBoundingClientRect(), lv = 1 - (e.clientY - wr.top) / wr.height;
+    rp.bFade = Math.round(Math.max(0, Math.min(gSpan(), s - b0)) * 10) / 10;
+    rp.bLevel = lv >= 0.95 ? 1 : Math.round(Math.max(0, lv) * 100) / 100;
+    showT(xp(b0 + rp.bFade), "↗ " + fmtF(rp.bFade) + (rp.bLevel < 1 ? " · " + Math.round(rp.bLevel * 100) + " %" : ""));
+  }
+  else { rp.outro = Math.max(0, Math.min(rp.dur - Math.min(rp.cDur, rp.dur), s - drag.off)); showT(xp(rp.outro + Math.min(rp.cDur, rp.dur) / 2), cRange()); }
   layout();
 });
 addEventListener("mouseup", () => {
   if (!drag) return;
-  const d = drag; drag = null; document.body.classList.remove("wv-drag");
-  if (d.k === "go") pplay("B", Math.max(0, rp.drop - 4)); // сразу слышно 3-2-1-GO
-  else pplay("C");
+  const d = drag; drag = null; document.body.classList.remove("wv-drag"); showT(0, null);
+  replay(d.k);
 });
+// колесо над волной — зум к курсору; Shift + колесо / тачпад вбок — листать
+$("wave").addEventListener("wheel", e => {
+  if (!rp.dur || !rp.peaks) return;
+  e.preventDefault();
+  const [s, px] = waveSec(e);
+  if (e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) panBy((e.deltaX || e.deltaY) * px);
+  else zoomAt(s, e.deltaY < 0 ? 0.8 : 1.25);
+  if (!drag) showT(xp(s), fmtP(s));
+}, { passive: false });
+// полоса-обзор (когда есть зум): клик — показать это место, тянуть — листать
+let ovDrag = null;
+const ovSec = e => { const r = $("wvO").getBoundingClientRect(); return (e.clientX - r.left) / r.width * rp.dur; };
+$("wvO").addEventListener("mousedown", e => {
+  if (!rp.dur || !rp.zv) return;
+  const s = ovSec(e), [a, b] = view();
+  if (s < a || s > b) setView(s - (b - a) / 2, b - a);
+  ovDrag = { off: s - view()[0] }; layout(); e.preventDefault();
+});
+addEventListener("mousemove", e => { if (!ovDrag) return; const [a, b] = view(); setView(ovSec(e) - ovDrag.off, b - a); layout(); });
+addEventListener("mouseup", () => { ovDrag = null; });
+// кнопки: зум к выбранной метке (если она видна), иначе к середине; «вся песня» — без зума
+const zFocus = () => { const [a, b] = view(), s = selSec(); return s >= a && s <= b ? s : (a + b) / 2; };
+$("zIn").onclick = () => zoomAt(zFocus(), 0.5);
+$("zOut").onclick = () => zoomAt(zFocus(), 2);
+$("zAll").onclick = () => { rp.zv = null; layout(); };
+// стрелки ← →: выбранная метка на 0,1 с, Shift — на 0,01 с; через полсекунды без нажатий — прослушка с этого места
+let nudgeT = 0;
+function nudge(d) {
+  if (!rp.dur || !rp.audio || !rp.peaks) return;
+  const r2 = v => Math.round(v * 100) / 100;
+  if (rp.sel === "c") rp.outro = r2(Math.max(0, Math.min(rp.dur - Math.min(rp.cDur, rp.dur), rp.outro + d)));
+  else rp.drop = r2(Math.max(0, Math.min(rp.dur - 5, rp.drop + d)));
+  keepVisible(selSec()); layout();
+  clearTimeout(nudgeT); nudgeT = setTimeout(() => { if (rp.open) replay(rp.sel); }, 500);
+}
+// поля времени (16.11 Ваня: «окно, в котором можно записать конкретный тайминг»): 1:23,45 / 1:23.45 / 83,45 / 83 → секунды; не разобрали — null
+function parseT(v) { const m = String(v).trim().replace(",", ".").match(/^(?:(\d+):)?(\d+(?:\.\d*)?)$/); return m ? (+(m[1] || 0)) * 60 + parseFloat(m[2]) : null; }
+function setT(k, v) {
+  if (!rp.open) return;
+  const el = $(k === "c" ? "inC" : "inB"), s = parseT(v);
+  if (s == null || !rp.dur) { el.classList.add("bad"); setTimeout(() => el.classList.remove("bad"), 900); el.value = fmtP(k === "c" ? rp.outro : rp.drop); return; }
+  const r2 = x => Math.round(x * 100) / 100;
+  if (k === "c") rp.outro = r2(Math.max(0, Math.min(rp.dur - Math.min(rp.cDur, rp.dur), s)));
+  else rp.drop = r2(Math.max(0, Math.min(rp.dur - 5, s)));
+  rp.sel = k; keepVisible(selSec()); layout();
+  el.value = fmtP(k === "c" ? rp.outro : rp.drop);   // как поняли (вне песни — прижато к краю)
+  if (rp.audio) replay(k);
+}
+[["inB", "go"], ["inC", "c"]].forEach(([id, k]) => {
+  const el = $(id), cur = () => fmtP(k === "c" ? rp.outro : rp.drop);
+  el.addEventListener("keydown", e => {
+    if (e.key === "Enter") { e.preventDefault(); setT(k, el.value); el.select(); }
+    else if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); el.value = cur(); el.blur(); }   // назад как было; панель не закрывать
+  });
+  el.addEventListener("focus", () => { rp.sel = k; layout(); setTimeout(() => el.select(), 0); });
+  el.addEventListener("blur", () => { if (el.value.trim() !== cur()) setT(k, el.value); });   // ушли из поля — тоже применить
+});
+// поле нарастания старта (16.11): секунды 0…17 (2 / 2,5 / 2.5); применили — слушаем старт с начала, как в игре
+function setF(v) {
+  if (!rp.open) return;
+  const el = $("inF"), x = parseFloat(String(v).trim().replace(",", "."));
+  if (!isFinite(x) || x < 0) { el.classList.add("bad"); setTimeout(() => el.classList.remove("bad"), 900); el.value = fmtF(rp.bFade); return; }
+  rp.bFade = Math.round(Math.min(gSpan(), x) * 10) / 10; layout(); el.value = fmtF(rp.bFade);
+  if (rp.audio) replay("fi");
+}
+$("inF").addEventListener("keydown", e => {
+  if (e.key === "Enter") { e.preventDefault(); setF($("inF").value); $("inF").select(); }
+  else if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); $("inF").value = fmtF(rp.bFade); $("inF").blur(); }
+});
+$("inF").addEventListener("focus", () => setTimeout(() => $("inF").select(), 0));
+// двойной клик по ручке — громкость в точке ручки снова полная (прямой наклон)
+$("wvFh").addEventListener("dblclick", () => { rp.bLevel = 1; layout(); replay("fi"); });
+$("wvFoh").addEventListener("dblclick", () => { rp.cLevel = 1; layout(); replay("fo"); });
+// поле затухания финиша (16.11): секунды 0…длина куска; применили — слушаем конец финиша
+function setO(v) {
+  if (!rp.open) return;
+  const el = $("inO"), x = parseFloat(String(v).trim().replace(",", ".")), cl = Math.min(rp.cDur, rp.dur);
+  if (!isFinite(x) || x < 0) { el.classList.add("bad"); setTimeout(() => el.classList.remove("bad"), 900); el.value = fmtF(Math.min(rp.cFade ?? 3, cl)); return; }
+  rp.cFade = Math.round(Math.min(cl, x) * 10) / 10; rp.sel = "c"; keepVisible(rp.outro + cl - rp.cFade); layout(); el.value = fmtF(rp.cFade);
+  if (rp.audio) replay("fo");
+}
+$("inO").addEventListener("keydown", e => {
+  if (e.key === "Enter") { e.preventDefault(); setO($("inO").value); $("inO").select(); }
+  else if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); $("inO").value = fmtF(rp.cFade ?? 3); $("inO").blur(); }
+});
+$("inO").addEventListener("focus", () => setTimeout(() => $("inO").select(), 0));
+$("inO").addEventListener("blur", () => { if ($("inO").value.trim() !== fmtF(Math.min(rp.cFade ?? 3, Math.min(rp.cDur, rp.dur)))) setO($("inO").value); });
+$("inF").addEventListener("blur", () => { if ($("inF").value.trim() !== fmtF(rp.bFade)) setF($("inF").value); });
 
 // прослушка кусков
 const au2 = $("au2"); let pp = null;
+let ticking = false;   // один цикл tick на все запуски (раньше каждый запуск добавлял свой)
 function pplay(mode, from) {
   if (pp && pp.mode === mode && from === undefined) { stopPanel(); return; }
   const src = rp.audio; if (!src) return;
   let start = 0, end = null;
   if (mode === "A") start = from || 0;
   if (mode === "B") start = from ?? Math.max(0, rp.drop - B_INTRO);
-  if (mode === "C") { start = rp.outro; end = rp.outro + Math.min(rp.cDur, rp.dur); }
-  // GO раньше B_INTRO (20,45 с): в игре старт начинается с тишины (сборка ставит ее перед песней, дроп ровно на GO) — так и слушаем
-  const wait = mode === "B" && from === undefined ? Math.max(0, B_INTRO - rp.drop) : 0;
-  pp = { mode, end };
-  const go = () => { if (!pp || pp.mode !== mode) return; au2.currentTime = start; au2.volume = 1; au2.play().catch(() => {}); };
-  const launch = () => {
-    if (!pp || pp.mode !== mode) return;
-    if (au2.dataset.src !== src) { au2.dataset.src = src; au2.src = src; au2.addEventListener("loadedmetadata", go, { once: true }); }
-    else if (au2.readyState < 1) au2.addEventListener("loadedmetadata", go, { once: true });
-    else go();
-  };
-  if (wait > 0) { au2.pause(); setTimeout(launch, wait * 1000); } else launch();
-  marks(); requestAnimationFrame(tick);
+  if (mode === "C") { start = from ?? rp.outro; end = rp.outro + Math.min(rp.cDur, rp.dur); }
+  // 16.11 Ваня: GO раньше 20,45 с — в игре старт начинается с тишины (сборка ставит ее перед песней), а в программе слушаем сразу, без нее.
+  // Раньше тут ждали эту тишину отложенным запуском, и старые запуски потом перематывали в начало («3 раза играет начало»).
+  const me = pp = { mode, end };   // этот запуск: отложенный go старого запуска видит, что pp уже другой, и молчит
+  const go = () => { if (pp !== me) return; au2.currentTime = start; au2.volume = volAt(mode, start); au2.play().catch(() => {}); };
+  if (au2.dataset.src !== src) { au2.dataset.src = src; au2.src = src; au2.addEventListener("loadedmetadata", go, { once: true }); }
+  else if (au2.readyState < 1) au2.addEventListener("loadedmetadata", go, { once: true });
+  else go();
+  marks(); if (!ticking) { ticking = true; requestAnimationFrame(tick); }
+}
+// громкость прослушки в секунде ct песни: старт — нарастание bFade с начала музыки куска, финиш — затухание последние 3 с (линейно, как в Audio.cs)
+// нарастание старта (16.11, Ваня: «более флекс»): от тишины до ручки (bFade с, громкость bLevel), от ручки до GO — до полной, дальше полная.
+// u — секунды от начала музыки куска. Та же формула — src/Audio.cs FadeIn (так соберется в игру)
+const gSpan = () => Math.min(rp.drop, B_INTRO);   // от начала музыки старта до GO
+function fadeGain(u) {
+  const g = gSpan(), f = Math.min(rp.bFade || 0, g), L = rp.bLevel ?? 1;
+  if (!(f > 0)) return 1;
+  if (u <= 0) return 0;
+  if (u < f) return L * u / f;
+  if (L < 1 && u < g) return L + (1 - L) * (u - f) / (g - f);
+  return 1;
+}
+// затухание финиша (16.11): кусок len с, ручка за f с до конца на высоте L. L = 1: полная до ручки, дальше в тишину; L < 1: от начала куска
+// к L у ручки, дальше в тишину. Та же формула — src/Audio.cs FadeOut
+function fadeOutGain(t) {
+  const len = Math.min(rp.cDur, rp.dur), f = Math.max(0, Math.min(rp.cFade ?? 3, len)), L = rp.cLevel ?? 1, h = len - f;
+  if (t >= len) return 0;
+  if (t > h) return f > 0 ? L * (len - t) / f : 0;
+  if (L < 1 && h > 0) return 1 - (1 - L) * Math.max(0, t) / h;
+  return 1;
+}
+function volAt(mode, ct) {
+  if (mode === "B") return fadeGain(ct - Math.max(0, rp.drop - B_INTRO));
+  if (mode === "C") return fadeOutGain(ct - rp.outro);
+  return 1;
 }
 function stopPanel() { au2.pause(); pp = null; marks(); $("wvPh").style.display = "none"; $("wvCd").textContent = ""; }
 function marks() { document.querySelectorAll(".part").forEach(p => { const b = p.querySelector(".pp"), on = pp && pp.mode === p.dataset.p; b.classList.toggle("on", !!on); b.textContent = on ? "❚❚" : "▶"; }); }
 function tick() {
-  if (!pp) return;
+  if (!pp) { ticking = false; return; }
   const ct = au2.currentTime;
-  if (pp.end != null) {
-    if (ct >= pp.end) { stopPanel(); return; }
-    au2.volume = Math.max(0, Math.min(1, (pp.end - ct) / 3)); // финиш — с затуханием в конце, как в игре
-  }
-  if (rp.dur) { $("wvPh").style.display = "block"; $("wvPh").style.left = (100 * ct / rp.dur) + "%"; }
+  if (pp.end != null && ct >= pp.end) { stopPanel(); ticking = false; return; }
+  au2.volume = volAt(pp.mode, ct);   // финиш — затухание в конце, старт — нарастание в начале: как соберет программа (src/Audio.cs Piece)
+  if (rp.dur) { const x = xp(ct); $("wvPh").style.display = x >= 0 && x <= 100 ? "block" : "none"; $("wvPh").style.left = x + "%"; }   // в зуме — только когда в видимом куске
   const left = rp.drop - ct;
   $("wvCd").textContent = pp.mode === "B" && left > -1 && left <= Math.min(3, B_COUNT) ? (left > 0 ? Math.ceil(left) : "GO") : "";   // цифры — только 3-2-1, как в игре (старт 3,45 с)
   requestAnimationFrame(tick);
@@ -1516,10 +1787,10 @@ async function importMusic(x) {
     if (tg.title) { artist = tg.artist || ""; title = tg.title; }
     if (inf.title) { artist = inf.artist || ""; title = inf.title; }
     const num = v => typeof v === "number" && isFinite(v) ? v : null;
-    const cDur = num(inf.cDur) ?? C_DUR, drop = num(inf.drop) ?? guessDrop(a), outro = num(inf.outro) ?? Math.max(0, a.duration - cDur);
+    const cDur = num(inf.cDur) ?? C_DUR, drop = num(inf.drop) ?? guessDrop(a), outro = num(inf.outro) ?? Math.max(0, a.duration - cDur), bFade = num(inf.bFade) ?? 0, bLevel = num(inf.bLevel) ?? 1, cFade = num(inf.cFade) ?? 3, cLevel = num(inf.cLevel) ?? 1;   // нарастание старта (16.11) — из song.json
     const res = await api("/api/song/upload?name=" + encodeURIComponent(x.src.split("\\").pop()), toPcm(a).buffer, true);
     await api("/api/song/cover?id=" + encodeURIComponent(res.id), await coverPng(img, title, artist), true);
-    await api("/api/song/save", { id: res.id, title, artist, drop: +drop.toFixed(2), outro: +outro.toFixed(2), cDur, race: true, city: true, garage: true });
+    await api("/api/song/save", { id: res.id, title, artist, drop: +drop.toFixed(2), outro: +outro.toFixed(2), cDur, bFade, bLevel, cFade, cLevel, race: true, city: true, garage: true });
     x.newId = res.id;
   }
   await api("/api/music/done", { id: x.newId || x.id, src: x.src, asig: x.asig, isig: x.isig, replace: x.kind === "new" ? x.id : null });
@@ -1535,11 +1806,16 @@ addEventListener("focus", syncMusic);
 // Плейлист / альбом — одна строка (сколько песен, сколько уже есть). «Завантажити все» — окно с весом и временем, дальше по одной с прогрессом.
 const YT_RE = /https?:\/\/[^\s;,"'<>]+/gi;
 const isYt = u => /^https?:\/\/([a-z0-9-]+\.)*(youtube\.com|youtu\.be)\//i.test(u || "");
+// Spotify (16.11): песня / альбом / плейлист — программа берет оттуда только список (Spotify.cs), каждую песню ищет на YT Music, звук — оттуда.
+// Ссылка Spotify в списке раскрывается в строки песен: найдено / «перевір» (желтым) / не нашлось и скрытые Spotify (красным, не качаем).
+const isSp = u => /^https?:\/\/open\.spotify\.com\//i.test(u || "");
+const isLink = u => isYt(u) || isSp(u);
 const isYtList = u => { try { const p = new URL(u).pathname.toLowerCase(); return p.startsWith("/playlist") || p.startsWith("/browse/"); } catch (e) { return false; } };
 const ytShort = u => String(u || "").replace(/^https?:\/\/(www\.|music\.|m\.)?/i, "");
 function ytKey(u) {   // одна песня / плейлист под разными ссылками (music. / www. / youtu.be, &list=, &t=, &si=) — один ключ
   try {
     const x = new URL(u), p = x.pathname;
+    if (/^open\.spotify\.com$/i.test(x.hostname)) { const m = p.match(/\/(track|album|playlist)\/([A-Za-z0-9]{22})/i); if (m) return "s" + m[1][0].toLowerCase() + ":" + m[2]; }   // st: / sa: / sp: — песня из плейлиста и ее ссылка — один ключ
     if (p.toLowerCase().startsWith("/browse/")) return "b:" + p.slice(8);
     if (p.toLowerCase().startsWith("/playlist")) return "l:" + x.searchParams.get("list");
     if (x.searchParams.get("v")) return "v:" + x.searchParams.get("v");
@@ -1556,7 +1832,7 @@ function ytParse(text) {   // текст (вставка / .txt) -> {rows: [{url
   for (let rec of String(text || "").replace(/^﻿/, "").split(/[;\r\n]+/)) {
     rec = rec.trim();
     if (!rec || rec.startsWith("#") || rec.startsWith("//")) continue;   // пусто / комментарий
-    const links = (rec.match(YT_RE) || []).map(u => u.replace(/[).]+$/, "")).filter(isYt);
+    const links = (rec.match(YT_RE) || []).map(u => u.replace(/[).]+$/, "")).filter(isLink);
     if (!links.length) { skip++; continue; }                               // заголовок, текст, чужая ссылка
     if (links.length > 1) { links.forEach(url => rows.push({ url, title: "", artist: "" })); continue; }   // несколько ссылок подряд — без имен
     const f = rec.replace(YT_RE, "").split(/[,\t]/).map(s => s.replace(/"/g, "").trim()).filter(Boolean);
@@ -1598,22 +1874,97 @@ async function ytPickTxt() {
   if (!ytParse(text).rows.length) { await askYesNo({ title: t("ytM4"), html: `<p>${t("ytTxtNone")}</p>`, yes: t("close"), no: null }); return null; }
   return text;
 }
-async function ytAsk(pre) {   // pre — текст (ссылку / .txt перетащили на окно программы) — сразу список
+// Spotify — своя карточка и свое окно (Ваня 16.11: «Спотифай лучше отдельно»): тот же список, только ссылки Spotify.
+// Чужая ссылка в окне (Spotify в YouTube и наоборот) — вопрос «перейти туда?» Так / Ні (Ваня: «лучше просто сказать… перейти на спотифай да нет»).
+// Карточка — сначала выбор (Ваня 16.11: «ссылка на плейлист до 100, либо 1 трек, либо ссылку на сайт и пусть переводит, и отдельно csv»).
+// Ссылка / .csv пришли готовыми (перетащили, «перейти?» из окна YouTube) — сразу список.
+const EXPORTIFY = "https://exportify.app/";   // github.com/watsonbox/exportify — выгрузка плейлиста в .csv через свой вход Spotify (живой 16.11.2026)
+async function spAsk(pre) {
+  if (playing) stopPreview();
+  if (pre) return ytAsk(pre, true);
+  for (;;) {
+    const v = await askYesNo({ title: "Spotify → YouTube Music",
+      html: `<p>${t("spChoose")}</p><ul><li>${t("spM1d")}</li><li>${t("spM2d")}</li><li>${t("spM3d")}</li><li>${t("spM4d")}</li></ul><p class="sp-cut">${t("spNote")}</p>`,
+      buttons: [{ label: t("spM1"), val: "pl" }, { label: t("spM2"), val: "song" }, { label: t("spM3") + " ↗", val: "site" }, { label: t("spCsvBtn"), val: "csv" }, { label: t("cancel"), val: false }] });
+    if (!v) return;
+    if (v === "site") { openUrl(EXPORTIFY); continue; }   // сайт — в браузере; выбор остается: выгрузил — «Файл .csv»
+    if (v === "csv") {
+      const f = await new Promise(res => {
+        const fi = document.createElement("input"); fi.type = "file"; fi.accept = ".csv,.tsv,.txt,text/csv,text/plain";
+        fi.onchange = async () => res(fi.files[0] ? { text: await readTxt(fi.files[0]), name: fi.files[0].name } : null);
+        fi.addEventListener("cancel", () => res(null));
+        fi.click();
+      });
+      if (!f) continue;
+      if (!spCsv(f.text)) { await askYesNo({ title: t("spCsvBtn"), html: `<p>${errText({ key: "spCsv" })}</p>`, yes: t("close"), no: null }); continue; }
+      return ytAsk(f.text, true);
+    }
+    return ytAsk(null, v);   // "pl" / "song" — окно со ссылкой
+  }
+}
+// .csv — выгрузка плейлиста (запасной путь, Ваня 16.11: «это как альтернативный вариант»; Ctrl+A в Spotify у него не выделяет).
+// Exportify: «Track URI», «Track Name», «Artist Name(s)», «Duration (ms)»; другие сервисы — «Track name», «Artist name» (без длины).
+// Имена и длина уже в файле — сразу строки и поиск на YT Music, без запросов к Spotify. null — не похоже на список песен.
+function csvRows(text) {   // CSV с кавычками («A, B», "" внутри); разделитель , ; или Tab — какой чаще в заголовке
+  text = String(text || "").replace(/^﻿/, "");
+  const head = text.split(/\r?\n/)[0] || "";
+  const sep = [",", ";", "\t"].sort((a, b) => head.split(b).length - head.split(a).length)[0];
+  const out = []; let row = [], f = "", q = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) { if (c === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; continue; }
+    if (c === '"') q = true;
+    else if (c === sep) { row.push(f); f = ""; }
+    else if (c === "\n" || c === "\r") { if (c === "\r" && text[i + 1] === "\n") i++; row.push(f); f = ""; if (row.length > 1 || row[0]) out.push(row); row = []; }
+    else f += c;
+  }
+  if (f || row.length) { row.push(f); if (row.length > 1 || row[0]) out.push(row); }
+  return out;
+}
+function spCsv(text) {
+  if (/youtube\.com|youtu\.be/i.test(text || "")) return null;   // .txt со ссылками YouTube («Назва,Виконавець,Посилання») — это список YouTube
+  const lines = csvRows(text); if (lines.length < 2) return null;
+  const h = lines[0].map(x => x.trim().toLowerCase());
+  const col = re => h.findIndex(x => re.test(x));
+  // исполнитель: сначала «Artist Name(s)» — в Exportify раньше нее идет «Artist URI(s)», она тоже на «artist» (16.11, файл Вани)
+  const cu = col(/track uri|spotify.*(uri|id)|^uri$/), ct = col(/track name|^name$|^title$|^song|^track$/), cd = col(/duration/);
+  let ca = col(/artist name/); if (ca < 0) ca = col(/^artists?$/); if (ca < 0) ca = col(/^artist(?!.*\b(uri|id)\b)/);
+  if (ct < 0 || ca < 0) return null;
+  const rows = [];
+  for (const r of lines.slice(1)) {
+    const title = (r[ct] || "").trim();
+    const m = (cu >= 0 ? r[cu] || "" : "").match(/([A-Za-z0-9]{22})\s*$/);
+    if (!title) { if (m) rows.push({ sp: m[1], title: "", artist: "", dur: 0, hidden: true }); continue; }   // скрыта в стране: без имени и в выгрузке — красной строкой, как у ссылки
+    const d = cd >= 0 ? (r[cd] || "").trim() : ""; let dur = 0;
+    if (/^\d+:\d\d$/.test(d)) { const [a, b] = d.split(":"); dur = +a * 60 + +b; } else if (+d > 0) dur = +d > 3600 ? Math.round(+d / 1000) : Math.round(+d);   // мс / с / м:сс
+    rows.push({ sp: m ? m[1] : "", title, artist: (r[ca] || "").replace(/\s*;\s*/g, ", ").trim(), dur });
+  }
+  return rows;
+}
+async function ytAsk(pre, spMode) {   // pre — текст (ссылку / .txt перетащили на окно программы) — сразу список; spMode — окно Spotify
   if (playing) stopPreview();
   // сначала выбор; Esc и «Скасувати» — выйти
-  let mode = pre ? "list" : await askYesNo({ title: t("ytT"), html: `<p>${t("ytChoose")}</p><ul><li>${t("ytM1d")}</li><li>${t("ytM2d")}</li><li>${t("ytM3d")}</li><li>${t("ytM4d")}</li></ul>`,
+  let mode = pre || spMode ? "list" : await askYesNo({ title: t("ytT"), html: `<p>${t("ytChoose")}</p><ul><li>${t("ytM1d")}</li><li>${t("ytM2d")}</li><li>${t("ytM3d")}</li><li>${t("ytM4d")}</li></ul>`,
     buttons: [{ label: t("ytM1"), val: "song" }, { label: t("ytM2"), val: "pl" }, { label: t("ytM3"), val: "list" }, { label: t("ytM4"), val: "txt" }, { label: t("cancel"), val: false }] });
   if (!mode) return;
   const fromTxt = mode === "txt";
   if (fromTxt) { pre = await ytPickTxt(); if (pre == null) return; mode = "list"; }
-  const L = [], seen = new Set(), infoQ = [];
+  const L = [], seen = new Set(), infoQ = [], cuts = [];
+  const spBusy = () => L.some(x => (x.spl && !x.err) || (x.sp && !x.hidden && !x.si));   // Spotify: список еще читается / песню еще ищем
+  let spQ = Promise.resolve();
   let skip = 0, dup = 0, alive = true, free = -1, infoRun = 0, readQ = Promise.resolve(), haveQ = Promise.resolve(), box = null, inp = null, lbl = null;
+  let jump = null, close = null;   // «перейти в другое окно»: текст со ссылками; close — закрыть это окно (done из askYesNo)
   const plan = () => {   // что качать: без «уже есть» и без повторов (одна песня в двух плейлистах — один раз)
     const ids = new Set(), todo = []; let total = 0, have = 0;
     const push = (k, x) => { if (ids.has(k)) return; ids.add(k); total++; if (x.have) have++; else todo.push(x); };
     for (const x of L) {
-      if (x.err) continue;
+      if (x.err || x.spl) continue;   // ссылка Spotify еще не прочитана
       if (x.pl) { if (x.r) x.r.items.forEach(it => push("v:" + it.id, it)); continue; }
+      if (x.sp) {   // песня Spotify: качаем найденную на YT Music, имена — с YT Music (как у плейлиста YouTube)
+        const f = x.si; if (!f || !f.found) continue;
+        push("v:" + f.id, { url: "https://music.youtube.com/watch?v=" + f.id, artist: f.by, title: f.title, dur: f.len || x.dur, names: false, have: !!f.have, sp: true });
+        continue;
+      }
       const own = !!(x.artist || x.title), inf = x.info && x.info.found ? x.info : null;
       // свои имена — в song.json (names); нет своих — имя и канал с YouTube только для поиска песни вместо клипа / замены недоступного (как у плейлиста)
       push(x.k, { url: x.url, artist: own ? x.artist : inf ? inf.by : "", title: own ? x.title : inf ? inf.title : "", dur: inf ? inf.len : 0, names: own, have: x.have });
@@ -1622,11 +1973,29 @@ async function ytAsk(pre) {   // pre — текст (ссылку / .txt пер�
   };
   // строка списка: картинка, имя (свое / с YouTube), под ним — исполнитель, длина, ссылка; справа — метка и «✕ Прибрати»
   const row = (x, i) => {
-    const id = x.pl ? (x.r && x.r.items[0] ? x.r.items[0].id : "") : ytVid(x.url);
-    const img = id ? `<img src="${esc(ytThumb(id))}" alt="">` : `<span class="ph">${x.pl ? "≡" : "▶"}</span>`;
+    const id = x.pl ? (x.r && x.r.items[0] ? x.r.items[0].id : "") : x.sp ? (x.si && x.si.found ? x.si.id : "") : x.spl ? "" : ytVid(x.url);
+    const img = id ? `<img src="${esc(ytThumb(id))}" alt="">` : `<span class="ph">${x.pl ? "≡" : x.sp || x.spl ? "♫" : "▶"}</span>`;
     let m, cls = "", tag = "";
     const s = [];
-    if (x.pl) {
+    if (x.spl) {   // ссылка Spotify, пока читаем список (потом строка меняется на строки песен)
+      m = "Spotify";
+      if (x.err) { s.push(esc(x.err)); cls = " bad"; } else s.push(`<span class="wait">${t("spRead")}</span>`);
+      tag = `<span class="yt-tag sp">Spotify</span>`;
+    } else if (x.sp) {   // песня Spotify: имя и длина Spotify, под ним — что нашлось на YT Music (картинка — оттуда)
+      const f = x.si;
+      if (x.hidden) { m = t("spHidden"); cls = " bad"; }
+      else {
+        m = esc((x.artist ? x.artist + " — " : "") + x.title) + (x.dur ? " · " + ytLen(x.dur) : "");
+        if (!f) s.push(`<span class="wait">${t("spFind")}</span>`);
+        else if (!f.found) { s.push(f.err ? esc(f.err) : t("spNone")); cls = " bad"; }
+        else {
+          s.push("YT Music: " + esc(f.title + (f.by ? " · " + f.by : "")) + (f.len ? " · " + ytLen(f.len) : ""));
+          if (!f.ok) { s.push(f.why === "len" ? t("spCheckLen", { a: ytLen(f.len), b: ytLen(x.dur) }) : f.why === "title" ? t("spCheckTitle") : t("spCheckArt")); cls = " warn"; }
+        }
+      }
+      if (f && f.have) { tag = `<span class="yt-tag">${t("ytHaveTag")}</span>`; cls += " off"; }
+      else tag = `<span class="yt-tag sp">Spotify</span>`;
+    } else if (x.pl) {
       m = t("ytPl") + (x.r && x.r.title ? " «" + esc(x.r.title) + "»" : "");
       if (x.err) { s.push(esc(x.err)); cls = " bad"; }
       else if (!x.r) s.push(t("ytPlRead"));
@@ -1659,25 +2028,68 @@ async function ytAsk(pre) {   // pre — текст (ссылку / .txt пер�
       if (list.children[i] !== x.el) list.insertBefore(x.el, list.children[i] || null);
     });
     while (list.children.length > L.length) list.lastElementChild.remove();
-    const p = plan(), wait = L.some(x => x.pl && !x.r && !x.err), st = box.querySelector("[data-st]"), parts = [];
+    const p = plan(), wait = L.some(x => x.pl && !x.r && !x.err) || spBusy(), st = box.querySelector("[data-st]"), parts = [];
+    const spNo = L.filter(x => x.sp && (x.hidden || (x.si && !x.si.found))).length, spChk = L.filter(x => x.sp && x.si && x.si.found && !x.si.ok && !x.si.have).length;
     if (L.length) parts.push(t("ytInList", { n: L.length }));
+    if (spChk) parts.push(t("spCheckN", { k: spChk }));
+    if (spNo) parts.push(t("spNoneN", { k: spNo }));
     if (skip) parts.push(t("ytSkipped", { k: skip }));
     if (dup) parts.push(t("ytDupN", { k: dup }));
-    st.textContent = parts.join(" · "); st.className = "fp-st" + (skip ? " no" : "");
+    st.textContent = parts.join(" · "); st.className = "fp-st" + (skip || spNo || spChk ? " no" : "");
+    // плейлист Spotify уперся в 100 (предел embed) — как добрать остальное
+    // «это не совсем Spotify» (spNote) — вверху окна Spotify и в окне загрузки (ytRun); здесь — только подсказка про 100
+    const cutEl = box.querySelector("[data-sp]"), ch = cuts.map(c => `<p class="sp-cut">${t("spCut", { n: c.n, p: esc(c.title), b: t("spCsvBtn") })}</p>`).join("");
+    if (cutEl.innerHTML !== ch) cutEl.innerHTML = ch;
     lbl.textContent = L.length ? t("ytGoAll", { n: p.todo.length + (wait ? "+" : "") }) : t("ytGo");
   };
   const peekNext = () => {   // что по ссылке — по 3 запроса разом (YT Music, без yt-dlp)
     while (infoRun < 3 && infoQ.length) {
       const x = infoQ.shift(); if (x.gone || !alive) continue;
       infoRun++;
-      api("/api/yt/info", { url: x.url }).then(r => { x.info = r; }, () => { x.info = { found: false }; }).then(() => { infoRun--; draw(); peekNext(); });
+      if (x.sp) api("/api/sp/find", { artist: x.artist, title: x.title, dur: x.dur })   // песня Spotify -> та же на YT Music
+        .then(r => { x.si = r; }, e => { x.si = { found: false, err: errText(e) }; }).then(() => { infoRun--; drawSoon(); peekNext(); });
+      else api("/api/yt/info", { url: x.url }).then(r => { x.info = r; }, () => { x.info = { found: false }; }).then(() => { infoRun--; drawSoon(); peekNext(); });
     }
   };
+  let drawT = 0;
+  const drawSoon = () => { if (!drawT) drawT = requestAnimationFrame(() => { drawT = 0; draw(); }); };   // плейлист Spotify — сотни ответов: рисуем раз в кадр
+  // ссылка Spotify прочитана: на ее месте — строки песен (повторы с уже вставленными — мимо, как у ссылок), каждую ищем на YT Music
+  const spOpen = (x, r) => {
+    const i = L.indexOf(x); if (i < 0 || x.gone) return;
+    if (!r.items.length) { x.err = t("ytPlN", { n: 0 }); draw(); return; }
+    seen.delete(x.k);
+    const rows = [];
+    for (const it of r.items) {
+      const k = "st:" + it.sp;
+      if (seen.has(k)) { dup++; continue; }
+      seen.add(k);
+      rows.push({ k, url: "https://open.spotify.com/track/" + it.sp, sp: true, artist: it.artist, title: it.title, dur: it.dur, hidden: it.hidden, src: r.kind === "track" ? "" : r.title });
+    }
+    if (x.el) x.el.remove();
+    if (r.free >= 0) free = r.free;
+    L.splice(i, 1, ...rows);
+    if (r.cut) cuts.push({ n: r.items.length, title: r.title });
+    if (box) { infoQ.push(...rows.filter(y => !y.hidden)); peekNext(); }
+    draw();
+  };
+  // чужая ссылка (Spotify в окне YouTube / YouTube в окне Spotify): в список не берем, спрашиваем «перейти туда?» Так / Ні
+  const offer = text => {
+    const g = box && box.querySelector("[data-go]");
+    if (!g) { jump = text; return; }
+    g.innerHTML = `<div class="go-ask"><span>${t(spMode ? "spGoYt" : "spGoSp", { p: esc(t(spMode ? "ytAdd" : "spAdd")) })}</span>`
+      + `<button class="y" data-go-y>${t("yes")}</button><button data-go-n>${t("no")}</button></div>`;
+    g.querySelector("[data-go-y]").onclick = () => { jump = text; close(false); };   // это окно закрываем, другое откроется с этими ссылками
+    g.querySelector("[data-go-n]").onclick = () => { g.innerHTML = ""; inp.focus(); };
+  };
   const addRows = (p, countSkip) => {
+    const foreign = p.rows.filter(x => spMode ? !isSp(x.url) : isSp(x.url));
+    if (foreign.length) { offer(foreign.map(x => x.url).join("\n")); p = { rows: p.rows.filter(x => !foreign.includes(x)), skip: p.skip }; }
     if (countSkip) skip += p.skip;
     const fresh = [];
-    for (const x of p.rows) { x.k = ytKey(x.url); if (seen.has(x.k)) { dup++; continue; } seen.add(x.k); x.pl = isYtList(x.url); L.push(x); fresh.push(x); }
-    const singles = fresh.filter(x => !x.pl);   // одиночные: «уже есть?» одним запросом (id ролика / исполнитель|название) + что по ссылке
+    for (const x of p.rows) { x.k = ytKey(x.url); if (seen.has(x.k)) { dup++; continue; } seen.add(x.k); x.spl = isSp(x.url); x.pl = !x.spl && isYtList(x.url); L.push(x); fresh.push(x); }
+    for (const x of fresh.filter(x => x.spl))   // Spotify — ссылка за ссылкой (Ctrl+C из Spotify — сотни ссылок песен)
+      spQ = spQ.then(() => alive && !x.gone ? api("/api/sp/list", { url: x.url }).then(r => spOpen(x, r), e => { x.err = errText(e); draw(); }) : null);
+    const singles = fresh.filter(x => !x.pl && !x.spl);   // одиночные: «уже есть?» одним запросом (id ролика / исполнитель|название) + что по ссылке
     if (singles.length) haveQ = haveQ.then(() => api("/api/yt/have", { items: singles.map(x => ({ url: x.url, artist: x.artist, title: x.title })) })
       .then(r => { singles.forEach((x, i) => x.have = !!(r.have && r.have[i])); if (r.free >= 0) free = r.free; draw(); }, () => {}));
     if (box) { infoQ.push(...singles); peekNext(); }
@@ -1688,6 +2100,27 @@ async function ytAsk(pre) {   // pre — текст (ссылку / .txt пер�
     if (box && fresh.length) { const l = box.querySelector("[data-list]"); l.scrollTop = l.scrollHeight; }
   };
   const say = text => { const st = box.querySelector("[data-st]"); st.textContent = text; st.className = "fp-st no"; };
+  const addSp = (rows, src) => {   // песни из .csv: имена и длина уже есть — сразу строки, поиск на YT Music (повторы — мимо, как у ссылок)
+    const fresh = [];
+    for (const it of rows) {
+      const k = it.sp ? "st:" + it.sp : "sc:" + (it.artist + "|" + it.title).toLowerCase().replace(/[^\p{L}\p{N}|]/gu, "");
+      if (seen.has(k)) { dup++; continue; }
+      seen.add(k);
+      const x = { k, url: it.sp ? "https://open.spotify.com/track/" + it.sp : "", sp: true, artist: it.artist, title: it.title, dur: it.dur, hidden: !!it.hidden, src };
+      L.push(x); fresh.push(x);
+    }
+    if (box) { infoQ.push(...fresh.filter(x => !x.hidden)); peekNext(); }
+    draw();
+    if (box && fresh.length) { const l = box.querySelector("[data-list]"); l.scrollTop = l.scrollHeight; }
+  };
+  // текст из файла / с главного окна: выгрузка .csv — в окне Spotify список песен, в окне YouTube — «перейти на Spotify?»; иначе — ссылки
+  const addText = (text, file) => {
+    const csv = spCsv(text);
+    if (csv && !spMode) { offer(text); return; }
+    if (csv) { addSp(csv, file || ""); return; }
+    if (spMode && /\.csv$/i.test(file || "")) { say(errText({ key: "spCsv" })); return; }
+    addRows(ytParse(text), true);
+  };
   // одна песня / плейлист: одно поле, Enter или «Завантажити». Что вставили — то и делаем по самой ссылке (плейлист в поле «песня» — тоже ок)
   const askOne = pl => askYesNo({ title: pl ? t("ytListT") : t("ytSongT"), yes: t("ytGo"), no: t("cancel"),
     html: `<p>${pl ? t("ytPlHtml") : t("ytSongHtml")}</p><div class="fp-path"><input data-in spellcheck="false" placeholder="${pl ? "https://music.youtube.com/playlist?list=…" : "https://music.youtube.com/watch?v=…"}"></div><div class="fp-st" data-st></div>`,
@@ -1700,17 +2133,19 @@ async function ytAsk(pre) {   // pre — текст (ссылку / .txt пер�
       };
       setTimeout(() => inp.focus(), 80);
     } });
-  const ok = mode !== "list" ? await askOne(mode === "pl") : await askYesNo({ title: fromTxt ? t("ytM4") : t("ytM3"), yes: t("ytGo"), no: t("cancel"), tall: true,
-    html: `<p>${t("ytHtml")}</p>`
-      + `<div class="fp-path"><input data-in spellcheck="false" placeholder="https://music.youtube.com/watch?v=…"><button data-add>${t("ytAddBtn")}</button></div>`
-      + `<div class="yt-list" data-list></div><div class="fp-st" data-st></div>`,
+  const TT = spMode ? "Spotify → YouTube Music" : t("ytT");   // заголовок окна Spotify — откуда звук (без перевода)
+  const ok = mode !== "list" ? await askOne(mode === "pl") : await askYesNo({ title: spMode ? TT : fromTxt ? t("ytM4") : t("ytM3"), yes: t("ytGo"), no: t("cancel"), tall: true,
+    html: (spMode ? `<p>${t("spHtml")}</p><p class="sp-cut">${t("spNote")}</p>` : `<p>${t("ytHtml")}</p>`)
+      + `<div class="fp-path"><input data-in spellcheck="false" placeholder="${spMode === "song" ? "https://open.spotify.com/track/…" : spMode ? "https://open.spotify.com/playlist/…" : "https://music.youtube.com/watch?v=…"}"><button data-add>${t("ytAddBtn")}</button>`
+      + (spMode ? `<button data-csv title="${esc(t("spCsvTip"))}">${t("spCsvBtn")}</button>` : "") + `</div>`
+      + `<div data-go></div><div class="yt-list" data-list></div><div data-sp></div><div class="fp-st" data-st></div>`,
     onOpen: (b, done) => {
-      box = b; inp = b.querySelector("[data-in]"); lbl = b.parentElement.querySelector(".dlg-btn .lbl");
-      const add = () => { const v = inp.value.trim(); if (!v) return; const p = ytParse(v); if (!p.rows.length) say(errText({ key: "ytLink" })); else { addRows(p, false); inp.value = ""; } inp.focus(); };
+      box = b; close = done; inp = b.querySelector("[data-in]"); lbl = b.parentElement.querySelector(".dlg-btn .lbl");
+      const add = () => { const v = inp.value.trim(); if (!v) return; const p = ytParse(v); if (!p.rows.length) say(errText({ key: spMode ? "spLink" : "ytLink" })); else { addRows(p, false); inp.value = ""; } inp.focus(); };
       inp.onkeydown = e => { if (e.key !== "Enter") return; e.preventDefault(); if (inp.value.trim()) add(); else if (L.length) done(true); };
       inp.addEventListener("paste", e => {   // вставили ссылку / пачку — сразу в список (с тем, что уже набрано в поле: «Назва,Виконавець,»)
         const s = e.clipboardData.getData("text") || "";
-        if (!(s.match(YT_RE) || []).some(isYt)) return;
+        if (!(s.match(YT_RE) || []).some(isLink)) return;
         e.preventDefault();
         addRows(ytParse(inp.value.slice(0, inp.selectionStart) + s + inp.value.slice(inp.selectionEnd)), /[\n;]/.test(s.trim()));
         inp.value = "";
@@ -1727,37 +2162,67 @@ async function ytAsk(pre) {   // pre — текст (ссылку / .txt пер�
       back.addEventListener("drop", async e => {
         e.preventDefault(); e.stopPropagation();
         const f = [...(e.dataTransfer.files || [])].find(y => /\.(txt|csv|tsv)$/i.test(y.name));
-        if (f) addRows(ytParse(await readTxt(f)), true);
+        if (f) addText(await readTxt(f), f.name);
         else addRows(ytParse(e.dataTransfer.getData("text/uri-list") || e.dataTransfer.getData("text/plain") || ""), false);
         inp.focus();
       });
-      if (pre) addRows(ytParse(pre), true);
+      const cb = b.querySelector("[data-csv]");   // окно Spotify: «Файл .csv» — выгрузка плейлиста (больше 100 песен)
+      if (cb) cb.onclick = () => {
+        const fi = document.createElement("input"); fi.type = "file"; fi.accept = ".csv,.tsv,.txt,text/csv,text/plain";
+        fi.onchange = async () => { if (fi.files[0]) addText(await readTxt(fi.files[0]), fi.files[0].name); inp.focus(); };
+        fi.click();
+      };
+      if (pre) addText(pre);
       draw(); setTimeout(() => inp.focus(), 80);
     } });
-  if (!ok) { alive = false; return; }
+  if (!ok) { alive = false; if (jump) { const j = jump; return spMode ? ytAsk(j) : spAsk(j); } return; }   // «Так» на «перейти?» — другое окно с этими ссылками
+  // чужая ссылка в поле «одна пісня» / «плейлист» (или вписана и сразу «Завантажити») — тот же вопрос отдельным окном
+  const foreign = (inp.value.match(YT_RE) || []).filter(spMode ? isYt : isSp);
+  if (foreign.length && !L.length && !ytParse(inp.value).rows.some(x => spMode ? isSp(x.url) : !isSp(x.url))) {
+    alive = false;
+    const go = await askYesNo({ title: spMode ? t("ytT") : "Spotify", html: `<p>${t(spMode ? "spGoYt" : "spGoSp", { p: esc(t(spMode ? "ytAdd" : "spAdd")) })}</p>`, yes: t("yes"), no: t("no") });
+    if (go) return spMode ? ytAsk(inp.value) : spAsk(inp.value);
+    return;
+  }
   if (inp.value.trim()) addRows(ytParse(inp.value), false);   // вставили руками и сразу нажали «Завантажити»
-  if (!L.length) { if (inp.value.trim()) await showError({ key: "ytLink" }); return; }
+  if (!L.length) { if (inp.value.trim()) await showError({ key: spMode ? "spLink" : "ytLink" }); return; }
+  if (spBusy()) {   // Spotify: дочитать списки и найти все песни на YT Music — потом считать, что качать; «Стоп» — выйти
+    let stopW = false;
+    showBusy(TT, "", { label: t("ytStop"), fn: () => { stopW = true; } });
+    peekNext();
+    while (spBusy() && !stopW) {
+      const n = L.filter(x => x.sp && !x.hidden).length, d = L.filter(x => x.sp && !x.hidden && x.si).length;
+      updateBusy(L.some(x => x.spl && !x.err) ? t("spRead") : t("spWait", { n: d, m: n }), n ? 100 * d / n : 0);
+      await new Promise(r => setTimeout(r, 300));
+    }
+    hideBusy();
+    if (stopW) { alive = false; return; }
+  }
   alive = false;   // что по ссылке — больше не спрашиваем (качаем)
   if (L.some(x => x.pl && !x.r && !x.err)) { alive = true; showBusy(t("ytT"), t("ytRead")); await readQ; hideBusy(); alive = false; }
   await haveQ;
   const { todo, total, have } = plan(), bad = L.filter(x => x.err);
   const badHtml = bad.map(x => `<br><span class="warn">✕ ${esc(ytShort(x.url))}: ${esc(x.err)}</span>`).join("");
   if (!todo.length) {
-    const msg = total ? (L.length === 1 && L[0].pl ? t("ytAllHave", { n: total }) : t("ytNothing")) : "";
-    await askYesNo({ title: bad.length && !total ? t("ytFailT") : t("ytT"), html: `<p>${msg}${badHtml}</p>`, yes: t("close"), no: null });
+    const msg = total ? (L.length === 1 && L[0].pl ? t("ytAllHave", { n: total }) : t("ytNothing")) : L.some(x => x.sp) ? t("spNothing") : "";
+    await askYesNo({ title: bad.length && !total ? t("ytFailT") : TT, html: `<p>${msg}${badHtml}</p>`, yes: t("close"), no: null });
     return;
   }
   if (L.length === 1 && !L[0].pl) {   // одна песня — как раньше: сразу качаем, без окна веса
     const x = todo[0];
-    showBusy(t("ytT"), t("ytBusy"));
+    showBusy(TT, t("ytBusy"));
     try { await api("/api/yt", { url: x.url, artist: x.artist, title: x.title, dur: x.dur, names: x.names }); hideBusy(); }
     catch (e) { hideBusy(); await showError(e); return; }
     await syncMusic();
     return;
   }
   const one = L.length === 1 && L[0].pl;
-  const head = (one ? `<b>${esc(L[0].r.title)}</b> — ${t("ytListN", { n: total })}` : t("ytMixN", { k: L.length, n: total })) + (have ? " " + t("ytHave", { k: have }) : "") + badHtml;
-  await ytRun(todo, one ? t("ytListT") : t("ytT"), head, free);
+  const spOne = !one && L.length > 1 && L.every(x => x.sp && x.src && x.src === L[0].src);   // один альбом / плейлист Spotify — как плейлист YouTube
+  const spNo = L.filter(x => x.sp && (x.hidden || (x.si && !x.si.found))).length;
+  const head = (one ? `<b>${esc(L[0].r.title)}</b> — ${t("ytListN", { n: total })}` : spOne ? `<b>${esc(L[0].src)}</b> — ${t("ytListN", { n: total })}`
+      : L.every(x => x.sp) ? t("ytListN", { n: total }) : t("ytMixN", { k: L.length, n: total }))   // Spotify: плейлист + .csv — просто «пісень: N»
+    + (have ? " " + t("ytHave", { k: have }) : "") + (spNo ? "<br>" + t("spNoneN", { k: spNo }) : "") + badHtml;
+  await ytRun(todo, one ? t("ytListT") : L.every(x => x.sp) ? "Spotify → YouTube Music" : TT, head, free);   // заголовок говорит, откуда звук
 }
 // список песен (плейлист / пачка ссылок): окно веса и времени, потом по одной (прогресс, «Стоп» — после текущей); потом обычный импорт Music
 async function ytRun(todo, title, head, free) {
@@ -1767,7 +2232,7 @@ async function ytRun(todo, title, head, free) {
   const fmt = b => (b >= 1e9 ? (b / 1e9).toFixed(1) + " " + t("uGB") : Math.max(1, Math.round(b / 1e6)) + " " + t("uMB")).replace(".", ["en", "zh", "ja", "ko"].includes(LANG) ? "." : ",");   // 1.5 GB — en/zh/ja/ko, 1,5 — остальные
   const full = free >= 0 && disk + mod > free;
   if (!await askYesNo({ title, yes: t("ytListGo", { n: todo.length }), no: t("cancel"),
-    html: `<p>${head}</p><p>${t("ytListHtml", { min, mine: t("secMine") })}</p>`
+    html: `<p>${head}</p>` + (todo.some(x => x.sp) ? `<p class="sp-cut">${t("spNote")}</p>` : "") + `<p>${t("ytListHtml", { min, mine: t("secMine") })}</p>`
       + `<p>${t("ytSize", { dl: fmt(dl), disk: fmt(disk), mod: fmt(mod), free: free >= 0 ? fmt(free) : "?" })}${full ? ` <b style="color:#ff3b3b">${t("ytNoSpace")}</b>` : ""}</p>`
       + `<p><small>${t("ytLag")}</small></p>` })) return;
   let stop = false, ok = 0, alt = 0, miss = 0; const bad = [];
@@ -1805,7 +2270,7 @@ $("rpOk").onclick = async () => {
       const blob = await new Promise(r => $("covC").toBlob(r, "image/png"));
       await api("/api/song/cover?id=" + encodeURIComponent(rp.id) + (rp.song ? "&tofolder=1" : ""), blob, true);
     }
-    await api("/api/song/save", { id: rp.id, title: $("rpTitle").value, artist: $("rpArtist").value, drop: +rp.drop.toFixed(2), outro: +rp.outro.toFixed(2), cDur: rp.cDur, race: rp.race, city: rp.city, garage: rp.garage });
+    await api("/api/song/save", { id: rp.id, title: $("rpTitle").value, artist: $("rpArtist").value, drop: +rp.drop.toFixed(2), outro: +rp.outro.toFixed(2), cDur: rp.cDur, bFade: +(rp.bFade || 0).toFixed(2), bLevel: +(rp.bLevel ?? 1).toFixed(2), cFade: +(rp.cFade ?? 3).toFixed(2), cLevel: +(rp.cLevel ?? 1).toFixed(2), race: rp.race, city: rp.city, garage: rp.garage });
     if (!rp.song && rp.fileObj) await api("/api/music/put?id=" + encodeURIComponent(rp.id) + "&name=" + encodeURIComponent(rp.fileObj.name), rp.fileObj, true).catch(e => note(esc(errText(e))));
     S = await api("/api/state"); songs = S.songs;
     closeSong(); render(); stats();
@@ -1830,6 +2295,7 @@ addEventListener("drop", e => { e.preventDefault(); if (!e._done) dropAny(e); })
 $("grid").addEventListener("dragover", e => { const c = e.target.closest(".card.add"); document.querySelectorAll(".card.add").forEach(x => x.classList.toggle("dragto", x === c)); });
 $("grid").addEventListener("drop", e => {
   document.querySelectorAll(".card.dragto").forEach(x => x.classList.remove("dragto"));
+  if (e.target.closest("#spCard") && !e.dataTransfer.files.length) { const u = e.dataTransfer.getData("text/uri-list") || e.dataTransfer.getData("text/plain") || ""; if (u) { e._done = true; spAsk(u); return; } }
   if (e.target.closest("#ytCard") && !e.dataTransfer.files.length) { const u = e.dataTransfer.getData("text/uri-list") || e.dataTransfer.getData("text/plain") || ""; if (u) { e._done = true; ytAsk(u); return; } }   // ссылку перетащили из браузера — окно со ссылкой в списке
   const f = e.dataTransfer.files[0]; if (!f || /\.(txt|csv|tsv)$/i.test(f.name)) return;   // .txt со ссылками — dropAny (окно YouTube)
   if (e.target.closest(".card.add")) { e._done = true; openSong(null, f); }
@@ -1869,7 +2335,7 @@ addEventListener("keydown", e => {
 }, true);
 applyI18n("docTitle"); fitSide();
 // язык хранит программа (data\settings.json): localStorage у окна каждый раз новый — порт другой
-const relang = () => { applyI18n("docTitle"); fitSide(); relangDialogs(); if (S) { renderProfiles(); render(); } if (rp.open) { $("rpH").textContent = t(rp.song ? "panelEdit" : "panelNew"); showBody(); } };
+const relang = () => { applyI18n("docTitle"); fitSide(); relangDialogs(); if (S) { renderProfiles(); render(); } if (rp.open) { $("rpH").textContent = t(rp.song ? "panelEdit" : "panelNew"); showBody(); layout(); } };   // layout — запятая / точка во времени
 const onLang = () => { relang(); api("/api/lang", { lang: LANG }).catch(() => {}); };
 function setLang(c) {
   if (c !== LANG) { LANG = c; try { localStorage.setItem("lang", c); } catch (e) {} relang(); }

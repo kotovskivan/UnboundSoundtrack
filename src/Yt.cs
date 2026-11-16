@@ -211,7 +211,7 @@ static class Yt
     }
 
     // что уже есть: id видео из song.json папок Music + «исполнитель|название» песен программы
-    static HashSet<string> Have()
+    internal static HashSet<string> Have()   // internal — и для Spot.Find (песня Spotify уже есть?)
     {
         var h = new HashSet<string>();
         foreach (var s in Settings.Get().songs.Where(x => !x.draft)) h.Add(Key(s.artist, s.title));
@@ -229,7 +229,7 @@ static class Yt
         return h;
     }
     // «исполнитель|название» без регистра, пробелов и знаков: «AIN'T SHIT CHANGE» = «Ain't Shit Change»
-    static string Key(string artist, string title)
+    internal static string Key(string artist, string title)
     {
         Func<string, string> n = s => new string((s ?? "").ToLowerInvariant().Where(char.IsLetterOrDigit).ToArray());
         return "\u0001" + n(artist) + "|" + n(title);

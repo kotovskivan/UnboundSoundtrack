@@ -1,4 +1,4 @@
-﻿UNBOUND SOUNDTRACK  v1.0.1
+﻿UNBOUND SOUNDTRACK  v1.0.4
 Need for Speed Unbound に自分の曲を — 自分のジャケット付きの新しい曲として。
 Kitivski + Claude による無料のファンメイドツールです。Electronic Arts および Criterion Games とは一切関係ありません。
 ウェブサイト：https://kotovskivan.github.io/UnboundSoundtrack/
@@ -13,6 +13,9 @@ Kitivski + Claude による無料のファンメイドツールです。Electron
     ゲームの曲はそのまま残ります。
   - YouTube / YT Music の曲：曲・プレイリスト・アルバムのリンク、複数のリンクをまとめて、または .txt のリスト。
     リンクが MV の場合は、同じ曲を YT Music から取得します — MV のイントロや寸劇は入りません。
+  - Spotify：曲・アルバム・プレイリストのリンク（1 リンクにつき最大 100 曲。もっと大きいプレイリストは exportify.app の .csv ファイルで）。
+    Spotify から取るのはリストだけ — 曲そのものは YT Music からダウンロードします。
+  - 曲エディター：波形をズーム、GO とゴールを 0.1 秒単位で設定（矢印キー）、GO 前のなめらかなフェードイン、ゴールのフェードアウトも自由に。
   - 曲ごとに、レースのスタート（17 秒のカットシーン + 3.45 秒のカウントダウン、GO の瞬間にドロップ）とフィニッシュのパートを設定できます。
   - カードの HIGH / LOW — 曲が流れる頻度です（ゲームは HIGH を優先します）。
   - プロファイル：曲のセットを使い分けて、ワンクリックで切り替えられます。

@@ -1,4 +1,4 @@
-﻿UNBOUND SOUNDTRACK  v1.0.1
+﻿UNBOUND SOUNDTRACK  v1.0.4
 Tes propres chansons dans Need for Speed Unbound — sous forme de nouveaux titres, avec tes propres pochettes.
 Outil gratuit fait par des fans : Kitivski + Claude. SANS lien avec Electronic Arts ou Criterion Games.
 Site : https://kotovskivan.github.io/UnboundSoundtrack/
@@ -13,6 +13,9 @@ CE QU'IL FAIT
     Les titres du jeu restent tels quels.
   - Chansons de YouTube / YT Music : lien d'une chanson, playlist ou album, plusieurs liens d'un coup ou une liste .txt.
     Si le lien est un clip, le programme prend la même chanson sur YT Music — sans les intros ni les sketchs du clip.
+  - Spotify : lien d'une chanson, d'un album ou d'une playlist (jusqu'à 100 chansons par lien ; une playlist plus grande en fichier .csv via exportify.app).
+    Seule la liste vient de Spotify — les chansons elles-mêmes sont téléchargées depuis YT Music.
+  - Éditeur de chanson : zoom sur la forme d'onde, GO et l'arrivée au 0,1 s près (flèches), montée en douceur avant le GO, ton propre fondu à l'arrivée.
   - Pour chaque chanson, règle le départ (17 s de cinématique + 3,45 s de compte à rebours, le drop tombe sur le GO)
     et le passage d'arrivée.
   - HIGH / LOW sur la carte — à quelle fréquence un titre passe (le jeu prend d'abord les HIGH).

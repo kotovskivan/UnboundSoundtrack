@@ -127,6 +127,16 @@
 .yt-row .s .u { color: #6f6c78; }
 .yt-row .yt-tag { flex: none; font-size: .55em; padding: 4px 9px; border: 1px solid #9d9aa6; color: #e9e7ee; text-transform: uppercase; letter-spacing: .05em; }
 .yt-row .yt-tag.pl { border-color: #58ff3c; color: #58ff3c; }
+.yt-row .yt-tag.sp { border-color: #1ed760; color: #1ed760; }   /* песня из Spotify (звук — с YT Music) */
+.yt-row .s .wait { font-style: italic; }
+.yt-list:has(~ [data-sp] .sp-cut) { max-height: 26vh; }   /* подсказка про 100 — список ниже, чтобы влезли подсказка и строка «У списку» */
+/* чужая ссылка в окне (Spotify в YouTube / YouTube в Spotify): «Перейти туди?» Так / Ні */
+.go-ask { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 0 0 6px; padding: 8px 10px; border-left: 3px solid #1ed760; background: rgba(30,215,96,.08); font-size: .78em; color: #f2f0f5; }
+.go-ask span { flex: 1; min-width: 200px; }
+.go-ask button { flex: none; background: #2c2d34; color: #f2f0f5; border: 0; font: inherit; padding: 7px 16px; cursor: pointer; }
+.go-ask button.y { background: #f2f0f5; color: #141519; }
+.go-ask button:hover { background: #1ed760; color: #141519; }
+.sp-cut { margin: 6px 0 0; padding: 8px 10px; border-left: 3px solid #ffd84a; background: rgba(255,216,74,.08); font-size: .74em; line-height: 1.4; color: #f2f0f5; }   /* плейлист Spotify уперся в 100 */
 .yt-row.off .tx, .yt-row.off img { opacity: .5; }   /* «вже є»: бледнеет имя и картинка, метка и «✕ Прибрати» — четкие */
 .yt-row.warn .m, .yt-row.warn .s { color: #ffd84a; }
 .yt-row.bad .s { color: #ff6b5b; }

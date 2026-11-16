@@ -1,4 +1,4 @@
-﻿UNBOUND SOUNDTRACK  v1.0.1
+﻿UNBOUND SOUNDTRACK  v1.0.4
 Your own songs in Need for Speed Unbound — as new tracks with your own covers.
 Free fan-made tool by Kitivski + Claude. NOT affiliated with Electronic Arts or Criterion Games.
 Website: https://kotovskivan.github.io/UnboundSoundtrack/
@@ -16,6 +16,9 @@ WHAT IT DOES
     The game's tracks stay as they are.
   - Songs from YouTube / YT Music: a link to a song, a playlist or an album, many links at once or a .txt list.
     If the link is a music video, the program takes the same song from YT Music — without the video's intros and skits.
+  - Spotify: a link to a song, an album or a playlist (up to 100 songs per link; a bigger playlist — as a .csv file from exportify.app).
+    Only the list comes from Spotify — the songs themselves are downloaded from YT Music.
+  - Song editor: zoom into the waveform, set GO and the finish to 0.1 s (arrow keys), a smooth fade-in before GO, your own fade-out at the finish.
   - For each song set the race start (17 s cutscene + 3.45 s countdown, the drop hits at GO) and the finish piece.
   - HIGH / LOW on a card — how often a track plays (the game picks HIGH first).
   - Profiles: different sets of tracks, switch in one click.

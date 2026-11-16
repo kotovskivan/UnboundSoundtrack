@@ -323,7 +323,7 @@ static class Ui
     static Dictionary<string, object> SongView(Song s)
     {
         return new Dictionary<string, object> {
-            { "id", s.id }, { "title", s.title }, { "artist", s.artist }, { "file", s.file }, { "dur", s.dur }, { "drop", s.drop }, { "outro", s.outro }, { "cDur", s.cDur },
+            { "id", s.id }, { "title", s.title }, { "artist", s.artist }, { "file", s.file }, { "dur", s.dur }, { "drop", s.drop }, { "outro", s.outro }, { "cDur", s.cDur }, { "bFade", s.bFade }, { "bLevel", s.bLevel }, { "cFade", s.cFade }, { "cLevel", s.cLevel },
             { "race", s.race }, { "city", s.city }, { "garage", s.Gar() }, { "low", s.low }, { "added", s.added }, { "audio", "/songs/" + s.id + "/song.wav" }, { "src", s.src },
             { "cover", s.cover ? "/songs/" + s.id + "/cover.png?v=" + s.added : null } };
     }
@@ -669,6 +669,10 @@ static class Ui
                     if (b.ContainsKey("race")) s.race = Convert.ToBoolean(b["race"]);
                     if (b.ContainsKey("city")) s.city = Convert.ToBoolean(b["city"]);
                     if (b.ContainsKey("garage")) s.garage = Convert.ToBoolean(b["garage"]);
+                    if (b.ContainsKey("bFade")) s.bFade = Math.Round(Math.Max(0, Math.Min(Audio.B_INTRO, Convert.ToDouble(b["bFade"]))), 2);   // нарастание старта (16.11): до GO
+                    if (b.ContainsKey("bLevel")) s.bLevel = Math.Round(Math.Max(0, Math.Min(1, Convert.ToDouble(b["bLevel"]))), 2);
+                    if (b.ContainsKey("cFade")) s.cFade = Math.Round(Math.Max(0, Math.Min(s.cDur, Convert.ToDouble(b["cFade"]))), 2);   // затухание финиша (16.11)
+                    if (b.ContainsKey("cLevel")) s.cLevel = Math.Round(Math.Max(0, Math.Min(1, Convert.ToDouble(b["cLevel"]))), 2);
                     if (s.title == "") s.title = Music.Cut(Path.GetFileNameWithoutExtension(s.file), Music.MaxTitle);
                     s.draft = false;
                 });
@@ -785,6 +789,19 @@ static class Ui
                 // окно «Пісні з YouTube»: какие ссылки списка уже есть в программе ({items: [{url, artist, title}]} -> {have: [bool]})
                 var b = r.JsonBody(); object it;
                 w.Json(Yt.HaveList(b.TryGetValue("items", out it) ? it as System.Collections.IEnumerable : null)); return;
+            }
+            case "/api/sp/list":
+            {
+                // ссылка Spotify (песня / альбом / плейлист) -> список песен: исполнитель, название, длина (Spotify.cs; звук — с YT Music)
+                var b = r.JsonBody(); object u;
+                w.Json(Spot.List(b.TryGetValue("url", out u) ? u as string : null)); return;
+            }
+            case "/api/sp/find":
+            {
+                // песня из Spotify -> та же песня на YT Music ({artist, title, dur} -> {found, id, title, by, len, ok, why, have})
+                var b = r.JsonBody(); object ar, ti, du;
+                w.Json(Spot.Find(b.TryGetValue("artist", out ar) ? ar as string : null, b.TryGetValue("title", out ti) ? ti as string : null,
+                                 b.TryGetValue("dur", out du) && du != null ? Convert.ToDouble(du) : 0)); return;
             }
             case "/api/build":
             {

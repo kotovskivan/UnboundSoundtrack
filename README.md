@@ -5,7 +5,8 @@ Free fan-made tool by **Kitivski + Claude** (Claude — AI by Anthropic). Not af
 
 - Add your songs (mp3, flac, wav, ogg, m4a) as **new tracks** with your own title and cover — the game's tracks stay.
 - Songs from **YouTube / YT Music**: a link to a song, a playlist or an album, many links at once or a .txt list (via yt-dlp).
-- For each song: the **race start** (17 s cutscene + 3.45 s countdown, the drop hits at GO) and the **finish** piece.
+- From **Spotify**: a link to a song, an album or a playlist (up to 100 songs), or a .csv from exportify.app — only the list comes from Spotify, the songs are found and downloaded from YT Music.
+- For each song: the **race start** (17 s cutscene + 3.45 s countdown, the drop hits at GO) with a smooth fade-in, and the **finish** piece with your own fade-out. Zoom and 0.1 s precision.
 - Turn tracks on/off separately for **races**, the **city** and the **garage**; profiles; HIGH / LOW; 30-second previews.
 - Builds **one mod** for Frosty Mod Manager. Game files are not changed. Interface in **14 languages**.
 - **Offline only** — mods are for single player.
@@ -63,6 +64,16 @@ Output: `out\Unbound Soundtrack\` — the same layout as the release zip.
 
 ## Changelog
 
+- **1.0.4**
+  - New: **From Spotify** — a link to a song, an album or a playlist (`src/Spotify.cs`). The list is read from Spotify's public embed page
+    (`open.spotify.com/embed/...`, no login, no API key; it gives up to 100 songs), bigger playlists — a .csv from exportify.app (parsed in the window).
+    Each song is searched on YT Music (title + artist, length within 3 s); doubtful matches are shown in yellow. Audio is never taken from Spotify.
+  - Song editor: zoom (wheel to the cursor, overview strip, ruler), GO and the finish to 0.1 s with the arrow keys (Shift — 0.01 s), typed time fields.
+    Idea by MtheAX.
+  - Race start fade-in (`Song.bFade` / `bLevel`, `Audio.FadeIn`) and finish fade-out / length (`Song.cFade` / `cLevel` / `cDur`, `Audio.FadeOut`);
+    the window preview uses the same formula. Cache keys change only for songs with non-default values — the rest aren't re-encoded.
+  - Fixed: with an early GO the race start preview could jump back to the beginning (stale delayed starts).
+  - TLS 1.2 is switched on for Spotify requests (the exe has no app.config; Spotify drops old TLS).
 - **1.0.3**
   - Fixed: with a lot of your songs (about 100 and more — then the mod adds its own sound banks) the police chase music went silent.
     When the mod changed the game's music graph, Frosty's writer lost the plugins of the music players, including the chase ones.
@@ -114,5 +125,6 @@ Third-party parts keep their own licenses — see `docs/THIRD-PARTY.txt`.
 - [Alternate Waves](https://www.nexusmods.com/needforspeedunbound/mods/340), [The Lakeshore Sound](https://nfsmods.xyz/mod/7400),
   [vgmstream](https://github.com/vgmstream/vgmstream) — we learned from them how the game's music works.
 - [Low Rider](https://steamcommunity.com/profiles/76561198421221810) — feedback and suggestions about the game.
+- MtheAX — the idea to zoom the waveform and set GO to 0.1 s.
 
 Need for Speed and NFS Unbound are trademarks of Electronic Arts Inc.

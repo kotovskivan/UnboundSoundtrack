@@ -1,6 +1,6 @@
 // Своя песня -> куски A/B/C (48 кГц, стерео, 16 бит) -> кодировщик EA (Tool.exe) -> .sps + .sek.
 // A — полная; B — «старт гонки»: 17 с катсцены + 3,45 с старта 3-2-1 до GO и дальше до конца (GO раньше 20 с — с начала);
-// C — «финиш»: свой отрезок с затуханием 3 с.
+// C — «финиш»: свой отрезок с затуханием (по умолчанию 3 с; с 16.11 настраивается — cFade / cLevel). B — с нарастанием в начале, если человек задал его в окне (bFade / bLevel, 16.11).
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -52,24 +52,50 @@ static class Audio
     }
 
     // pad — тишина перед куском (с): старт гонки, если GO в песне раньше 20 с (Ваня 12.11: «да делать на GO») — дроп все равно ровно на GO
-    static void Piece(byte[] pcm, double from, double len, double fade, string path, double pad = 0)
+    // gainIn(u) — громкость в секунде u от начала звука (после pad) на первых gainLen с: нарастание старта гонки (16.11, FadeIn);
+    // gainOut(t) — громкость в секунде t от начала звука с outFrom с до конца: затухание финиша (16.11, FadeOut; до этого — всегда 3 с)
+    static void Piece(byte[] pcm, double from, double len, string path, double pad = 0, Func<double, double> gainIn = null, double gainLen = 0,
+        Func<double, double> gainOut = null, double outFrom = 0)
     {
         long total = pcm.Length / 4;
         long a = Math.Max(0, Math.Min(total, (long)Math.Round(from * SR)));
         long n = len < 0 ? total - a : Math.Min(total - a, (long)Math.Round(len * SR));
         long z = Math.Max(0, (long)Math.Round(pad * SR));
         var d = new byte[(z + n) * 4]; Buffer.BlockCopy(pcm, (int)(a * 4), d, (int)(z * 4), (int)(n * 4));   // массив — нули: тишина уже есть
-        if (fade > 0)
-        {
-            long fn = Math.Min(n, (long)(fade * SR));
-            for (long i = 0; i < fn; i++)
-            {
-                double k = 1.0 - (double)i / Math.Max(1, fn - 1);   // от 1 до 0, как np.linspace(1, 0, n)
-                long s = (z + n - fn + i) * 4;
-                for (int c = 0; c < 2; c++) { short v = BitConverter.ToInt16(d, (int)s + 2 * c); short nv = (short)(v * k); d[s + 2 * c] = (byte)nv; d[s + 2 * c + 1] = (byte)(nv >> 8); }
-            }
-        }
+        if (gainIn != null && gainLen > 0) Gain(d, z, 0, Math.Min(n, (long)Math.Ceiling(gainLen * SR)), gainIn);
+        if (gainOut != null) Gain(d, z, Math.Max(0, Math.Min(n, (long)Math.Floor(outFrom * SR))), n, gainOut);
         using (var f = File.Create(path)) { WriteHeader(f, d.Length); f.Write(d, 0, d.Length); }
+    }
+    // кадры i0..i1 (от начала звука, после тишины z) умножить на g(секунда)
+    static void Gain(byte[] d, long z, long i0, long i1, Func<double, double> g)
+    {
+        for (long i = i0; i < i1; i++)
+        {
+            double k = Math.Max(0, Math.Min(1, g((double)i / SR)));
+            long s = (z + i) * 4;
+            for (int c = 0; c < 2; c++) { short v = BitConverter.ToInt16(d, (int)s + 2 * c); short nv = (short)(v * k); d[s + 2 * c] = (byte)nv; d[s + 2 * c + 1] = (byte)(nv >> 8); }
+        }
+    }
+
+    // затухание финиша (16.11, Ваня) — зеркало нарастания: кусок len с, желтая ручка за f с до конца с громкостью L.
+    // L = 1: полная до ручки, от ручки до конца — в тишину (обычное: f = 3). L < 1: от начала куска громкость спускается к L у ручки, дальше — в тишину.
+    // Та же формула — в окне (web/index.html fadeOutGain). from — с какой секунды куска менять громкость. Нет затухания — null.
+    public static Func<double, double> FadeOut(Song s, double len, out double from)
+    {
+        double f = Math.Max(0, Math.Min(s.cFade, len)), L = Math.Max(0, Math.Min(1, s.cLevel)), h = len - f;
+        from = L < 1 ? 0 : h;
+        if (!(f > 0) && L >= 1) return null;
+        return t => t >= len ? 0 : t > h ? (f > 0 ? L * (len - t) / f : 0) : (L < 1 && h > 0 ? 1 - (1 - L) * t / h : 1);
+    }
+
+    // нарастание старта (16.11, Ваня): от тишины до ручки (f с, громкость L), от ручки до GO (g с от начала музыки) — до полной, дальше полная.
+    // Та же формула — в окне (web/index.html fadeGain), чтобы прослушка звучала как в игре. Нет нарастания — null.
+    public static Func<double, double> FadeIn(Song s, out double len)
+    {
+        double g = Math.Min(s.drop, B_INTRO), f = Math.Min(s.bFade, g), L = Math.Max(0, Math.Min(1, s.bLevel));
+        len = 0; if (!(f > 0)) return null;
+        len = L < 1 ? g : f;
+        return u => u <= 0 ? 0 : u < f ? L * u / f : (L < 1 && u < g ? L + (1 - L) * (u - f) / (g - f) : 1);
     }
 
     // готовит папку enc\ с A/B/C .sps/.sek. Кусок перекодируется, только если поменялось то, от чего он зависит:
@@ -84,8 +110,10 @@ static class Audio
         string w = wi.Length + "|" + wi.LastWriteTimeUtc.Ticks;
         var keys = new Dictionary<string, string> {
             { "A", w + "|v1" },
-            { "B", w + "|" + s.drop.ToString("0.00") + "|" + B_INTRO.ToString("0.00") + (s.drop < B_INTRO ? "|pad" : "") + "|v1" },   // pad — тишина перед ранним GO (12.11)
-            { "C", w + "|" + s.outro.ToString("0.00") + "|" + s.cDur.ToString("0.00") + "|v1" } };
+            // pad — тишина перед ранним GO (12.11); fi — нарастание (16.11): только если задано — у остальных песен ключ прежний, перекодировать не нужно
+            { "B", w + "|" + s.drop.ToString("0.00") + "|" + B_INTRO.ToString("0.00") + (s.drop < B_INTRO ? "|pad" : "") + (s.bFade > 0 ? "|fi" + s.bFade.ToString("0.00") + (s.bLevel < 1 ? "@" + s.bLevel.ToString("0.00") : "") : "") + "|v1" },
+            // fo — затухание финиша (16.11): только если не обычные 3 с / ручка опущена — у остальных песен ключ прежний
+            { "C", w + "|" + s.outro.ToString("0.00") + "|" + s.cDur.ToString("0.00") + (s.cFade != 3 || s.cLevel < 1 ? "|fo" + s.cFade.ToString("0.00") + "@" + s.cLevel.ToString("0.00") : "") + "|v1" } };
         // кэш до 12.11 (один key.txt на три куска, B — с 17 с): A и C из него годятся, B — перекодировать
         string oldFile = Path.Combine(enc, "key.txt");
         string oldKey = string.Join("|", wi.Length, wi.LastWriteTimeUtc.Ticks, s.drop.ToString("0.00"), s.outro.ToString("0.00"), s.cDur.ToString("0.00"), "v1");
@@ -111,9 +139,9 @@ static class Audio
         {
             File.Delete(Path.Combine(enc, "key_" + k + ".txt"));
             foreach (string f in Directory.GetFiles(enc, k + ".*")) File.Delete(f);
-            if (k == "A") Piece(pcm, 0, -1, 0, Path.Combine(enc, "A.wav"));
-            if (k == "B") Piece(pcm, b0, -1, 0, Path.Combine(enc, "B.wav"), Math.Max(0, B_INTRO - s.drop));   // GO раньше B_INTRO — тишина перед песней
-            if (k == "C") Piece(pcm, c0, cLen, 3.0, Path.Combine(enc, "C.wav"));
+            if (k == "A") Piece(pcm, 0, -1, Path.Combine(enc, "A.wav"));
+            if (k == "B") { double fl; var fi = FadeIn(s, out fl); Piece(pcm, b0, -1, Path.Combine(enc, "B.wav"), Math.Max(0, B_INTRO - s.drop), fi, fl); }   // GO раньше B_INTRO — тишина перед песней
+            if (k == "C") { double of; var fo = FadeOut(s, cLen, out of); Piece(pcm, c0, cLen, Path.Combine(enc, "C.wav"), 0, null, 0, fo, of); }
         }
         pcm = null;
         foreach (string k in todo)

@@ -1,4 +1,4 @@
-﻿UNBOUND SOUNDTRACK  v1.0.1
+﻿UNBOUND SOUNDTRACK  v1.0.4
 Omat biisisi Need for Speed Unboundiin — uusina kappaleina omilla kansikuvilla.
 Ilmainen fanityökalu, tekijät Kitivski + Claude. EI yhteydessä Electronic Artsiin tai Criterion Gamesiin.
 Verkkosivu: https://kotovskivan.github.io/UnboundSoundtrack/
@@ -13,6 +13,9 @@ MITÄ SE TEKEE
     Pelin kappaleet pysyvät ennallaan.
   - Biisit YouTubesta / YT Musicista: linkki biisiin, soittolistaan tai albumiin, monta linkkiä kerralla tai .txt-lista.
     Jos linkki on musiikkivideo, ohjelma ottaa saman biisin YT Musicista — ilman videon introja ja sketsejä.
+  - Spotify: linkki biisiin, albumiin tai soittolistaan (enintään 100 biisiä linkkiä kohden; isompi soittolista .csv-tiedostona exportify.appista).
+    Spotifysta tulee vain lista — itse biisit ladataan YT Musicista.
+  - Biisieditori: zoomaa aaltomuotoa, aseta GO ja maali 0,1 s tarkkuudella (nuolinäppäimet), pehmeä nousu ennen GO:ta, oma häivytys maalissa.
   - Jokaiselle biisille kisan lähtö (17 s välivideo + 3,45 s lähtölaskenta, drop iskee kohdassa GO) ja maalin pätkä.
   - HIGH / LOW kortissa — kuinka usein kappale soi (peli valitsee ensin HIGH).
   - Profiilit: eri kappalevalikoimat, vaihto yhdellä klikkauksella.

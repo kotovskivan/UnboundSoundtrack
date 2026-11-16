@@ -1,4 +1,4 @@
-﻿UNBOUND SOUNDTRACK  v1.0.1
+﻿UNBOUND SOUNDTRACK  v1.0.4
 Need for Speed Unbound에 내 노래를 — 내 커버를 씌운 새 트랙으로.
 Kitivski + Claude가 만든 무료 팬 메이드 도구예요. Electronic Arts나 Criterion Games와는 아무 관련이 없어요.
 웹사이트: https://kotovskivan.github.io/UnboundSoundtrack/
@@ -13,6 +13,9 @@ Kitivski + Claude가 만든 무료 팬 메이드 도구예요. Electronic Arts�
     게임 트랙은 그대로 남아요.
   - YouTube / YT Music의 노래: 노래, 재생목록, 앨범 링크, 여러 링크를 한꺼번에, 또는 .txt 목록.
     링크가 뮤직비디오면 같은 노래를 YT Music에서 가져와요 — 뮤직비디오의 인트로나 스킷 없이요.
+  - Spotify: 노래, 앨범, 재생목록 링크 (링크당 최대 100곡, 더 큰 재생목록은 exportify.app의 .csv 파일로).
+    Spotify에서는 목록만 가져와요 — 노래 자체는 YT Music에서 내려받아요.
+  - 노래 편집기: 파형 확대, GO와 피니시를 0.1초 단위로 (방향키), GO 전 부드러운 페이드인, 피니시 페이드아웃도 원하는 대로.
   - 노래마다 레이스 출발(17초 컷신 + 3.45초 카운트다운, GO에 드롭이 터져요)과 결승 구간을 정할 수 있어요.
   - 카드의 HIGH / LOW — 트랙이 얼마나 자주 나오는지예요(게임은 HIGH를 먼저 골라요).
   - 프로필: 트랙 구성을 여러 개 만들고 클릭 한 번으로 바꿔요.
