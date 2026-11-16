@@ -291,7 +291,7 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
 @media (max-width: 979px) {
   .hero > div:first-child, .hubx-txt { text-align: center; }
   .hero h1 .sig { margin-left: 0; transform-origin: center; font-size: clamp(44px, 15vw, 78px); }
-  .hero h1 b { font-size: clamp(56px, 19vw, 96px); } /* 16.11 (Ваня): лого на телефоне крупнее — почти на всю ширину */
+  .hero h1 b { font-size: clamp(56px, 19vw, 96px); transform: translateX(-.1em); } /* 16.11 (Ваня): лого крупнее; курсив кренит вправо — сдвиг на .1em к центру (замер по пикселям) */
   .hero .lead, .hubx-lead, .hubx-sub { margin-left: auto; margin-right: auto; }
   .cta { justify-content: center; margin-left: auto; margin-right: auto; }
   .cta > .btn.primary { flex: 1 1 auto; } /* 16.11 (Ваня): «Завантажити» на всю ширину, как плитки под ним */
@@ -301,8 +301,8 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
 }
 @media (max-width: 639px) {
   .cta-more .btn { padding: 12px 10px; font-size: 12px; letter-spacing: .06em; } /* «Посібник у Steam» — в одну строку */
-  .steps li { padding: 46px 0 30px; min-height: 0; text-align: center; } /* цифра сверху по центру, текст под ней — как первый экран */
-  .steps li::before { left: 50%; top: 0; transform: translateX(-50%); font-size: 40px; }
+  .steps li { padding: 0 0 26px 40px; min-height: 0; } /* Ваня: цифра слева, верх цифры = верх первой строки, текст столбиком */
+  .steps li::before { left: 0; top: 0; font-size: 32px; }
   .log > div { grid-template-columns: 1fr; gap: 6px; padding: 14px 16px; }
   .log dt { display: flex; align-items: baseline; gap: 10px; font-size: 18px; }
   .log dt small { display: inline; }
