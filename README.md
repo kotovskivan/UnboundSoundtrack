@@ -49,8 +49,9 @@ Output: `out\Unbound Soundtrack\` — the same layout as the release zip.
   unmodified in the release zip (`app\encoder\`) — you can copy them from there.
 - `vcruntime140.dll` and `vcruntime140_1.dll` (Microsoft Visual C++ runtime) are copied from `System32` into `app\frosty\`
   (and `app\encoder\`) — so the program works on a clean Windows without the Visual C++ Redistributable.
-- Not built by `build.cmd`: `app\yt-dlp.exe` ([yt-dlp releases](https://github.com/yt-dlp/yt-dlp/releases)) and
-  `app\vcredist\VC_redist.x64.exe` (Microsoft's installer) — copy them from the release zip if you need them.
+- Not built by `build.cmd`: `app\yt-dlp.exe` ([yt-dlp releases](https://github.com/yt-dlp/yt-dlp/releases)) — copy it from the release zip if you need it.
+- Since 1.0.4 the zip has no Visual C++ installer: if the runtime still fails to load, the program opens Microsoft's download
+  ([vc_redist.x64.exe](https://aka.ms/vs/17/release/vc_redist.x64.exe)).
 
 ## Executables in the release zip
 
@@ -60,7 +61,6 @@ Output: `out\Unbound Soundtrack\` — the same layout as the release zip.
 | `app\encoder\Tool.exe` | EA audio encoder from Frosty Editor's Sound Editor plugin (HarGabt's fork), unmodified |
 | `app\frosty\ThirdParty\fifaconfig.exe` | part of Frosty Mod Manager's `ThirdParty` folder, unmodified |
 | `app\yt-dlp.exe` | [yt-dlp](https://github.com/yt-dlp/yt-dlp) (Unlicense), official release, unmodified |
-| `app\vcredist\VC_redist.x64.exe` | Microsoft Visual C++ Redistributable x64 installer, signed by Microsoft, unmodified |
 
 ## Changelog
 
