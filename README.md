@@ -125,6 +125,6 @@ Third-party parts keep their own licenses — see `docs/THIRD-PARTY.txt`.
 - [Alternate Waves](https://www.nexusmods.com/needforspeedunbound/mods/340), [The Lakeshore Sound](https://nfsmods.xyz/mod/7400),
   [vgmstream](https://github.com/vgmstream/vgmstream) — we learned from them how the game's music works.
 - [Low Rider](https://steamcommunity.com/profiles/76561198421221810) — feedback and suggestions about the game.
-- MtheAX — the idea to zoom the waveform and set GO to 0.1 s.
+- [MtheAX](https://steamcommunity.com/profiles/76561199074624815) — the idea to zoom the waveform and set GO to 0.1 s.
 
 Need for Speed and NFS Unbound are trademarks of Electronic Arts Inc.
