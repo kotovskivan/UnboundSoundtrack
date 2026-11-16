@@ -293,11 +293,13 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
   .hero h1 .sig { margin-left: 0; transform-origin: center; }
   .hero .lead, .hubx-lead, .hubx-sub { margin-left: auto; margin-right: auto; }
   .cta { justify-content: center; margin-left: auto; margin-right: auto; }
+  .cta > .btn.primary { flex: 1 1 auto; } /* 16.11 (Ваня): «Завантажити» на всю ширину, как плитки под ним */
   .cta-more { margin-left: auto; margin-right: auto; }
   .hero .btn { text-align: center; }
   .hubx-tag { justify-content: center; }
 }
 @media (max-width: 639px) {
+  .cta-more .btn { padding: 12px 10px; font-size: 12px; letter-spacing: .06em; } /* «Посібник у Steam» — в одну строку */
   .steps li { padding-left: 42px; min-height: 0; }
   .steps li::before { font-size: 34px; top: -4px; }
   .log > div { grid-template-columns: 1fr; gap: 6px; padding: 14px 16px; }
