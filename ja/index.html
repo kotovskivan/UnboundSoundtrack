@@ -59,8 +59,8 @@
  "applicationCategory": "GameApplication",
  "applicationSubCategory": "Game mod tool",
  "operatingSystem": "Windows 10, Windows 11",
- "softwareVersion": "1.0.3",
- "fileSize": "63.9 MB",
+ "softwareVersion": "1.0.4",
+ "fileSize": "64.0 MB",
  "downloadUrl": "https://drive.google.com/drive/folders/1xj2YBqJ-sqB53Azt__dZNrsfP8iMbS_a?usp=sharing",
  "isAccessibleForFree": true,
  "offers": {
@@ -81,7 +81,7 @@
  },
  "creditText": "Kitivski + Claude",
  "datePublished": "2026-11-10",
- "dateModified": "2026-11-15",
+ "dateModified": "2026-11-16",
  "sameAs": [
   "https://github.com/kotovskivan/UnboundSoundtrack",
   "https://steamcommunity.com/sharedfiles/filedetails/?id=3837419990"
@@ -377,7 +377,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
         <p class="lead"><b>Need for Speed Unbound</b> の音楽を自分好みに完全カスタマイズ：自分の曲をジャケット付きで追加し、ゲームの曲は残すもオフにするも自由。</p>
         <div class="cta">
           <a class="btn primary" href="https://drive.google.com/drive/folders/1xj2YBqJ-sqB53Azt__dZNrsfP8iMbS_a?usp=sharing" target="_blank" rel="noopener">
-            <span>ダウンロード</span><small>v1.0.3 · zip 63.9 MB · Google Drive</small>
+            <span>ダウンロード</span><small>v1.0.4 · zip 64.0 MB · Google Drive</small>
           </a>
           <a class="btn" href="https://github.com/kotovskivan/UnboundSoundtrack" target="_blank" rel="noopener"><span>ソースコード</span><small>GitHub · GPL v3</small></a>
         </div>
@@ -429,7 +429,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
       <h2 class="h2"><span class="n">01</span><span>できること</span></h2>
       <div class="features">
         <div class="card"><h3>自分の曲</h3><p>mp3、flac、wav、ogg、m4a を、自分のタイトルとジャケット付きの<b>新しい</b>トラックとして追加。ゲームの曲を置き換えません。1 つの MOD に数百曲。</p></div>
-        <div class="card"><h3>YouTube · YT Music</h3><p>曲・プレイリスト・アルバムのリンク、複数のリンク、.txt リストを貼るだけ。ダウンロードはプログラムが自動で行います。MV のリンクなら YT Music の同じ曲を、イントロや寸劇なしで取得します。</p></div>
+        <div class="card"><h3>YouTube · YT Music · Spotify</h3><p>曲・プレイリスト・アルバムのリンク、複数のリンク、.txt リストを貼るだけ。ダウンロードはプログラムが自動で行います。MV のリンクなら YT Music の同じ曲を、イントロや寸劇なしで取得します。 Spotify のリンクも使えます：リストは Spotify から、曲は YT Music から。</p></div>
         <div class="card"><h3>GO でドロップ</h3><p>スタート：17 秒のカットシーン + 3.45 秒のカウントダウン、GO の瞬間にドロップ。GO はベースの入りからプログラムが自動で見つけ、マウスで調整もできます。フィニッシュ用の短いパートも。</p></div>
         <div class="card"><h3>レース · 街 · ガレージ</h3><p>曲をレース・街・ガレージで別々にオン／オフ。ガレージだけで流す曲も作れます。音楽セットごとにプロファイルも作れます。HIGH / LOW で再生頻度も設定できます。</p></div>
         <div class="card"><h3>MOD はひとつ</h3><p>Frosty Mod Manager 用の MOD をひとつ作ります。ゲームファイルは変更しません — MOD をオフにすれば元どおりです。</p></div>
@@ -440,6 +440,11 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
     <section class="block" id="screens">
       <h2 class="h2"><span class="n">02</span><span>スクリーンショット</span></h2>
       <div class="shots">
+        <!-- 16.11 (Ваня): первый ряд — языки, главное окно; дальше редактор + треки, YouTube + Spotify, как работает + мод готов. 8 кадров, PNG — outputs/nfs-unbound/skriny-1.0.4/png-sajt -->
+        <figure>
+          <button class="shot-btn" type="button" data-full="../img/lang-ja.jpg"><img src="../img/lang-ja-s.jpg" srcset="../img/lang-ja-s.jpg 720w, ../img/lang-ja.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="14 言語 — 初回起動時に選べます。"></button>
+          <figcaption>14 言語 — 初回起動時に選べます。</figcaption>
+        </figure>
         <figure>
           <button class="shot-btn" type="button" data-full="../img/main-ja.jpg"><img src="../img/main-ja-s.jpg" srcset="../img/main-ja-s.jpg 720w, ../img/main-ja.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="自分の曲がゲームの曲と並びます。"></button>
           <figcaption>自分の曲がゲームの曲と並びます。</figcaption>
@@ -449,20 +454,24 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
           <figcaption>スタート：GO の瞬間にドロップ。フィニッシュ：ゴール後の短いパート。</figcaption>
         </figure>
         <figure>
+          <button class="shot-btn" type="button" data-full="../img/tracks-ja.jpg"><img src="../img/tracks-ja-s.jpg" srcset="../img/tracks-ja-s.jpg 720w, ../img/tracks-ja.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="ゲームの曲のオン／オフ — レース・街・ガレージで別々に。"></button>
+          <figcaption>ゲームの曲のオン／オフ — レース・街・ガレージで別々に。</figcaption>
+        </figure>
+        <figure>
           <button class="shot-btn" type="button" data-full="../img/yt-ja.jpg"><img src="../img/yt-ja-s.jpg" srcset="../img/yt-ja-s.jpg 720w, ../img/yt-ja.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="YouTube と YT Music から曲を追加 — リンク、プレイリスト、.txt リスト。"></button>
           <figcaption>YouTube と YT Music から曲を追加 — リンク、プレイリスト、.txt リスト。</figcaption>
         </figure>
         <figure>
-          <button class="shot-btn" type="button" data-full="../img/built-ja.jpg"><img src="../img/built-ja-s.jpg" srcset="../img/built-ja-s.jpg 720w, ../img/built-ja.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="ボタンひとつで、MOD が Frosty Mod Manager のリストに入ります。"></button>
-          <figcaption>ボタンひとつで、MOD が Frosty Mod Manager のリストに入ります。</figcaption>
-        </figure>
-        <figure>
-          <button class="shot-btn" type="button" data-full="../img/lang-ja.jpg"><img src="../img/lang-ja-s.jpg" srcset="../img/lang-ja-s.jpg 720w, ../img/lang-ja.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="14 言語 — 最初に Windows の言語を提案します。"></button>
-          <figcaption>14 言語 — 最初に Windows の言語を提案します。</figcaption>
+          <button class="shot-btn" type="button" data-full="../img/sp-ja.jpg"><img src="../img/sp-ja-s.jpg" srcset="../img/sp-ja-s.jpg 720w, ../img/sp-ja.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="Spotify にも対応 — 曲、アルバム、プレイリスト。音源は YouTube Music から。"></button>
+          <figcaption>Spotify にも対応 — 曲、アルバム、プレイリスト。音源は YouTube Music から。</figcaption>
         </figure>
         <figure>
           <button class="shot-btn" type="button" data-full="../img/help-ja.jpg"><img src="../img/help-ja-s.jpg" srcset="../img/help-ja-s.jpg 720w, ../img/help-ja.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="ヘルプはプログラムの中に — どこを押せばいいかすぐわかります。"></button>
           <figcaption>ヘルプはプログラムの中に — どこを押せばいいかすぐわかります。</figcaption>
+        </figure>
+        <figure>
+          <button class="shot-btn" type="button" data-full="../img/built-ja.jpg"><img src="../img/built-ja-s.jpg" srcset="../img/built-ja-s.jpg 720w, ../img/built-ja.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="ボタンひとつで、MOD が Frosty Mod Manager のリストに入ります。"></button>
+          <figcaption>ボタンひとつで、MOD が Frosty Mod Manager のリストに入ります。</figcaption>
         </figure>
       </div>
     </section>
@@ -513,7 +522,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
 
     <section class="block" id="changelog">
       <h2 class="h2"><span class="n">06</span><span>更新履歴</span></h2>
-      <dl class="log"><div><dt>1.0.3<small>2026-11-15</small></dt><dd><b>修正：</b> 自分の曲が多いとき（約 100 曲以上）、追跡中の音楽が鳴らなくなっていました。MOD はゲームの音楽ロジックをそのまま残し、あなたの曲だけを追加するようになりました（作成時に確認します）。<br>ウィンドウに NFS Own Music のタイル（NFS シリーズ全体に自分の曲を）、「私たちのページ」に NFSAddons を追加。</dd></div><div><dt>1.0.2<small>2026-11-13</small></dt><dd><b>新機能：</b>「ガレージ」— レースと街の横に3つ目のスイッチ。曲やゲームの曲をガレージだけで流せます（Low Rider さんのアイデア）。1.0.1 の曲とプロファイルはこれまでどおりガレージでも流れます。<br>フィンランド語を追加 — 14言語に。<br>新デザイン：ゲームのメニューのような真っすぐなパネルと白い選択表示、幅広の見出し、暗い背景、「流れる場所」はアイコンに。<br>感謝：Low Rider さん — フィードバックと提案をありがとう。<br>修正：「ガレージ」だけオンのゲームの曲が「オフ」として自分の曲に回されることがあった問題、Music フォルダーから曲を再インポートすると LOW が消える問題。</dd></div><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>大型アップデート。</b><br><b>新機能：</b>YouTube / YT Music から曲を追加——1 曲、プレイリスト、アルバム、複数のリンク、.txt リスト。MV のリンクなら YT Music の同じ曲を取得します。<br>13 言語（AI 翻訳）。<br>1 つの MOD に数百曲（277 曲でテスト済み）。<br>スタート：GO の瞬間にドロップ（17 秒のカットシーン + 3.45 秒のカウントダウン）。GO はベースの入りで自動検出。ドロップが早い曲は前に無音を入れます。<br>すべての曲に HIGH / LOW。並べ替え、フィルター、リスト表示。ドラッグ＆ドロップと自分の曲順。<br>自分の曲も ▶ で試聴。ジャケット：アップロード、生成、削除。<br>曲ごとの作成の進行状況と「停止」ボタン。ブラウザーの選択。「使い方」ヘルプ。Visual C++ 同梱。<br><b>修正：</b>ラテン文字以外を含むフォルダーで MOD を作成できない問題（1.0.0a にもありました）。Visual C++ がない環境での「FrostyHash.dll」エラー。「レースのみ」の曲がガレージで流れる問題。ラテン文字以外の曲名がゲーム内の表示で空になる問題。長すぎる曲名で保存が壊れる問題。作成中にウィンドウを閉じて再作成するとエラーになる問題。フォルダー選択、最初の画面での言語切り替え、小さい画面でのウィンドウサイズ。<br><b>アップデート方法：</b>1.0.1 を新しいフォルダーに展開し、古いフォルダーから <b>data</b> と <b>Music</b> をコピーして、もう一度 <b>MOD を作成</b> を押してください。</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>修正：zip を Windows エクスプローラーで展開すると「MOD を作成」が FileLoadException（FrostySdk、0x80131515）で失敗していました。ほかの変更はありません。</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>最初のリリース。</dd></div></dl>
+      <dl class="log"><div><dt>1.0.4<small>2026-11-16</small></dt><dd><b>新機能：</b>「Spotify から」— 曲・アルバム・プレイリストのリンク（最大 100 曲）、もっと大きいプレイリストは exportify.app の .csv ファイルで。リストは Spotify から、曲は YT Music から。<br>曲エディター：ズーム、GO とゴールを 0.1 秒単位で（矢印キー）または手入力、GO 前のなめらかなフェードイン、ゴールのフェードアウトも自由に（アイデアをくれた MtheAX に感謝）。<br><b>修正：</b> GO が早い曲で、スタートの試聴が最初に戻ってしまうことがありました。</dd></div><div><dt>1.0.3<small>2026-11-15</small></dt><dd><b>修正：</b> 自分の曲が多いとき（約 100 曲以上）、追跡中の音楽が鳴らなくなっていました。MOD はゲームの音楽ロジックをそのまま残し、あなたの曲だけを追加するようになりました（作成時に確認します）。<br>ウィンドウに NFS Own Music のタイル（NFS シリーズ全体に自分の曲を）、「私たちのページ」に NFSAddons を追加。</dd></div><div><dt>1.0.2<small>2026-11-13</small></dt><dd><b>新機能：</b>「ガレージ」— レースと街の横に3つ目のスイッチ。曲やゲームの曲をガレージだけで流せます（Low Rider さんのアイデア）。1.0.1 の曲とプロファイルはこれまでどおりガレージでも流れます。<br>フィンランド語を追加 — 14言語に。<br>新デザイン：ゲームのメニューのような真っすぐなパネルと白い選択表示、幅広の見出し、暗い背景、「流れる場所」はアイコンに。<br>感謝：Low Rider さん — フィードバックと提案をありがとう。<br>修正：「ガレージ」だけオンのゲームの曲が「オフ」として自分の曲に回されることがあった問題、Music フォルダーから曲を再インポートすると LOW が消える問題。</dd></div><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>大型アップデート。</b><br><b>新機能：</b>YouTube / YT Music から曲を追加——1 曲、プレイリスト、アルバム、複数のリンク、.txt リスト。MV のリンクなら YT Music の同じ曲を取得します。<br>13 言語（AI 翻訳）。<br>1 つの MOD に数百曲（277 曲でテスト済み）。<br>スタート：GO の瞬間にドロップ（17 秒のカットシーン + 3.45 秒のカウントダウン）。GO はベースの入りで自動検出。ドロップが早い曲は前に無音を入れます。<br>すべての曲に HIGH / LOW。並べ替え、フィルター、リスト表示。ドラッグ＆ドロップと自分の曲順。<br>自分の曲も ▶ で試聴。ジャケット：アップロード、生成、削除。<br>曲ごとの作成の進行状況と「停止」ボタン。ブラウザーの選択。「使い方」ヘルプ。Visual C++ 同梱。<br><b>修正：</b>ラテン文字以外を含むフォルダーで MOD を作成できない問題（1.0.0a にもありました）。Visual C++ がない環境での「FrostyHash.dll」エラー。「レースのみ」の曲がガレージで流れる問題。ラテン文字以外の曲名がゲーム内の表示で空になる問題。長すぎる曲名で保存が壊れる問題。作成中にウィンドウを閉じて再作成するとエラーになる問題。フォルダー選択、最初の画面での言語切り替え、小さい画面でのウィンドウサイズ。<br><b>アップデート方法：</b>1.0.1 を新しいフォルダーに展開し、古いフォルダーから <b>data</b> と <b>Music</b> をコピーして、もう一度 <b>MOD を作成</b> を押してください。</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>修正：zip を Windows エクスプローラーで展開すると「MOD を作成」が FileLoadException（FrostySdk、0x80131515）で失敗していました。ほかの変更はありません。</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>最初のリリース。</dd></div></dl>
     </section>
   </div>
 </main>

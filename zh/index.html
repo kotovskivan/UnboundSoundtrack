@@ -59,8 +59,8 @@
  "applicationCategory": "GameApplication",
  "applicationSubCategory": "Game mod tool",
  "operatingSystem": "Windows 10, Windows 11",
- "softwareVersion": "1.0.3",
- "fileSize": "63.9 MB",
+ "softwareVersion": "1.0.4",
+ "fileSize": "64.0 MB",
  "downloadUrl": "https://drive.google.com/drive/folders/1xj2YBqJ-sqB53Azt__dZNrsfP8iMbS_a?usp=sharing",
  "isAccessibleForFree": true,
  "offers": {
@@ -81,7 +81,7 @@
  },
  "creditText": "Kitivski + Claude",
  "datePublished": "2026-11-10",
- "dateModified": "2026-11-15",
+ "dateModified": "2026-11-16",
  "sameAs": [
   "https://github.com/kotovskivan/UnboundSoundtrack",
   "https://steamcommunity.com/sharedfiles/filedetails/?id=3837419990"
@@ -377,7 +377,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
         <p class="lead">在 <b>Need for Speed Unbound</b>（极品飞车：不羁）里完全按你的喜好定制音乐：加入带封面的自己的歌，游戏原有曲目可保留也可关闭 —— 由你选择。</p>
         <div class="cta">
           <a class="btn primary" href="https://drive.google.com/drive/folders/1xj2YBqJ-sqB53Azt__dZNrsfP8iMbS_a?usp=sharing" target="_blank" rel="noopener">
-            <span>下载</span><small>v1.0.3 · zip 63.9 MB · Google Drive</small>
+            <span>下载</span><small>v1.0.4 · zip 64.0 MB · Google Drive</small>
           </a>
           <a class="btn" href="https://github.com/kotovskivan/UnboundSoundtrack" target="_blank" rel="noopener"><span>源代码</span><small>GitHub · GPL v3</small></a>
         </div>
@@ -429,7 +429,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
       <h2 class="h2"><span class="n">01</span><span>功能</span></h2>
       <div class="features">
         <div class="card"><h3>你的歌曲</h3><p>mp3、flac、wav、ogg、m4a —— 以你自己的名称和封面作为<b>新</b>曲目加入，不会替换游戏原有曲目。一个模组可放数百首歌。</p></div>
-        <div class="card"><h3>YouTube · YT Music</h3><p>粘贴单曲、播放列表或专辑链接，也可以一次多个链接或 .txt 列表。程序会自动下载；MV 链接会从 YT Music 取同一首歌，没有片头和小剧情。</p></div>
+        <div class="card"><h3>YouTube · YT Music · Spotify</h3><p>粘贴单曲、播放列表或专辑链接，也可以一次多个链接或 .txt 列表。程序会自动下载；MV 链接会从 YT Music 取同一首歌，没有片头和小剧情。 也可以用 Spotify 链接：列表来自 Spotify，歌曲来自 YT Music。</p></div>
         <div class="card"><h3>GO 时起 Drop</h3><p>比赛起步：17 秒过场动画 + 3.45 秒倒计时，Drop 正好落在 GO。程序按低音冲击自动找到 GO，也可以用鼠标调整。另有冲线后的一小段。</p></div>
         <div class="card"><h3>比赛 · 城市 · 车库</h3><p>分别为比赛、城市和车库开启或关闭曲目——歌曲甚至可以只在车库播放。可为不同的音乐组合建立配置。HIGH / LOW 决定曲目的播放频率。</p></div>
         <div class="card"><h3>一个模组</h3><p>为 Frosty Mod Manager 生成一个模组。游戏文件不会被修改 —— 关闭模组，游戏就恢复原样。</p></div>
@@ -440,6 +440,11 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
     <section class="block" id="screens">
       <h2 class="h2"><span class="n">02</span><span>截图</span></h2>
       <div class="shots">
+        <!-- 16.11 (Ваня): первый ряд — языки, главное окно; дальше редактор + треки, YouTube + Spotify, как работает + мод готов. 8 кадров, PNG — outputs/nfs-unbound/skriny-1.0.4/png-sajt -->
+        <figure>
+          <button class="shot-btn" type="button" data-full="../img/lang-zh.jpg"><img src="../img/lang-zh-s.jpg" srcset="../img/lang-zh-s.jpg 720w, ../img/lang-zh.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="14 种语言 —— 首次启动时选择你的语言。"></button>
+          <figcaption>14 种语言 —— 首次启动时选择你的语言。</figcaption>
+        </figure>
         <figure>
           <button class="shot-btn" type="button" data-full="../img/main-zh.jpg"><img src="../img/main-zh-s.jpg" srcset="../img/main-zh-s.jpg 720w, ../img/main-zh.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="你的歌曲和游戏曲目放在一起。"></button>
           <figcaption>你的歌曲和游戏曲目放在一起。</figcaption>
@@ -449,20 +454,24 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
           <figcaption>起步：Drop 正好落在 GO。终点：冲线后的一小段。</figcaption>
         </figure>
         <figure>
+          <button class="shot-btn" type="button" data-full="../img/tracks-zh.jpg"><img src="../img/tracks-zh-s.jpg" srcset="../img/tracks-zh-s.jpg 720w, ../img/tracks-zh.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="游戏曲目开或关 —— 比赛、城市和车库分别设置。"></button>
+          <figcaption>游戏曲目开或关 —— 比赛、城市和车库分别设置。</figcaption>
+        </figure>
+        <figure>
           <button class="shot-btn" type="button" data-full="../img/yt-zh.jpg"><img src="../img/yt-zh-s.jpg" srcset="../img/yt-zh-s.jpg 720w, ../img/yt-zh.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="来自 YouTube 和 YT Music 的歌曲 —— 链接、播放列表或 .txt 列表。"></button>
           <figcaption>来自 YouTube 和 YT Music 的歌曲 —— 链接、播放列表或 .txt 列表。</figcaption>
         </figure>
         <figure>
-          <button class="shot-btn" type="button" data-full="../img/built-zh.jpg"><img src="../img/built-zh-s.jpg" srcset="../img/built-zh-s.jpg 720w, ../img/built-zh.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="一个按钮 —— 模组就出现在 Frosty Mod Manager 列表中。"></button>
-          <figcaption>一个按钮 —— 模组就出现在 Frosty Mod Manager 列表中。</figcaption>
-        </figure>
-        <figure>
-          <button class="shot-btn" type="button" data-full="../img/lang-zh.jpg"><img src="../img/lang-zh-s.jpg" srcset="../img/lang-zh-s.jpg 720w, ../img/lang-zh.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="14 种语言 —— 程序会优先推荐你的 Windows 语言。"></button>
-          <figcaption>14 种语言 —— 程序会优先推荐你的 Windows 语言。</figcaption>
+          <button class="shot-btn" type="button" data-full="../img/sp-zh.jpg"><img src="../img/sp-zh-s.jpg" srcset="../img/sp-zh-s.jpg 720w, ../img/sp-zh.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="也支持 Spotify —— 单曲、专辑或播放列表。音频来自 YouTube Music。"></button>
+          <figcaption>也支持 Spotify —— 单曲、专辑或播放列表。音频来自 YouTube Music。</figcaption>
         </figure>
         <figure>
           <button class="shot-btn" type="button" data-full="../img/help-zh.jpg"><img src="../img/help-zh-s.jpg" srcset="../img/help-zh-s.jpg 720w, ../img/help-zh.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="程序内置帮助 —— 告诉你点哪里、做什么。"></button>
           <figcaption>程序内置帮助 —— 告诉你点哪里、做什么。</figcaption>
+        </figure>
+        <figure>
+          <button class="shot-btn" type="button" data-full="../img/built-zh.jpg"><img src="../img/built-zh-s.jpg" srcset="../img/built-zh-s.jpg 720w, ../img/built-zh.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="一个按钮 —— 模组就出现在 Frosty Mod Manager 列表中。"></button>
+          <figcaption>一个按钮 —— 模组就出现在 Frosty Mod Manager 列表中。</figcaption>
         </figure>
       </div>
     </section>
@@ -513,7 +522,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
 
     <section class="block" id="changelog">
       <h2 class="h2"><span class="n">06</span><span>更新内容</span></h2>
-      <dl class="log"><div><dt>1.0.3<small>2026-11-15</small></dt><dd><b>修复：</b> 自己的歌很多时（约 100 首以上），警察追逐时的音乐会消失。现在模组保留游戏原有的音乐逻辑，只把你的歌加进去；生成模组时会检查这一点。<br>窗口里：NFS Own Music 卡片（整个 NFS 系列都能放自己的歌），“我们的页面”里加入 NFSAddons。</dd></div><div><dt>1.0.2<small>2026-11-13</small></dt><dd><b>新功能：</b>“车库”——在“比赛”和“城市”旁新增第三个开关：歌曲或游戏曲目可以只在车库播放（Low Rider 的建议）。1.0.1 的歌曲和配置在车库照常播放。<br>新增芬兰语——现在共 14 种语言。<br>新外观：像游戏菜单一样的直角面板和白色选中、宽体标题、深色背景，“播放场景”改为图标。<br>致谢：Low Rider——感谢反馈和建议。<br>修复：只开启“车库”的游戏曲目可能被当作“关闭”让给你的歌曲；从 Music 文件夹重新导入歌曲时 LOW 会丢失。</dd></div><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>大更新。</b><br><b>新增：</b>来自 YouTube / YT Music 的歌曲——单曲、播放列表、专辑、多个链接或 .txt 列表；MV 链接会从 YT Music 取同一首歌。<br>13 种语言（AI 翻译）。<br>一个模组可放数百首歌（已用 277 首测试）。<br>比赛起步：Drop 正好落在 GO（17 秒过场动画 + 3.45 秒倒计时）；GO 按低音冲击自动查找；Drop 来得早的歌曲前面会补上静音。<br>每首曲目都可设 HIGH / LOW；排序、筛选、列表视图；拖放和自定义歌曲顺序。<br>自己的歌曲可用 ▶ 试听；封面：上传、生成或删除。<br>生成时显示每首歌的进度，并有“停止”按钮；可选浏览器；“使用说明”帮助；已内置 Visual C++。<br><b>修复：</b>程序放在含非拉丁字母的文件夹中时无法生成模组（1.0.0a 也有）；没有 Visual C++ 时出现“FrostyHash.dll”错误；“仅比赛”的歌曲会在车库播放；非拉丁字母的歌名在游戏内标牌上显示为空；过长的歌名会导致保存失败；生成过程中关闭窗口后再次生成出错；文件夹选择、首屏语言切换、小屏幕上的窗口大小。<br><b>更新：</b>把 1.0.1 解压到新文件夹，从旧文件夹复制 <b>data</b> 和 <b>Music</b>，再点一次 <b>生成模组</b>。</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>修复：用 Windows 资源管理器解压 zip 后，“生成模组” 会报 FileLoadException（FrostySdk，0x80131515）错误。其他没有变化。</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>首个版本。</dd></div></dl>
+      <dl class="log"><div><dt>1.0.4<small>2026-11-16</small></dt><dd><b>新功能：</b>「从 Spotify 导入」—— 单曲、专辑或播放列表的链接（最多 100 首），更大的播放列表可用 exportify.app 导出的 .csv 文件；列表来自 Spotify，歌曲从 YT Music 下载。<br>歌曲编辑器：放大波形，GO 和终点精确到 0.1 秒（方向键）或手动输入，GO 前平滑渐强，终点淡出可自定（感谢 MtheAX 的建议）。<br><b>修复：</b> GO 较早时，起跑试听可能跳回开头。</dd></div><div><dt>1.0.3<small>2026-11-15</small></dt><dd><b>修复：</b> 自己的歌很多时（约 100 首以上），警察追逐时的音乐会消失。现在模组保留游戏原有的音乐逻辑，只把你的歌加进去；生成模组时会检查这一点。<br>窗口里：NFS Own Music 卡片（整个 NFS 系列都能放自己的歌），“我们的页面”里加入 NFSAddons。</dd></div><div><dt>1.0.2<small>2026-11-13</small></dt><dd><b>新功能：</b>“车库”——在“比赛”和“城市”旁新增第三个开关：歌曲或游戏曲目可以只在车库播放（Low Rider 的建议）。1.0.1 的歌曲和配置在车库照常播放。<br>新增芬兰语——现在共 14 种语言。<br>新外观：像游戏菜单一样的直角面板和白色选中、宽体标题、深色背景，“播放场景”改为图标。<br>致谢：Low Rider——感谢反馈和建议。<br>修复：只开启“车库”的游戏曲目可能被当作“关闭”让给你的歌曲；从 Music 文件夹重新导入歌曲时 LOW 会丢失。</dd></div><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>大更新。</b><br><b>新增：</b>来自 YouTube / YT Music 的歌曲——单曲、播放列表、专辑、多个链接或 .txt 列表；MV 链接会从 YT Music 取同一首歌。<br>13 种语言（AI 翻译）。<br>一个模组可放数百首歌（已用 277 首测试）。<br>比赛起步：Drop 正好落在 GO（17 秒过场动画 + 3.45 秒倒计时）；GO 按低音冲击自动查找；Drop 来得早的歌曲前面会补上静音。<br>每首曲目都可设 HIGH / LOW；排序、筛选、列表视图；拖放和自定义歌曲顺序。<br>自己的歌曲可用 ▶ 试听；封面：上传、生成或删除。<br>生成时显示每首歌的进度，并有“停止”按钮；可选浏览器；“使用说明”帮助；已内置 Visual C++。<br><b>修复：</b>程序放在含非拉丁字母的文件夹中时无法生成模组（1.0.0a 也有）；没有 Visual C++ 时出现“FrostyHash.dll”错误；“仅比赛”的歌曲会在车库播放；非拉丁字母的歌名在游戏内标牌上显示为空；过长的歌名会导致保存失败；生成过程中关闭窗口后再次生成出错；文件夹选择、首屏语言切换、小屏幕上的窗口大小。<br><b>更新：</b>把 1.0.1 解压到新文件夹，从旧文件夹复制 <b>data</b> 和 <b>Music</b>，再点一次 <b>生成模组</b>。</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>修复：用 Windows 资源管理器解压 zip 后，“生成模组” 会报 FileLoadException（FrostySdk，0x80131515）错误。其他没有变化。</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>首个版本。</dd></div></dl>
     </section>
   </div>
 </main>

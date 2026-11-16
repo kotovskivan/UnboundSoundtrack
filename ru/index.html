@@ -59,8 +59,8 @@
  "applicationCategory": "GameApplication",
  "applicationSubCategory": "Game mod tool",
  "operatingSystem": "Windows 10, Windows 11",
- "softwareVersion": "1.0.3",
- "fileSize": "63.9 MB",
+ "softwareVersion": "1.0.4",
+ "fileSize": "64.0 MB",
  "downloadUrl": "https://drive.google.com/drive/folders/1xj2YBqJ-sqB53Azt__dZNrsfP8iMbS_a?usp=sharing",
  "isAccessibleForFree": true,
  "offers": {
@@ -81,7 +81,7 @@
  },
  "creditText": "Kitivski + Claude",
  "datePublished": "2026-11-10",
- "dateModified": "2026-11-15",
+ "dateModified": "2026-11-16",
  "sameAs": [
   "https://github.com/kotovskivan/UnboundSoundtrack",
   "https://steamcommunity.com/sharedfiles/filedetails/?id=3837419990"
@@ -377,7 +377,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
         <p class="lead">Полная кастомизация музыки в <b>Need for Speed Unbound</b> под себя: добавь свои песни с обложками, а треки игры оставь или выключи — свобода выбора.</p>
         <div class="cta">
           <a class="btn primary" href="https://drive.google.com/drive/folders/1xj2YBqJ-sqB53Azt__dZNrsfP8iMbS_a?usp=sharing" target="_blank" rel="noopener">
-            <span>Скачать</span><small>v1.0.3 · zip 63,9 МБ · Google Drive</small>
+            <span>Скачать</span><small>v1.0.4 · zip 64,0 МБ · Google Drive</small>
           </a>
           <a class="btn" href="https://github.com/kotovskivan/UnboundSoundtrack" target="_blank" rel="noopener"><span>Исходный код</span><small>GitHub · GPL v3</small></a>
         </div>
@@ -429,7 +429,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
       <h2 class="h2"><span class="n">01</span><span>Что умеет</span></h2>
       <div class="features">
         <div class="card"><h3>Свои песни</h3><p>mp3, flac, wav, ogg, m4a — как <b>новые</b> треки, со своим названием и обложкой, а не вместо треков игры. Сотни песен в одном моде.</p></div>
-        <div class="card"><h3>YouTube · YT Music</h3><p>Вставь ссылку на песню, плейлист или альбом — или много ссылок, или список .txt. Программа скачает сама; если ссылка на клип — возьмет ту же песню из YT Music, без вступлений и сценок.</p></div>
+        <div class="card"><h3>YouTube · YT Music · Spotify</h3><p>Вставь ссылку на песню, плейлист или альбом — или много ссылок, или список .txt. Программа скачает сама; если ссылка на клип — возьмет ту же песню из YT Music, без вступлений и сценок. Ссылка Spotify тоже подходит: список — из Spotify, песни — с YT Music.</p></div>
         <div class="card"><h3>Дроп на GO</h3><p>Старт гонки: 17 с катсцены + 3,45 с отсчета — дроп бьет на GO. GO программа находит сама по удару баса, подправишь мышкой. Плюс короткий кусок для финиша.</p></div>
         <div class="card"><h3>Гонки · Город · Гараж</h3><p>Включай и выключай треки отдельно для гонок, города и гаража — песня может играть даже только в гараже. Профили для разных наборов музыки. HIGH / LOW — как часто играет трек.</p></div>
         <div class="card"><h3>Один мод</h3><p>Собирает один мод для Frosty Mod Manager. Файлы игры не меняются — выключил мод, и игра как была.</p></div>
@@ -440,6 +440,11 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
     <section class="block" id="screens">
       <h2 class="h2"><span class="n">02</span><span>Скриншоты</span></h2>
       <div class="shots">
+        <!-- 16.11 (Ваня): первый ряд — языки, главное окно; дальше редактор + треки, YouTube + Spotify, как работает + мод готов. 8 кадров, PNG — outputs/nfs-unbound/skriny-1.0.4/png-sajt -->
+        <figure>
+          <button class="shot-btn" type="button" data-full="../img/lang-ru.jpg"><img src="../img/lang-ru-s.jpg" srcset="../img/lang-ru-s.jpg 720w, ../img/lang-ru.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="14 языков — свой выбираешь при первом запуске."></button>
+          <figcaption>14 языков — свой выбираешь при первом запуске.</figcaption>
+        </figure>
         <figure>
           <button class="shot-btn" type="button" data-full="../img/main-ru.jpg"><img src="../img/main-ru-s.jpg" srcset="../img/main-ru-s.jpg 720w, ../img/main-ru.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="Твои песни рядом с треками игры."></button>
           <figcaption>Твои песни рядом с треками игры.</figcaption>
@@ -449,20 +454,24 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
           <figcaption>Старт гонки: дроп бьет на GO. Финиш: короткий кусок после линии.</figcaption>
         </figure>
         <figure>
+          <button class="shot-btn" type="button" data-full="../img/tracks-ru.jpg"><img src="../img/tracks-ru-s.jpg" srcset="../img/tracks-ru-s.jpg 720w, ../img/tracks-ru.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="Треки игры — включить или выключить отдельно для гонок, города и гаража."></button>
+          <figcaption>Треки игры — включить или выключить отдельно для гонок, города и гаража.</figcaption>
+        </figure>
+        <figure>
           <button class="shot-btn" type="button" data-full="../img/yt-ru.jpg"><img src="../img/yt-ru-s.jpg" srcset="../img/yt-ru-s.jpg 720w, ../img/yt-ru.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="Песни с YouTube и YT Music — ссылка, плейлист или список .txt."></button>
           <figcaption>Песни с YouTube и YT Music — ссылка, плейлист или список .txt.</figcaption>
         </figure>
         <figure>
-          <button class="shot-btn" type="button" data-full="../img/built-ru.jpg"><img src="../img/built-ru-s.jpg" srcset="../img/built-ru-s.jpg 720w, ../img/built-ru.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="Одна кнопка — и мод уже в списке Frosty Mod Manager."></button>
-          <figcaption>Одна кнопка — и мод уже в списке Frosty Mod Manager.</figcaption>
-        </figure>
-        <figure>
-          <button class="shot-btn" type="button" data-full="../img/lang-ru.jpg"><img src="../img/lang-ru-s.jpg" srcset="../img/lang-ru-s.jpg 720w, ../img/lang-ru.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="14 языков — программа сама предлагает язык Windows."></button>
-          <figcaption>14 языков — программа сама предлагает язык Windows.</figcaption>
+          <button class="shot-btn" type="button" data-full="../img/sp-ru.jpg"><img src="../img/sp-ru-s.jpg" srcset="../img/sp-ru-s.jpg 720w, ../img/sp-ru.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="И Spotify — песня, альбом или плейлист. Звук берется с YouTube Music."></button>
+          <figcaption>И Spotify — песня, альбом или плейлист. Звук берется с YouTube Music.</figcaption>
         </figure>
         <figure>
           <button class="shot-btn" type="button" data-full="../img/help-ru.jpg"><img src="../img/help-ru-s.jpg" srcset="../img/help-ru-s.jpg 720w, ../img/help-ru.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="Справка прямо в программе — что и где нажать."></button>
           <figcaption>Справка прямо в программе — что и где нажать.</figcaption>
+        </figure>
+        <figure>
+          <button class="shot-btn" type="button" data-full="../img/built-ru.jpg"><img src="../img/built-ru-s.jpg" srcset="../img/built-ru-s.jpg 720w, ../img/built-ru.jpg 1440w" sizes="(min-width: 760px) 50vw, 100vw" width="720" height="450" loading="lazy" alt="Одна кнопка — и мод уже в списке Frosty Mod Manager."></button>
+          <figcaption>Одна кнопка — и мод уже в списке Frosty Mod Manager.</figcaption>
         </figure>
       </div>
     </section>
@@ -513,7 +522,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
 
     <section class="block" id="changelog">
       <h2 class="h2"><span class="n">06</span><span>Что нового</span></h2>
-      <dl class="log"><div><dt>1.0.3<small>2026-11-15</small></dt><dd><b>Фикс:</b> когда своих песен много (примерно от 100), в погоне пропадала музыка. Теперь мод оставляет музыкальную логику игры как есть и только добавляет в нее твои песни; сборка это проверяет.<br>В окне — плитка NFS Own Music (свои песни во всей серии NFS) и NFSAddons в «наши страницы».</dd></div><div><dt>1.0.2<small>2026-11-13</small></dt><dd><b>Новое:</b> «Гараж» — третий переключатель рядом с «Гонки» и «Город»: песня или трек игры может играть только в гараже (идея Low Rider). Песни и профили из 1.0.1 играют в гараже, как раньше.<br>Финский язык — теперь 14 языков.<br>Новый вид: прямые плашки и белое выделение, как в меню игры, широкие заголовки, темный фон, «где играет» — значками.<br>Спасибо: Low Rider — за отзывы и дополнения.<br>Исправлено: трек игры с одним «Гаражом» мог отдаться твоим песням как выключенный; LOW терялся при повторном импорте песни из папки Music.</dd></div><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>Большое обновление.</b><br><b>Новое:</b> песни из YouTube / YT Music — песня, плейлист, альбом, много ссылок или список .txt; если ссылка на клип — программа берет ту же песню из YT Music.<br>13 языков (перевод ИИ).<br>Сотни песен в одном моде (проверено на 277).<br>Старт гонки: дроп бьет на GO (17 с катсцены + 3,45 с отсчета); GO ищется по удару баса; если дроп в песне ранний — перед ней ставится тишина.<br>HIGH / LOW для каждого трека; сортировка, фильтры, вид списком; перетаскивание и свой порядок песен.<br>▶ для своих песен; обложки: загрузить, сгенерировать или удалить.<br>Прогресс сборки по каждой песне и кнопка «Стоп»; выбор браузера; справка «Как это работает»; Visual C++ внутри.<br><b>Исправлено:</b> сборка в папке с не латинскими буквами (было и в 1.0.0a); ошибка «FrostyHash.dll» без Visual C++; песни «только Гонки» играли в гараже; названия не латиницей были пустыми на плашке в игре; длинные названия песен ломали сохранение; повторная сборка после закрытия окна во время сборки; выбор папки, язык на первых экранах, размер окна на маленьких экранах.<br><b>Обновление:</b> распакуй 1.0.1 в новую папку, скопируй <b>data</b> и <b>Music</b> из старой, нажми <b>СОБРАТЬ МОД</b> еще раз.</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>Фикс: «Собрать мод» падал с FileLoadException (FrostySdk, 0x80131515), если zip распакован Проводником. Больше ничего не менялось.</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>Первый релиз.</dd></div></dl>
+      <dl class="log"><div><dt>1.0.4<small>2026-11-16</small></dt><dd><b>Новое:</b> «Из Spotify» — ссылка на песню, альбом или плейлист (до 100 песен) или файл .csv с exportify.app для плейлиста побольше; список — из Spotify, песни — с YT Music.<br>Редактор песни: зум, GO и финиш с точностью 0,1 с (стрелками) или вписать вручную, плавное нарастание перед GO, свое затухание на финише (спасибо MtheAX за идею).<br><b>Исправлено:</b> прослушка старта могла перескакивать в начало, когда GO стоит рано.</dd></div><div><dt>1.0.3<small>2026-11-15</small></dt><dd><b>Фикс:</b> когда своих песен много (примерно от 100), в погоне пропадала музыка. Теперь мод оставляет музыкальную логику игры как есть и только добавляет в нее твои песни; сборка это проверяет.<br>В окне — плитка NFS Own Music (свои песни во всей серии NFS) и NFSAddons в «наши страницы».</dd></div><div><dt>1.0.2<small>2026-11-13</small></dt><dd><b>Новое:</b> «Гараж» — третий переключатель рядом с «Гонки» и «Город»: песня или трек игры может играть только в гараже (идея Low Rider). Песни и профили из 1.0.1 играют в гараже, как раньше.<br>Финский язык — теперь 14 языков.<br>Новый вид: прямые плашки и белое выделение, как в меню игры, широкие заголовки, темный фон, «где играет» — значками.<br>Спасибо: Low Rider — за отзывы и дополнения.<br>Исправлено: трек игры с одним «Гаражом» мог отдаться твоим песням как выключенный; LOW терялся при повторном импорте песни из папки Music.</dd></div><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>Большое обновление.</b><br><b>Новое:</b> песни из YouTube / YT Music — песня, плейлист, альбом, много ссылок или список .txt; если ссылка на клип — программа берет ту же песню из YT Music.<br>13 языков (перевод ИИ).<br>Сотни песен в одном моде (проверено на 277).<br>Старт гонки: дроп бьет на GO (17 с катсцены + 3,45 с отсчета); GO ищется по удару баса; если дроп в песне ранний — перед ней ставится тишина.<br>HIGH / LOW для каждого трека; сортировка, фильтры, вид списком; перетаскивание и свой порядок песен.<br>▶ для своих песен; обложки: загрузить, сгенерировать или удалить.<br>Прогресс сборки по каждой песне и кнопка «Стоп»; выбор браузера; справка «Как это работает»; Visual C++ внутри.<br><b>Исправлено:</b> сборка в папке с не латинскими буквами (было и в 1.0.0a); ошибка «FrostyHash.dll» без Visual C++; песни «только Гонки» играли в гараже; названия не латиницей были пустыми на плашке в игре; длинные названия песен ломали сохранение; повторная сборка после закрытия окна во время сборки; выбор папки, язык на первых экранах, размер окна на маленьких экранах.<br><b>Обновление:</b> распакуй 1.0.1 в новую папку, скопируй <b>data</b> и <b>Music</b> из старой, нажми <b>СОБРАТЬ МОД</b> еще раз.</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>Фикс: «Собрать мод» падал с FileLoadException (FrostySdk, 0x80131515), если zip распакован Проводником. Больше ничего не менялось.</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>Первый релиз.</dd></div></dl>
     </section>
   </div>
 </main>
