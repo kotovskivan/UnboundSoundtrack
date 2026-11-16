@@ -364,6 +364,7 @@ static class Ui
     }
 
     // ---------- задания (рабочий процесс) ----------
+    const string VcUrl = "https://aka.ms/vs/17/release/vc_redist.x64.exe";   // официальная постоянная ссылка Microsoft: Visual C++ 2015–2022 x64
     static Process jobProc;            // рабочий процесс текущего задания
     static volatile bool jobStop;      // остановили сами («Стоп» / вышли из программы) — это не ошибка
     // рабочий процесс + его кодировщик (Tool.exe) — деревом по PID
@@ -830,11 +831,18 @@ static class Ui
                 }
                 else if (what == "vcredist")
                 {
-                    // P2-01, запасной путь: Visual C++ Redistributable x64 (установщик Microsoft лежит в app\vcredist)
+                    // P2-01, запасной путь: Visual C++ Redistributable x64. С 17.11 установщика в zip нет (Ваня: «выпиливай» — антивирусы, вес):
+                    // кнопка открывает официальную загрузку Microsoft; лежит в app\vcredist (zip до 1.0.4) — запускаем его, как раньше
                     string vc = Path.Combine(App.AppDir, "vcredist", "VC_redist.x64.exe");
-                    if (!File.Exists(vc)) throw new UserError("crash", "no " + vc);
-                    try { Process.Start(new ProcessStartInfo(vc) { UseShellExecute = true }); App.Log("VC++ installer started"); }
-                    catch (System.ComponentModel.Win32Exception e) { if (e.NativeErrorCode != 1223) throw; App.Log("VC++ installer: UAC cancelled"); }
+                    if (!File.Exists(vc))
+                    {
+                        try { Process.Start(VcUrl); App.Log("VC++: download " + VcUrl); } catch (Exception e) { App.Log("VC++ link: " + e.Message); }
+                    }
+                    else
+                    {
+                        try { Process.Start(new ProcessStartInfo(vc) { UseShellExecute = true }); App.Log("VC++ installer started"); }
+                        catch (System.ComponentModel.Win32Exception e) { if (e.NativeErrorCode != 1223) throw; App.Log("VC++ installer: UAC cancelled"); }
+                    }
                 }
                 else if (what == "log") Process.Start("explorer.exe", "/select,\"" + App.LogPath + "\"");
                 else if (what == "folder") Process.Start("explorer.exe", "\"" + App.Root + "\"");

@@ -41,7 +41,7 @@ rem Microsoft Visual C++ runtime (1.0.1): a clean Windows has no VCRUNTIME140.dl
 rem the game's Oodle (oo2core_9_win64.dll) needs VCRUNTIME140_1.dll. The program loads app\frosty first (SetDllDirectory in App.cs).
 for %%f in (vcruntime140.dll vcruntime140_1.dll) do if exist "%WINDIR%\System32\%%f" copy /y "%WINDIR%\System32\%%f" "%OUT%\app\frosty\" >nul
 if exist "%WINDIR%\System32\vcruntime140.dll" copy /y "%WINDIR%\System32\vcruntime140.dll" "%OUT%\app\encoder\" >nul
-rem Not built here (copy from the release zip if you need them): app\yt-dlp.exe (songs from YouTube / YT Music)
-rem and app\vcredist\VC_redist.x64.exe (Microsoft's installer, offered by the program if the runtime still fails to load).
+rem Not built here (copy from the release zip if you need it): app\yt-dlp.exe (songs from YouTube / YT Music).
+rem Since 1.0.4 there is no VC_redist installer in the zip: if the runtime still fails to load, the program opens Microsoft's download.
 
 echo Built: %OUT%
