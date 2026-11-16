@@ -343,6 +343,20 @@ dialog#lb::backdrop { background: rgba(0,0,0,.86); }
 dialog#lb img { max-height: 92vh; width: auto; }
 dialog#lb button { position: absolute; top: 8px; right: 8px; width: 40px; height: 40px; cursor: pointer; background: var(--ink); color: var(--paper); border: 1px solid var(--line); font-size: 20px; line-height: 1; }
 dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
+/* ---------- 17.11 окно «Скачать»: GitHub или Google Диск (Ваня, вариант А — две равные кнопки) ---------- */
+dialog#dl { width: min(560px, calc(100vw - 32px)); max-width: none; padding: 0; border: 1px solid var(--acid); background: var(--panel); color: var(--paper); box-shadow: 8px 8px 0 rgba(182,255,26,.18); }
+dialog#dl::backdrop { background: rgba(0,0,0,.78); }
+.dl-box { position: relative; padding: 22px 22px 24px; }
+.dl-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; margin: 0 0 18px; padding-right: 48px; }
+.dl-head h2 { margin: 0; font: italic 700 22px/1.1 var(--font); letter-spacing: .14em; text-transform: uppercase; }
+.dl-head small { color: var(--mute); font-size: 13px; letter-spacing: .04em; }
+.dl-x { position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; cursor: pointer; background: var(--ink); color: var(--paper); border: 1px solid var(--line); font-size: 20px; line-height: 1; }
+.dl-x:hover { border-color: var(--acid); color: var(--acid); }
+.dl-pick { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 479px) { .dl-pick { grid-template-columns: 1fr; } } /* телефон — одна под другой */
+.dl-pick .btn { min-height: 78px; padding: 14px 18px; font-size: 18px; letter-spacing: .12em; }
+.dl-pick .btn:hover { background: rgba(182,255,26,.07); }
+.cjk .dl-head h2 { font-style: normal; letter-spacing: .03em; }
 
 /* ---------- подсказка «есть на твоем языке» ---------- */
 .suggest { position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 20; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; max-width: 560px; margin: 0 auto; background: var(--panel); border: 1px solid var(--acid); box-shadow: 6px 6px 0 rgba(182,255,26,.18); padding: 12px 14px; font-size: 15px; }
@@ -362,7 +376,7 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
       <summary title="언어"><span>KO<span class="ln"> · 한국어</span></span><span class="ar" aria-hidden="true">▼</span></summary>
       <nav class="menu" aria-label="언어"><a href="../" hreflang="uk" lang="uk"><b>UA</b>Українська</a><a href="../en/" hreflang="en" lang="en"><b>EN</b>English</a><a href="../de/" hreflang="de" lang="de"><b>DE</b>Deutsch</a><a href="../es/" hreflang="es" lang="es"><b>ES</b>Español</a><a href="../fr/" hreflang="fr" lang="fr"><b>FR</b>Français</a><a href="../it/" hreflang="it" lang="it"><b>IT</b>Italiano</a><a href="../pl/" hreflang="pl" lang="pl"><b>PL</b>Polski</a><a href="../pt/" hreflang="pt" lang="pt"><b>PT</b>Português</a><a href="../tr/" hreflang="tr" lang="tr"><b>TR</b>Türkçe</a><a href="../ru/" hreflang="ru" lang="ru"><b>RU</b>Русский</a><a href="../zh/" hreflang="zh" lang="zh-Hans"><b>ZH</b>简体中文</a><a href="../ja/" hreflang="ja" lang="ja"><b>JA</b>日本語</a><a href="../ko/" hreflang="ko" lang="ko" aria-current="page"><b>KO</b>한국어</a><a href="../fi/" hreflang="fi" lang="fi"><b>FI</b>Suomi</a><p class="ai">번역은 AI(Claude)가 했습니다</p></nav>
     </details>
-    <a class="dl-mini" href="https://github.com/kotovskivan/UnboundSoundtrack/releases/latest/download/UnboundSoundtrack.zip" target="_blank" rel="noopener">다운로드</a>
+    <a class="dl-mini" href="https://github.com/kotovskivan/UnboundSoundtrack/releases/latest/download/UnboundSoundtrack.zip" target="_blank" rel="noopener" data-dl>다운로드</a>
   </div>
 </header>
 
@@ -376,8 +390,8 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
         <h1 translate="no"><b>Unbound</b> <span class="sig">Soundtrack</span></h1>
         <p class="lead"><b>Need for Speed Unbound</b>의 음악을 내 마음대로 완전히 커스터마이즈: 커버와 함께 내 노래를 추가하고, 게임 원곡은 남기거나 끄거나 — 선택은 자유.</p>
         <div class="cta">
-          <a class="btn primary" href="https://github.com/kotovskivan/UnboundSoundtrack/releases/latest/download/UnboundSoundtrack.zip" target="_blank" rel="noopener">
-            <span>다운로드</span><small>v1.0.4 · zip 39.8 MB · GitHub</small>
+          <a class="btn primary" href="https://github.com/kotovskivan/UnboundSoundtrack/releases/latest/download/UnboundSoundtrack.zip" target="_blank" rel="noopener" data-dl>
+            <span>다운로드</span><small>v1.0.4 · zip 39.8 MB · GitHub · 드라이브</small>
           </a>
           <a class="btn" href="https://github.com/kotovskivan/UnboundSoundtrack" target="_blank" rel="noopener"><span>소스 코드</span><small>GitHub · GPL v3</small></a>
         </div>
@@ -577,6 +591,14 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
   </div>
 </footer>
 
+<dialog id="dl" aria-labelledby="dlT"><div class="dl-box">
+  <div class="dl-head"><h2 id="dlT">다운로드</h2><small>v1.0.4 · zip 39.8 MB</small></div>
+  <button type="button" class="dl-x" aria-label="닫기">✕</button>
+  <div class="dl-pick">
+    <a class="btn" href="https://github.com/kotovskivan/UnboundSoundtrack/releases/latest/download/UnboundSoundtrack.zip" target="_blank" rel="noopener"><span translate="no">GitHub</span><small>zip 바로 받기</small></a>
+    <a class="btn" href="https://drive.google.com/drive/folders/1xj2YBqJ-sqB53Azt__dZNrsfP8iMbS_a?usp=sharing" target="_blank" rel="noopener"><span>Google 드라이브</span><small>zip이 있는 폴더</small></a>
+  </div>
+</div></dialog>
 <dialog id="lb"><button type="button" aria-label="닫기">✕</button><img alt=""></dialog>
 <div class="suggest" id="sug" hidden><span></span><a href="#"></a><button type="button" aria-label="닫기">✕</button></div>
 
@@ -588,6 +610,17 @@ dialog#lb button:hover { border-color: var(--acid); color: var(--acid); }
   document.addEventListener("click", function (e) { if (dd.open && !dd.contains(e.target)) dd.open = false; });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && dd.open) { dd.open = false; dd.querySelector("summary").focus(); } });
 
+  /* 17.11: «Скачать» -> окно выбора GitHub / Google Диск; без JS, колесиком или Ctrl+клик — ссылка ведет прямо на GitHub */
+  var dl = document.getElementById("dl");
+  document.querySelectorAll("[data-dl]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      if (!dl.showModal || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+      e.preventDefault(); dl.showModal();
+    });
+  });
+  dl.querySelector(".dl-x").addEventListener("click", function () { dl.close(); });
+  dl.addEventListener("click", function (e) { if (e.target === dl) dl.close(); });   // клик мимо окна
+  dl.querySelectorAll(".dl-pick a").forEach(function (a) { a.addEventListener("click", function () { dl.close(); }); });
   /* скрин на весь экран */
   var lb = document.getElementById("lb"), lbImg = lb.querySelector("img");
   document.querySelectorAll(".shot-btn").forEach(function (b) {
