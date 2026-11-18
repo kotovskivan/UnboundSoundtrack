@@ -222,11 +222,12 @@
     let i = 0, t = 0;
     const reset = () => { gh.forEach(g => g.removeAttribute("style")); S.fx.forEach(e => { e.style.filter = ""; e.classList.remove("gl-paper"); }); el.style.opacity = ""; c2.clearRect(0, 0, W, H); };
     const stop = () => { clearTimeout(t); reset(); gh.forEach(g => g.remove()); cv.remove(); S.done(); el._gl = null; if (GL.next === step) GL.next = null; };
+    const t0 = performance.now();   // 18.11: кадры по общим часам — медленная отрисовка не растягивает глитч (как в Heat); ≥ 10 мс — кадр успевает нарисоваться
     const step = () => {
       reset();
       if (i >= frames.length || !el.isConnected) { stop(); cb && cb(); return; }
       frames[i++](A);
-      if (GL.manual) GL.next = step; else t = setTimeout(step, 1000 / 30 * GL.slow);
+      if (GL.manual) GL.next = step; else t = setTimeout(step, Math.max(10, t0 + i * 1000 / 30 * GL.slow - performance.now()));
     };
     el._gl = { stop };
     step();

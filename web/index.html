@@ -1341,6 +1341,9 @@ const fmtT = (s, d) => { const f = 10 ** d, c = Math.round(Math.max(0, s || 0) *
   return Math.floor(sec / 60) + ":" + String(sec % 60).padStart(2, "0") + (d ? dsep() + String(c % f).padStart(d, "0") : ""); };
 const fmtP = s => fmtT(s, 2);
 
+// 18.11: тяжелый подсчет (волна, громкость, PCM) — после глитча редактора, иначе он замирает (стенд 300 песен: long task до 252 мс посреди
+// анимации, 0,65–0,88 с вместо ~0,44; находка сессии Heat). rAF — глитч ставится в rAF из openSong, ждем, пока он начнется.
+const afterPan = () => new Promise(r => requestAnimationFrame(() => { const w = () => $("rpan")._gl ? setTimeout(w, 30) : r(); w(); }));
 function openSong(song, file) {
   stopPanel(); if (playing) stopPreview();
   Object.assign(rp, { open: true, song, id: song ? song.id : null, file: song ? song.file : "", fileObj: null, dur: song ? song.dur : 0, drop: song ? song.drop : 0,
@@ -1359,7 +1362,7 @@ function openSong(song, file) {
   if (file) takeFile(file);
   else if (song) {
     layout(); wvMsg(t("decoding"));
-    fetch(song.audio).then(r => r.arrayBuffer()).then(b => decode(b)).then(a => { if (rp.song !== song) return; peaksFrom(a); rp.lufs = lufs(a); volUi(); wvMsg(""); layout(); }).catch(() => wvMsg(t("badFile")));
+    fetch(song.audio).then(r => r.arrayBuffer()).then(b => decode(b)).then(async a => { await afterPan(); if (rp.song !== song) return; peaksFrom(a); rp.lufs = lufs(a); volUi(); wvMsg(""); layout(); }).catch(() => wvMsg(t("badFile")));
   }
 }
 function closeSong() {
@@ -1448,6 +1451,7 @@ async function takeFile(f) {
   showBody(); $("rpBody").style.display = ""; $("rpOk").disabled = true; layout(); wvMsg(t("decoding"));
   try {
     const buf = await f.arrayBuffer(), tg = id3(buf), a = await decode(buf);
+    await afterPan();
     wvMsg(t("uploading"));
     const res = await api("/api/song/upload?name=" + encodeURIComponent(f.name), toPcm(a).buffer, true);
     if (!rp.open) return;
