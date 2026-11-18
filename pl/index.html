@@ -104,7 +104,7 @@
 html, body { margin: 0; overflow-x: clip; }
 html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-body { background: var(--ink); color: var(--paper); font: 400 17px/1.55 var(--font); -webkit-font-smoothing: antialiased; }
+body { font-variant-emoji: text; background: var(--ink); color: var(--paper); font: 400 17px/1.55 var(--font); -webkit-font-smoothing: antialiased; }
 body::before {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background:
@@ -185,7 +185,7 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
 .yt-play span { font-size: 22px; font-style: normal; letter-spacing: 0; }
 .yt-btn:hover .yt-play, .yt-btn:focus-visible .yt-play { transform: translate(calc(-50% - 2px), calc(-50% - 2px)) rotate(-1.5deg); box-shadow: 9px 9px 0 var(--sun); }
 .yt iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-@media (max-width: 560px) { /* телефон: только ▶, справа (слева на обложке «DROP ON GO») */
+@media (max-width: 560px) { /* телефон: только ▶︎, справа (слева на обложке «DROP ON GO») */
   .yt-play { left: auto; right: 4%; font-size: 0; gap: 0; padding: 12px 18px; transform: translateY(-50%) rotate(-1.5deg); }
   .yt-btn:hover .yt-play, .yt-btn:focus-visible .yt-play { transform: translate(-2px, calc(-50% - 2px)) rotate(-1.5deg); }
   .yt-play span { font-size: 22px; } }
@@ -198,6 +198,8 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
   background: linear-gradient(0deg, var(--ink), transparent 22%), linear-gradient(180deg, var(--ink), transparent 12%),
               linear-gradient(90deg, rgba(10,10,10,.9) 0%, rgba(10,10,10,.72) 45%, rgba(10,10,10,.5) 100%); }
 .hero-zone.vid .hero-bg, .hero-zone.vid::before { opacity: 1; }
+@media (max-width: 979px) { /* 18.11 телефон: текст по центру — пленка ровная, без темного края слева */
+  .hero-zone::before { background: linear-gradient(0deg, var(--ink), transparent 14%), linear-gradient(180deg, var(--ink), transparent 8%), rgba(10,10,10,.7); } }
 
 /* ---------- бегущая строка ---------- */
 .ticker { width: 110vw; margin-left: -5vw; background: var(--paper); color: var(--ink); overflow: hidden; white-space: nowrap; transform: rotate(-1.2deg); font-weight: 700; font-size: 14px; letter-spacing: .06em; padding: 8px 0; }
@@ -268,7 +270,7 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
 .steps li::before { content: counter(s); position: absolute; left: 0; top: -12px; font-style: italic; font-weight: 700; font-size: 46px; line-height: 1; color: var(--acid); }
 .steps li:nth-child(even)::before { color: var(--sun); }
 .steps .sub { display: block; color: var(--mute); font-size: 15px; margin-top: 6px; }
-.steps .or { display: block; margin-top: 12px; }   /* 13.11: второй путь шага 3 — ▶ З YT MUSIC */
+.steps .or { display: block; margin-top: 12px; }   /* 13.11: второй путь шага 3 — ▶︎ З YT MUSIC */
 .alerts { display: grid; gap: 18px; }
 @media (min-width: 860px) { .alerts { grid-template-columns: 1fr 1fr; } }
 .alert { border: 1px solid; border-left-width: 6px; padding: 22px 22px 20px; }
@@ -407,7 +409,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
         <button class="yt-btn" type="button" aria-label="Obejrzyj wideo (YouTube)">
           <img src="../img/video.jpg" srcset="../img/video-s.jpg 720w, ../img/video.jpg 1280w"
                sizes="(min-width: 980px) 58vw, 100vw" width="1280" height="720" alt="Obejrzyj wideo" fetchpriority="high">
-          <span class="yt-play"><span>▶</span>Obejrzyj wideo</span>
+          <span class="yt-play"><span>▶︎</span>Obejrzyj wideo</span>
         </button>
       </div>
     </section>
@@ -447,7 +449,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
         <div class="card"><h3>Drop na GO</h3><p>Start wyścigu: 17 s przerywnika + 3,45 s odliczania — drop wchodzi na GO. GO program znajduje sam po uderzeniu basu, poprawisz myszką. Plus krótki fragment na metę.</p></div>
         <div class="card"><h3>Wyścigi · Miasto · Garaż</h3><p>Włączaj i wyłączaj utwory osobno w wyścigach, w mieście i w garażu — piosenka może grać nawet tylko w garażu. Profile dla różnych zestawów muzyki. HIGH / LOW — jak często gra utwór.</p></div>
         <div class="card"><h3>Jeden mod</h3><p>Buduje jeden mod do Frosty Mod Manager. Pliki gry się nie zmieniają — wyłączysz mod i gra jest jak dawniej.</p></div>
-        <div class="card"><h3>Czysty zip</h3><p>W zipie nie ma muzyki ani plików gry: piosenki są twoje, okładki i tła program czyta z twojej gry. ▶ — 30-sekundowy podgląd każdego utworu gry (potrzebny internet).</p></div>
+        <div class="card"><h3>Czysty zip</h3><p>W zipie nie ma muzyki ani plików gry: piosenki są twoje, okładki i tła program czyta z twojej gry. ▶︎ — 30-sekundowy podgląd każdego utworu gry (potrzebny internet).</p></div>
       </div>
     </section>
 
@@ -505,7 +507,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
         <ol class="steps">
           <li>Rozpakuj <b>cały</b> zip do zwykłego folderu — Pulpit, Dokumenty, D:\Mods… Nie do Program Files.</li>
           <li>Uruchom <b>Unbound Soundtrack.exe</b> i zaakceptuj warunki. Pierwsze uruchomienie czyta grę — kilka minut, tylko raz.</li>
-          <li><b>+ DODAJ PIOSENKĘ</b> → plik → ustaw GO i metę → <b>Zapisz</b>.<span class="or">Albo <b>▶ Z YT MUSIC</b> → wklej link (piosenka, playlista, album), wiele linków albo listę .txt → <b>Pobierz</b>.</span><span class="sub">Link do teledysku — program weźmie tę samą piosenkę z YT Music, bez intra i scenek. Przed playlistą pokaże, ile piosenek, ile już masz, ile czasu i miejsca; te, które już są, pominie. Lista .txt: Tytuł,Wykonawca,Link; (alfabetem łacińskim) — przykładowy plik jest w programie.</span><span class="sub">Piosenki leżą w folderze <b>Music</b> obok programu, każda w folderze z numerem: Music\1\, Music\2\… Można też ręcznie: nowy folder z numerem, w nim plik piosenki i obrazek.</span></li>
+          <li><b>+ DODAJ PIOSENKĘ</b> → plik → ustaw GO i metę → <b>Zapisz</b>.<span class="or">Albo <b>▶︎ Z YT MUSIC</b> → wklej link (piosenka, playlista, album), wiele linków albo listę .txt → <b>Pobierz</b>.</span><span class="sub">Link do teledysku — program weźmie tę samą piosenkę z YT Music, bez intra i scenek. Przed playlistą pokaże, ile piosenek, ile już masz, ile czasu i miejsca; te, które już są, pominie. Lista .txt: Tytuł,Wykonawca,Link; (alfabetem łacińskim) — przykładowy plik jest w programie.</span><span class="sub">Piosenki leżą w folderze <b>Music</b> obok programu, każda w folderze z numerem: Music\1\, Music\2\… Można też ręcznie: nowy folder z numerem, w nim plik piosenki i obrazek.</span></li>
           <li><b>ZBUDUJ MODA</b>. Mod pojawi się na liście Frosty Mod Manager.</li>
           <li>We Frosty Mod Manager zaznacz <b>Unbound Soundtrack</b>, wyłącz inne mody muzyczne, <b>Launch</b>.</li>
         </ol>
@@ -536,7 +538,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
 
     <section class="block" id="changelog">
       <h2 class="h2"><span class="n">06</span><span>Lista zmian</span></h2>
-      <dl class="log"><div><dt>1.0.5<small>2026-11-18</small></dt><dd><b>Poprawka:</b> długi klucz Frosty (nfsunbound.key, 16 416 bajtów) już nie psuje budowania moda — dzięki mazidpvt93.<br><b>Nowość:</b> głośność piosenki w edytorze 0–300 % z „Auto” i ochroną przed przesterowaniem (dzięki MGS3PLAYER za pomysł); sekcje WYŚCIGI / MIASTO / GARAŻ — widać, co gdzie gra, a „+” wybiera piosenki dla miejsca; małe kafelki.<br>Okna i sekcje przełączają się z glitchem w stylu Unbound; „Włącz / Wyłącz wszystkie” przy setkach piosenek już nie sypie błędami.</dd></div><div><dt>1.0.4<small>2026-11-16</small></dt><dd><b>Nowość:</b> „Ze Spotify” — link do piosenki, albumu lub playlisty (do 100 piosenek) albo plik .csv z exportify.app dla większej playlisty; lista pochodzi ze Spotify, piosenki z YT Music.<br>Edytor piosenki: zoom, GO i meta z dokładnością 0,1 s (strzałki) albo wpisane ręcznie, płynne narastanie przed GO, własne wyciszenie na mecie (dzięki MtheAX za pomysł).<br><b>Naprawione:</b> odsłuch startu mógł wracać na początek, gdy GO było wcześnie.</dd></div><div><dt>1.0.3<small>2026-11-15</small></dt><dd><b>Poprawka:</b> przy wielu własnych piosenkach (około 100 i więcej) muzyka w pościgach milkła. Teraz mod zostawia logikę muzyki gry bez zmian i tylko dodaje do niej twoje piosenki; jest to sprawdzane przy budowaniu.<br>W oknie: kafelek NFS Own Music (własne piosenki w całej serii NFS) i NFSAddons w „nasze strony”.</dd></div><div><dt>1.0.2<small>2026-11-13</small></dt><dd><b>Nowe:</b> „Garaż” — trzeci przełącznik obok Wyścigów i Miasta: piosenka lub utwór gry może grać tylko w garażu (pomysł Low Ridera). Piosenki i profile z 1.0.1 grają w garażu jak dotąd.<br>Fiński — teraz 14 języków.<br>Nowy wygląd: proste plakietki i białe zaznaczenie jak w menu gry, szerokie nagłówki, ciemne tło, „gdzie gra” jako ikony.<br>Podziękowania: Low Rider — za opinie i sugestie.<br>Naprawiono: utwór gry tylko z „Garażem” mógł zostać oddany twoim piosenkom jako „wyłączony”; LOW znikał przy ponownym imporcie piosenki z folderu Music.</dd></div><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>Duża aktualizacja.</b><br><b>Nowe:</b> piosenki z YouTube / YT Music — piosenka, playlista, album, wiele linków lub lista .txt; link do teledysku pobiera tę samą piosenkę z YT Music.<br>13 języków (tłumaczenie AI).<br>Setki piosenek w jednym modzie (sprawdzone na 277).<br>Start wyścigu: drop wchodzi na GO (17 s przerywnika + 3,45 s odliczania); GO szukane po uderzeniu basu; piosenki z wczesnym dropem dostają ciszę przed sobą.<br>HIGH / LOW dla każdego utworu; sortowanie, filtry, widok listy; przeciąganie i własna kolejność piosenek.<br>▶ dla własnych piosenek; okładki: wgraj, wygeneruj albo usuń.<br>Postęp budowania dla każdej piosenki i przycisk „Stop”; wybór przeglądarki; pomoc „Jak to działa”; Visual C++ w środku.<br><b>Naprawione:</b> budowanie w folderze z nie-łacińskimi literami (było też w 1.0.0a); błąd „FrostyHash.dll” bez Visual C++; piosenki „tylko Wyścigi” grały w garażu; nie-łacińskie tytuły były puste na plakietce w grze; długie nazwy piosenek psuły zapis; ponowne budowanie po zamknięciu okna w trakcie budowania; wybór folderu, język na pierwszych ekranach, rozmiar okna na małych ekranach.<br><b>Aktualizacja:</b> rozpakuj 1.0.1 do nowego folderu, skopiuj <b>data</b> i <b>Music</b> ze starego, naciśnij jeszcze raz <b>ZBUDUJ MODA</b>.</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>Poprawka: „Zbuduj moda” kończył się błędem FileLoadException (FrostySdk, 0x80131515), jeśli zip rozpakowano Eksploratorem Windows. Nic więcej się nie zmieniło.</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>Pierwsze wydanie.</dd></div></dl>
+      <dl class="log"><div><dt>1.0.5<small>2026-11-18</small></dt><dd><b>Poprawka:</b> długi klucz Frosty (nfsunbound.key, 16 416 bajtów) już nie psuje budowania moda — dzięki mazidpvt93.<br><b>Nowość:</b> głośność piosenki w edytorze 0–300 % z „Auto” i ochroną przed przesterowaniem (dzięki MGS3PLAYER za pomysł); sekcje WYŚCIGI / MIASTO / GARAŻ — widać, co gdzie gra, a „+” wybiera piosenki dla miejsca; małe kafelki.<br>Okna i sekcje przełączają się z glitchem w stylu Unbound; „Włącz / Wyłącz wszystkie” przy setkach piosenek już nie sypie błędami.</dd></div><div><dt>1.0.4<small>2026-11-16</small></dt><dd><b>Nowość:</b> „Ze Spotify” — link do piosenki, albumu lub playlisty (do 100 piosenek) albo plik .csv z exportify.app dla większej playlisty; lista pochodzi ze Spotify, piosenki z YT Music.<br>Edytor piosenki: zoom, GO i meta z dokładnością 0,1 s (strzałki) albo wpisane ręcznie, płynne narastanie przed GO, własne wyciszenie na mecie (dzięki MtheAX za pomysł).<br><b>Naprawione:</b> odsłuch startu mógł wracać na początek, gdy GO było wcześnie.</dd></div><div><dt>1.0.3<small>2026-11-15</small></dt><dd><b>Poprawka:</b> przy wielu własnych piosenkach (około 100 i więcej) muzyka w pościgach milkła. Teraz mod zostawia logikę muzyki gry bez zmian i tylko dodaje do niej twoje piosenki; jest to sprawdzane przy budowaniu.<br>W oknie: kafelek NFS Own Music (własne piosenki w całej serii NFS) i NFSAddons w „nasze strony”.</dd></div><div><dt>1.0.2<small>2026-11-13</small></dt><dd><b>Nowe:</b> „Garaż” — trzeci przełącznik obok Wyścigów i Miasta: piosenka lub utwór gry może grać tylko w garażu (pomysł Low Ridera). Piosenki i profile z 1.0.1 grają w garażu jak dotąd.<br>Fiński — teraz 14 języków.<br>Nowy wygląd: proste plakietki i białe zaznaczenie jak w menu gry, szerokie nagłówki, ciemne tło, „gdzie gra” jako ikony.<br>Podziękowania: Low Rider — za opinie i sugestie.<br>Naprawiono: utwór gry tylko z „Garażem” mógł zostać oddany twoim piosenkom jako „wyłączony”; LOW znikał przy ponownym imporcie piosenki z folderu Music.</dd></div><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>Duża aktualizacja.</b><br><b>Nowe:</b> piosenki z YouTube / YT Music — piosenka, playlista, album, wiele linków lub lista .txt; link do teledysku pobiera tę samą piosenkę z YT Music.<br>13 języków (tłumaczenie AI).<br>Setki piosenek w jednym modzie (sprawdzone na 277).<br>Start wyścigu: drop wchodzi na GO (17 s przerywnika + 3,45 s odliczania); GO szukane po uderzeniu basu; piosenki z wczesnym dropem dostają ciszę przed sobą.<br>HIGH / LOW dla każdego utworu; sortowanie, filtry, widok listy; przeciąganie i własna kolejność piosenek.<br>▶︎ dla własnych piosenek; okładki: wgraj, wygeneruj albo usuń.<br>Postęp budowania dla każdej piosenki i przycisk „Stop”; wybór przeglądarki; pomoc „Jak to działa”; Visual C++ w środku.<br><b>Naprawione:</b> budowanie w folderze z nie-łacińskimi literami (było też w 1.0.0a); błąd „FrostyHash.dll” bez Visual C++; piosenki „tylko Wyścigi” grały w garażu; nie-łacińskie tytuły były puste na plakietce w grze; długie nazwy piosenek psuły zapis; ponowne budowanie po zamknięciu okna w trakcie budowania; wybór folderu, język na pierwszych ekranach, rozmiar okna na małych ekranach.<br><b>Aktualizacja:</b> rozpakuj 1.0.1 do nowego folderu, skopiuj <b>data</b> i <b>Music</b> ze starego, naciśnij jeszcze raz <b>ZBUDUJ MODA</b>.</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>Poprawka: „Zbuduj moda” kończył się błędem FileLoadException (FrostySdk, 0x80131515), jeśli zip rozpakowano Eksploratorem Windows. Nic więcej się nie zmieniło.</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>Pierwsze wydanie.</dd></div></dl>
     </section>
   </div>
 </main>
@@ -634,7 +636,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
   lb.addEventListener("click", function (e) { if (e.target === lb) lb.close(); });
 
   /* 13.11: видео фоном — качаем только после полной загрузки страницы (Ваня: «сначала сайт, потом видео»);
-     телефон, «меньше движения», «экономия трафика» — не качаем вовсе; ушло с экрана — пауза */
+     «меньше движения», «экономия трафика» — не качаем вовсе; ушло с экрана — пауза. 18.11 (Ваня): и на телефоне тоже */
   var bv = document.querySelector(".hero-bg"), net = navigator.connection;
 
   /* 13.11: видео YouTube на первом экране — плеер (youtube-nocookie) только по клику; фон первого экрана больше НЕ ставится на паузу (16.11, Ваня) */
@@ -649,7 +651,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
     yt.replaceChildren(f); yt.classList.add("on");   // 16.11 (Ваня): фон под видео крутится дальше — «он не мешает»
   });
 
-  if (bv && matchMedia("(min-width: 980px)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches && !(net && net.saveData)) {
+  if (bv && !matchMedia("(prefers-reduced-motion: reduce)").matches && !(net && net.saveData)) {
     var play = function () { var p = bv.play(); if (p && p.catch) p.catch(function () {}); };
     var go = function () {
       bv.muted = true;

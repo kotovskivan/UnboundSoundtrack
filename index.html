@@ -104,7 +104,7 @@
 html, body { margin: 0; overflow-x: clip; }
 html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-body { background: var(--ink); color: var(--paper); font: 400 17px/1.55 var(--font); -webkit-font-smoothing: antialiased; }
+body { font-variant-emoji: text; background: var(--ink); color: var(--paper); font: 400 17px/1.55 var(--font); -webkit-font-smoothing: antialiased; }
 body::before {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background:
@@ -185,7 +185,7 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
 .yt-play span { font-size: 22px; font-style: normal; letter-spacing: 0; }
 .yt-btn:hover .yt-play, .yt-btn:focus-visible .yt-play { transform: translate(calc(-50% - 2px), calc(-50% - 2px)) rotate(-1.5deg); box-shadow: 9px 9px 0 var(--sun); }
 .yt iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-@media (max-width: 560px) { /* телефон: только ▶, справа (слева на обложке «DROP ON GO») */
+@media (max-width: 560px) { /* телефон: только ▶︎, справа (слева на обложке «DROP ON GO») */
   .yt-play { left: auto; right: 4%; font-size: 0; gap: 0; padding: 12px 18px; transform: translateY(-50%) rotate(-1.5deg); }
   .yt-btn:hover .yt-play, .yt-btn:focus-visible .yt-play { transform: translate(-2px, calc(-50% - 2px)) rotate(-1.5deg); }
   .yt-play span { font-size: 22px; } }
@@ -198,6 +198,8 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
   background: linear-gradient(0deg, var(--ink), transparent 22%), linear-gradient(180deg, var(--ink), transparent 12%),
               linear-gradient(90deg, rgba(10,10,10,.9) 0%, rgba(10,10,10,.72) 45%, rgba(10,10,10,.5) 100%); }
 .hero-zone.vid .hero-bg, .hero-zone.vid::before { opacity: 1; }
+@media (max-width: 979px) { /* 18.11 телефон: текст по центру — пленка ровная, без темного края слева */
+  .hero-zone::before { background: linear-gradient(0deg, var(--ink), transparent 14%), linear-gradient(180deg, var(--ink), transparent 8%), rgba(10,10,10,.7); } }
 
 /* ---------- бегущая строка ---------- */
 .ticker { width: 110vw; margin-left: -5vw; background: var(--paper); color: var(--ink); overflow: hidden; white-space: nowrap; transform: rotate(-1.2deg); font-weight: 700; font-size: 14px; letter-spacing: .06em; padding: 8px 0; }
@@ -268,7 +270,7 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
 .steps li::before { content: counter(s); position: absolute; left: 0; top: -12px; font-style: italic; font-weight: 700; font-size: 46px; line-height: 1; color: var(--acid); }
 .steps li:nth-child(even)::before { color: var(--sun); }
 .steps .sub { display: block; color: var(--mute); font-size: 15px; margin-top: 6px; }
-.steps .or { display: block; margin-top: 12px; }   /* 13.11: второй путь шага 3 — ▶ З YT MUSIC */
+.steps .or { display: block; margin-top: 12px; }   /* 13.11: второй путь шага 3 — ▶︎ З YT MUSIC */
 .alerts { display: grid; gap: 18px; }
 @media (min-width: 860px) { .alerts { grid-template-columns: 1fr 1fr; } }
 .alert { border: 1px solid; border-left-width: 6px; padding: 22px 22px 20px; }
@@ -407,7 +409,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
         <button class="yt-btn" type="button" aria-label="Дивитись відео (YouTube)">
           <img src="img/video.jpg" srcset="img/video-s.jpg 720w, img/video.jpg 1280w"
                sizes="(min-width: 980px) 58vw, 100vw" width="1280" height="720" alt="Дивитись відео" fetchpriority="high">
-          <span class="yt-play"><span>▶</span>Дивитись відео</span>
+          <span class="yt-play"><span>▶︎</span>Дивитись відео</span>
         </button>
       </div>
     </section>
@@ -447,7 +449,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
         <div class="card"><h3>Дроп на GO</h3><p>Старт гонки: 17 с катсцени + 3,45 с відліку — дроп б'є на GO. GO програма знаходить сама по удару басу, підправиш мишкою. Плюс короткий шматок для фінішу.</p></div>
         <div class="card"><h3>Гонки · Місто · Гараж</h3><p>Вмикай і вимикай треки окремо для гонок, міста і гаража — пісня може грати навіть тільки в гаражі. Профілі для різних наборів музики. HIGH / LOW — як часто грає трек.</p></div>
         <div class="card"><h3>Один мод</h3><p>Збирає один мод для Frosty Mod Manager. Файли гри не змінюються — вимкнув мод, і гра як була.</p></div>
-        <div class="card"><h3>Чистий zip</h3><p>У zip немає ні музики, ні файлів гри: пісні — твої, обкладинки й фони програма читає з твоєї гри. ▶ — 30-секундне прев'ю будь-якого треку гри (потрібен інтернет).</p></div>
+        <div class="card"><h3>Чистий zip</h3><p>У zip немає ні музики, ні файлів гри: пісні — твої, обкладинки й фони програма читає з твоєї гри. ▶︎ — 30-секундне прев'ю будь-якого треку гри (потрібен інтернет).</p></div>
       </div>
     </section>
 
@@ -505,7 +507,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
         <ol class="steps">
           <li>Розпакуй <b>увесь</b> zip у звичайну папку — Робочий стіл, Документи, D:\Mods… Не в Program Files.</li>
           <li>Запусти <b>Unbound Soundtrack.exe</b> і прийми умови. Перший запуск читає гру — кілька хвилин, лише раз.</li>
-          <li><b>+ ДОДАТИ ПІСНЮ</b> → обери файл → постав GO і фініш → <b>Зберегти</b>.<span class="or">Або <b>▶ З YT MUSIC</b> → встав посилання (пісня, плейлист, альбом), багато посилань або список .txt → <b>Завантажити</b>.</span><span class="sub">Посилання на кліп — програма візьме ту саму пісню з YT Music, без вступів і сценок. Перед плейлистом покаже, скільки пісень, скільки вже є, скільки часу й місця; ті, що вже є, пропустить. Список .txt: Назва,Виконавець,Посилання; (латиницею) — приклад файлу є в програмі.</span><span class="sub">Пісні лежать у папці <b>Music</b> поруч із програмою, кожна в папці з номером: Music\1\, Music\2\… Можна й вручну: нова папка з номером, у ній файл пісні та картинка.</span></li>
+          <li><b>+ ДОДАТИ ПІСНЮ</b> → обери файл → постав GO і фініш → <b>Зберегти</b>.<span class="or">Або <b>▶︎ З YT MUSIC</b> → встав посилання (пісня, плейлист, альбом), багато посилань або список .txt → <b>Завантажити</b>.</span><span class="sub">Посилання на кліп — програма візьме ту саму пісню з YT Music, без вступів і сценок. Перед плейлистом покаже, скільки пісень, скільки вже є, скільки часу й місця; ті, що вже є, пропустить. Список .txt: Назва,Виконавець,Посилання; (латиницею) — приклад файлу є в програмі.</span><span class="sub">Пісні лежать у папці <b>Music</b> поруч із програмою, кожна в папці з номером: Music\1\, Music\2\… Можна й вручну: нова папка з номером, у ній файл пісні та картинка.</span></li>
           <li><b>ЗІБРАТИ МОД</b>. Мод з'явиться у списку Frosty Mod Manager.</li>
           <li>У Frosty Mod Manager: галочка на <b>Unbound Soundtrack</b>, інші музичні моди вимкни, <b>Launch</b>.</li>
         </ol>
@@ -536,7 +538,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
 
     <section class="block" id="changelog">
       <h2 class="h2"><span class="n">06</span><span>Що нового</span></h2>
-      <dl class="log"><div><dt>1.0.5<small>2026-11-18</small></dt><dd><b>Фікс:</b> довгий ключ Frosty (nfsunbound.key 16 416 байт) більше не ламає збирання мода — дякуємо mazidpvt93.<br><b>Нове:</b> гучність пісні в редакторі 0–300 % з «Авто» і захистом від перевантаження (дякуємо MGS3PLAYER за ідею); розділи ГОНКИ / МІСТО / ГАРАЖ — видно, що де грає, і «+», щоб обрати пісні для місця; дрібні плитки.<br>Вікна й розділи перемикаються з глітчем у стилі Unbound; «Увімкнути / Вимкнути всі» на сотнях пісень більше не сипле помилками.</dd></div><div><dt>1.0.4<small>2026-11-16</small></dt><dd><b>Нове:</b> «Зі Spotify» — посилання на пісню, альбом чи плейлист (до 100 пісень) або файл .csv з exportify.app для більшого плейлиста; список — зі Spotify, пісні — з YT Music.<br>Редактор пісні: зум, GO і фініш з точністю 0,1 с (стрілками) або вписати вручну, плавне наростання перед GO, своє затухання на фініші (дякуємо MtheAX за ідею).<br><b>Виправлено:</b> прослуховування старту могло перескакувати на початок, коли GO стоїть рано.</dd></div><div><dt>1.0.3<small>2026-11-15</small></dt><dd><b>Фікс:</b> коли своїх пісень багато (приблизно від 100), у погоні пропадала музика. Тепер мод лишає музичну логіку гри як є й лише додає до неї твої пісні; збірка це перевіряє.<br>У вікні — плитка NFS Own Music (свої пісні в усій серії NFS) і NFSAddons у «наші сторінки».</dd></div><div><dt>1.0.2<small>2026-11-13</small></dt><dd><b>Нове:</b> «Гараж» — третій перемикач поруч із «Гонки» і «Місто»: пісня чи трек гри може грати тільки в гаражі (ідея Low Rider). Пісні й профілі з 1.0.1 грають у гаражі, як і раніше.<br>Фінська мова — тепер 14 мов.<br>Новий вигляд: прямі плашки й біле виділення, як у меню гри, широкі заголовки, темний фон, «де грає» — значками.<br>Подяки: Low Rider — за відгуки й доповнення.<br>Виправлено: трек гри з одним «Гаражем» міг віддатися твоїм пісням як вимкнений; LOW губився при повторному імпорті пісні з папки Music.</dd></div><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>Велике оновлення.</b><br><b>Нове:</b> пісні з YouTube / YT Music — пісня, плейлист, альбом, багато посилань або список .txt; якщо посилання на кліп — програма бере ту саму пісню з YT Music.<br>13 мов (переклад ШІ).<br>Сотні пісень в одному моді (перевірено на 277).<br>Старт гонки: дроп б'є на GO (17 с катсцени + 3,45 с відліку); GO шукається по удару басу; якщо дроп у пісні ранній — перед нею ставиться тиша.<br>HIGH / LOW для кожного треку; сортування, фільтри, вигляд списком; перетягування й свій порядок пісень.<br>▶ для своїх пісень; обкладинки: завантажити, згенерувати або видалити.<br>Прогрес збірки по кожній пісні й кнопка «Стоп»; вибір браузера; довідка «Як це працює»; Visual C++ всередині.<br><b>Виправлено:</b> збірка в папці з не латинськими літерами (було й в 1.0.0a); помилка «FrostyHash.dll» без Visual C++; пісні «тільки Гонки» грали в гаражі; назви не латиницею були порожні на плашці в грі; довгі назви пісень ламали збереження; повторна збірка після закриття вікна під час збірки; вибір папки, мова на перших екранах, розмір вікна на малих екранах.<br><b>Оновлення:</b> розпакуй 1.0.1 у нову папку, скопіюй <b>data</b> і <b>Music</b> зі старої, натисни <b>ЗІБРАТИ МОД</b> ще раз.</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>Фікс: «Зібрати мод» падав з FileLoadException (FrostySdk, 0x80131515), якщо zip розпаковано Провідником. Більше нічого не змінено.</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>Перший реліз.</dd></div></dl>
+      <dl class="log"><div><dt>1.0.5<small>2026-11-18</small></dt><dd><b>Фікс:</b> довгий ключ Frosty (nfsunbound.key 16 416 байт) більше не ламає збирання мода — дякуємо mazidpvt93.<br><b>Нове:</b> гучність пісні в редакторі 0–300 % з «Авто» і захистом від перевантаження (дякуємо MGS3PLAYER за ідею); розділи ГОНКИ / МІСТО / ГАРАЖ — видно, що де грає, і «+», щоб обрати пісні для місця; дрібні плитки.<br>Вікна й розділи перемикаються з глітчем у стилі Unbound; «Увімкнути / Вимкнути всі» на сотнях пісень більше не сипле помилками.</dd></div><div><dt>1.0.4<small>2026-11-16</small></dt><dd><b>Нове:</b> «Зі Spotify» — посилання на пісню, альбом чи плейлист (до 100 пісень) або файл .csv з exportify.app для більшого плейлиста; список — зі Spotify, пісні — з YT Music.<br>Редактор пісні: зум, GO і фініш з точністю 0,1 с (стрілками) або вписати вручну, плавне наростання перед GO, своє затухання на фініші (дякуємо MtheAX за ідею).<br><b>Виправлено:</b> прослуховування старту могло перескакувати на початок, коли GO стоїть рано.</dd></div><div><dt>1.0.3<small>2026-11-15</small></dt><dd><b>Фікс:</b> коли своїх пісень багато (приблизно від 100), у погоні пропадала музика. Тепер мод лишає музичну логіку гри як є й лише додає до неї твої пісні; збірка це перевіряє.<br>У вікні — плитка NFS Own Music (свої пісні в усій серії NFS) і NFSAddons у «наші сторінки».</dd></div><div><dt>1.0.2<small>2026-11-13</small></dt><dd><b>Нове:</b> «Гараж» — третій перемикач поруч із «Гонки» і «Місто»: пісня чи трек гри може грати тільки в гаражі (ідея Low Rider). Пісні й профілі з 1.0.1 грають у гаражі, як і раніше.<br>Фінська мова — тепер 14 мов.<br>Новий вигляд: прямі плашки й біле виділення, як у меню гри, широкі заголовки, темний фон, «де грає» — значками.<br>Подяки: Low Rider — за відгуки й доповнення.<br>Виправлено: трек гри з одним «Гаражем» міг віддатися твоїм пісням як вимкнений; LOW губився при повторному імпорті пісні з папки Music.</dd></div><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>Велике оновлення.</b><br><b>Нове:</b> пісні з YouTube / YT Music — пісня, плейлист, альбом, багато посилань або список .txt; якщо посилання на кліп — програма бере ту саму пісню з YT Music.<br>13 мов (переклад ШІ).<br>Сотні пісень в одному моді (перевірено на 277).<br>Старт гонки: дроп б'є на GO (17 с катсцени + 3,45 с відліку); GO шукається по удару басу; якщо дроп у пісні ранній — перед нею ставиться тиша.<br>HIGH / LOW для кожного треку; сортування, фільтри, вигляд списком; перетягування й свій порядок пісень.<br>▶︎ для своїх пісень; обкладинки: завантажити, згенерувати або видалити.<br>Прогрес збірки по кожній пісні й кнопка «Стоп»; вибір браузера; довідка «Як це працює»; Visual C++ всередині.<br><b>Виправлено:</b> збірка в папці з не латинськими літерами (було й в 1.0.0a); помилка «FrostyHash.dll» без Visual C++; пісні «тільки Гонки» грали в гаражі; назви не латиницею були порожні на плашці в грі; довгі назви пісень ламали збереження; повторна збірка після закриття вікна під час збірки; вибір папки, мова на перших екранах, розмір вікна на малих екранах.<br><b>Оновлення:</b> розпакуй 1.0.1 у нову папку, скопіюй <b>data</b> і <b>Music</b> зі старої, натисни <b>ЗІБРАТИ МОД</b> ще раз.</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>Фікс: «Зібрати мод» падав з FileLoadException (FrostySdk, 0x80131515), якщо zip розпаковано Провідником. Більше нічого не змінено.</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>Перший реліз.</dd></div></dl>
     </section>
   </div>
 </main>
@@ -634,7 +636,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
   lb.addEventListener("click", function (e) { if (e.target === lb) lb.close(); });
 
   /* 13.11: видео фоном — качаем только после полной загрузки страницы (Ваня: «сначала сайт, потом видео»);
-     телефон, «меньше движения», «экономия трафика» — не качаем вовсе; ушло с экрана — пауза */
+     «меньше движения», «экономия трафика» — не качаем вовсе; ушло с экрана — пауза. 18.11 (Ваня): и на телефоне тоже */
   var bv = document.querySelector(".hero-bg"), net = navigator.connection;
 
   /* 13.11: видео YouTube на первом экране — плеер (youtube-nocookie) только по клику; фон первого экрана больше НЕ ставится на паузу (16.11, Ваня) */
@@ -649,7 +651,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
     yt.replaceChildren(f); yt.classList.add("on");   // 16.11 (Ваня): фон под видео крутится дальше — «он не мешает»
   });
 
-  if (bv && matchMedia("(min-width: 980px)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches && !(net && net.saveData)) {
+  if (bv && !matchMedia("(prefers-reduced-motion: reduce)").matches && !(net && net.saveData)) {
     var play = function () { var p = bv.play(); if (p && p.catch) p.catch(function () {}); };
     var go = function () {
       bv.muted = true;

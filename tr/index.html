@@ -104,7 +104,7 @@
 html, body { margin: 0; overflow-x: clip; }
 html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-body { background: var(--ink); color: var(--paper); font: 400 17px/1.55 var(--font); -webkit-font-smoothing: antialiased; }
+body { font-variant-emoji: text; background: var(--ink); color: var(--paper); font: 400 17px/1.55 var(--font); -webkit-font-smoothing: antialiased; }
 body::before {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background:
@@ -185,7 +185,7 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
 .yt-play span { font-size: 22px; font-style: normal; letter-spacing: 0; }
 .yt-btn:hover .yt-play, .yt-btn:focus-visible .yt-play { transform: translate(calc(-50% - 2px), calc(-50% - 2px)) rotate(-1.5deg); box-shadow: 9px 9px 0 var(--sun); }
 .yt iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-@media (max-width: 560px) { /* телефон: только ▶, справа (слева на обложке «DROP ON GO») */
+@media (max-width: 560px) { /* телефон: только ▶︎, справа (слева на обложке «DROP ON GO») */
   .yt-play { left: auto; right: 4%; font-size: 0; gap: 0; padding: 12px 18px; transform: translateY(-50%) rotate(-1.5deg); }
   .yt-btn:hover .yt-play, .yt-btn:focus-visible .yt-play { transform: translate(-2px, calc(-50% - 2px)) rotate(-1.5deg); }
   .yt-play span { font-size: 22px; } }
@@ -198,6 +198,8 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
   background: linear-gradient(0deg, var(--ink), transparent 22%), linear-gradient(180deg, var(--ink), transparent 12%),
               linear-gradient(90deg, rgba(10,10,10,.9) 0%, rgba(10,10,10,.72) 45%, rgba(10,10,10,.5) 100%); }
 .hero-zone.vid .hero-bg, .hero-zone.vid::before { opacity: 1; }
+@media (max-width: 979px) { /* 18.11 телефон: текст по центру — пленка ровная, без темного края слева */
+  .hero-zone::before { background: linear-gradient(0deg, var(--ink), transparent 14%), linear-gradient(180deg, var(--ink), transparent 8%), rgba(10,10,10,.7); } }
 
 /* ---------- бегущая строка ---------- */
 .ticker { width: 110vw; margin-left: -5vw; background: var(--paper); color: var(--ink); overflow: hidden; white-space: nowrap; transform: rotate(-1.2deg); font-weight: 700; font-size: 14px; letter-spacing: .06em; padding: 8px 0; }
@@ -268,7 +270,7 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
 .steps li::before { content: counter(s); position: absolute; left: 0; top: -12px; font-style: italic; font-weight: 700; font-size: 46px; line-height: 1; color: var(--acid); }
 .steps li:nth-child(even)::before { color: var(--sun); }
 .steps .sub { display: block; color: var(--mute); font-size: 15px; margin-top: 6px; }
-.steps .or { display: block; margin-top: 12px; }   /* 13.11: второй путь шага 3 — ▶ З YT MUSIC */
+.steps .or { display: block; margin-top: 12px; }   /* 13.11: второй путь шага 3 — ▶︎ З YT MUSIC */
 .alerts { display: grid; gap: 18px; }
 @media (min-width: 860px) { .alerts { grid-template-columns: 1fr 1fr; } }
 .alert { border: 1px solid; border-left-width: 6px; padding: 22px 22px 20px; }
@@ -407,7 +409,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
         <button class="yt-btn" type="button" aria-label="Videoyu izle (YouTube)">
           <img src="../img/video.jpg" srcset="../img/video-s.jpg 720w, ../img/video.jpg 1280w"
                sizes="(min-width: 980px) 58vw, 100vw" width="1280" height="720" alt="Videoyu izle" fetchpriority="high">
-          <span class="yt-play"><span>▶</span>Videoyu izle</span>
+          <span class="yt-play"><span>▶︎</span>Videoyu izle</span>
         </button>
       </div>
     </section>
@@ -447,7 +449,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
         <div class="card"><h3>GO'da drop</h3><p>Yarış başlangıcı: 17 sn ara sahne + 3,45 sn geri sayım — drop tam GO'da gelir. Program GO'yu bas vuruşundan kendisi bulur, fareyle düzeltebilirsin. Bir de bitiş için kısa bir parça.</p></div>
         <div class="card"><h3>Yarış · Şehir · Garaj</h3><p>Parçaları yarışlar, şehir ve garaj için ayrı ayrı aç ve kapat — bir şarkı sadece garajda bile çalabilir. Farklı müzik setleri için profiller. HIGH / LOW — parçanın ne sıklıkla çalacağı.</p></div>
         <div class="card"><h3>Tek mod</h3><p>Frosty Mod Manager için tek bir mod oluşturur. Oyun dosyaları değişmez — modu kapat, oyun eskisi gibi olur.</p></div>
-        <div class="card"><h3>Temiz zip</h3><p>Zip'te müzik ve oyun dosyası yok: şarkılar senin, kapaklar ve arka planlar kendi oyunundan okunur. ▶ — oyundaki herhangi bir parçanın 30 saniyelik önizlemesi (internet gerekir).</p></div>
+        <div class="card"><h3>Temiz zip</h3><p>Zip'te müzik ve oyun dosyası yok: şarkılar senin, kapaklar ve arka planlar kendi oyunundan okunur. ▶︎ — oyundaki herhangi bir parçanın 30 saniyelik önizlemesi (internet gerekir).</p></div>
       </div>
     </section>
 
@@ -505,7 +507,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
         <ol class="steps">
           <li>Zip'in <b>tamamını</b> normal bir klasöre çıkar — Masaüstü, Belgeler, D:\Mods… Program Files'a değil.</li>
           <li><b>Unbound Soundtrack.exe</b>'yi aç ve koşulları kabul et. İlk açılış oyunu okur — birkaç dakika, sadece bir kez.</li>
-          <li><b>+ ŞARKI EKLE</b> → dosya seç → GO ve bitişi ayarla → <b>Kaydet</b>.<span class="or">Ya da <b>▶ YT MUSIC'TEN</b> → bir link yapıştır (şarkı, çalma listesi, albüm), çok sayıda link ya da .txt listesi → <b>İndir</b>.</span><span class="sub">Klip bağlantısı — program YT Music'teki aynı şarkıyı girişler ve sahneler olmadan alır. Çalma listesinden önce kaç şarkı olduğunu, kaçının zaten olduğunu, süreyi ve yeri gösterir; zaten olanları atlar. .txt listesi: Ad,Sanatçı,Bağlantı; (Latin harfleriyle) — örnek dosya programda var.</span><span class="sub">Şarkılar programın yanındaki <b>Music</b> klasöründe, her biri numaralı bir klasörde: Music\1\, Music\2\… Elle de olur: numaralı yeni bir klasör, içinde şarkı dosyası ve bir resim.</span></li>
+          <li><b>+ ŞARKI EKLE</b> → dosya seç → GO ve bitişi ayarla → <b>Kaydet</b>.<span class="or">Ya da <b>▶︎ YT MUSIC'TEN</b> → bir link yapıştır (şarkı, çalma listesi, albüm), çok sayıda link ya da .txt listesi → <b>İndir</b>.</span><span class="sub">Klip bağlantısı — program YT Music'teki aynı şarkıyı girişler ve sahneler olmadan alır. Çalma listesinden önce kaç şarkı olduğunu, kaçının zaten olduğunu, süreyi ve yeri gösterir; zaten olanları atlar. .txt listesi: Ad,Sanatçı,Bağlantı; (Latin harfleriyle) — örnek dosya programda var.</span><span class="sub">Şarkılar programın yanındaki <b>Music</b> klasöründe, her biri numaralı bir klasörde: Music\1\, Music\2\… Elle de olur: numaralı yeni bir klasör, içinde şarkı dosyası ve bir resim.</span></li>
           <li><b>MOD OLUŞTUR</b>. Mod, Frosty Mod Manager listesinde görünür.</li>
           <li>Frosty Mod Manager'da <b>Unbound Soundtrack</b>'i işaretle, diğer müzik modlarını kapat, <b>Launch</b>'a bas.</li>
         </ol>
@@ -536,7 +538,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
 
     <section class="block" id="changelog">
       <h2 class="h2"><span class="n">06</span><span>Yenilikler</span></h2>
-      <dl class="log"><div><dt>1.0.5<small>2026-11-18</small></dt><dd><b>Düzeltme:</b> uzun Frosty anahtarı (nfsunbound.key, 16 416 bayt) artık modun oluşturulmasını bozmuyor — teşekkürler mazidpvt93.<br><b>Yeni:</b> düzenleyicide şarkı sesi 0–300 % (“Otomatik” ve aşırı yük koruması; fikir için teşekkürler MGS3PLAYER); YARIŞ / ŞEHİR / GARAJ bölümleri — neyin nerede çaldığını görürsün, “+” ile o yer için şarkı seçersin; küçük kutucuklar.<br>Pencereler ve bölümler Unbound tarzı glitch ile değişiyor; yüzlerce şarkıda “Hepsini aç / kapat” artık hata vermiyor.</dd></div><div><dt>1.0.4<small>2026-11-16</small></dt><dd><b>Yeni:</b> “Spotify'dan” — bir şarkının, albümün ya da çalma listesinin linki (100 şarkıya kadar) ya da daha büyük liste için exportify.app'ten .csv dosyası; liste Spotify'dan, şarkılar YT Music'ten gelir.<br>Şarkı editörü: yakınlaştırma, GO ve bitiş 0,1 sn hassasiyetle (ok tuşları) ya da elle yazarak, GO'dan önce yumuşak giriş, bitişte kendi kısılman (fikir için MtheAX'e teşekkürler).<br><b>Düzeltildi:</b> GO erken olduğunda start dinlemesi başa dönebiliyordu.</dd></div><div><dt>1.0.3<small>2026-11-15</small></dt><dd><b>Düzeltme:</b> çok sayıda kendi şarkın olduğunda (yaklaşık 100 ve üstü) polis kovalamacası müziği susuyordu. Artık mod oyunun müzik mantığını olduğu gibi bırakıyor ve yalnızca senin şarkılarını ekliyor; oluştururken kontrol ediliyor.<br>Pencerede: NFS Own Music kutusu (tüm NFS serisinde kendi şarkıların) ve “sayfalarımız” içinde NFSAddons.</dd></div><div><dt>1.0.2<small>2026-11-13</small></dt><dd><b>Yeni:</b> “Garaj” — Yarış ve Şehir’in yanında üçüncü bir anahtar: bir şarkı ya da oyun parçası sadece garajda çalabilir (Low Rider’ın fikri). 1.0.1’deki şarkılar ve profiller garajda eskisi gibi çalar.<br>Fince — artık 14 dil.<br>Yeni görünüm: oyun menüsündeki gibi düz plakalar ve beyaz seçim, geniş başlıklar, koyu arka plan, “nerede çalıyor” simgelerle.<br>Teşekkürler: Low Rider — geri bildirimler ve öneriler için.<br>Düzeltildi: sadece “Garaj” açık bir oyun parçası şarkılarına “kapalı” diye verilebiliyordu; Music klasöründen yeniden içe aktarılan şarkıda LOW kayboluyordu.</dd></div><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>Büyük güncelleme.</b><br><b>Yeni:</b> YouTube / YT Music'ten şarkılar — şarkı, çalma listesi, albüm, çok sayıda bağlantı veya .txt listesi; klip bağlantısı YT Music'teki aynı şarkıyı alır.<br>13 dil (yapay zekâ çevirisi).<br>Tek modda yüzlerce şarkı (277 ile test edildi).<br>Yarış başlangıcı: drop GO'da gelir (17 sn ara sahne + 3,45 sn geri sayım); GO bas vuruşundan bulunur; dropu erken gelen şarkıların önüne sessizlik konur.<br>Her parça için HIGH / LOW; sıralama, filtreler, liste görünümü; sürükle-bırak ve kendi şarkı sıran.<br>Kendi şarkıların için ▶; kapaklar: yükle, oluştur veya sil.<br>Her şarkı için oluşturma ilerlemesi ve “Durdur” düğmesi; tarayıcı seçimi; “Nasıl çalışır” yardımı; Visual C++ dahil.<br><b>Düzeltildi:</b> Latin olmayan harfler içeren klasörde mod oluşturma (1.0.0a'da da vardı); Visual C++ olmadan “FrostyHash.dll” hatası; “sadece Yarış” şarkıları garajda çalıyordu; Latin olmayan adlar oyundaki levhada boştu; çok uzun şarkı adları kaydı bozuyordu; oluşturma sırasında pencereyi kapatıp yeniden oluşturma; klasör seçimi, ilk ekranlarda dil, küçük ekranlarda pencere boyutu.<br><b>Güncelleme:</b> 1.0.1'i yeni bir klasöre aç, eski klasörden <b>data</b> ve <b>Music</b>'i kopyala, <b>MOD OLUŞTUR</b>'a yeniden bas.</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>Düzeltme: zip Windows Gezgini ile çıkarıldığında “Mod oluştur” FileLoadException (FrostySdk, 0x80131515) hatası veriyordu. Başka bir şey değişmedi.</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>İlk sürüm.</dd></div></dl>
+      <dl class="log"><div><dt>1.0.5<small>2026-11-18</small></dt><dd><b>Düzeltme:</b> uzun Frosty anahtarı (nfsunbound.key, 16 416 bayt) artık modun oluşturulmasını bozmuyor — teşekkürler mazidpvt93.<br><b>Yeni:</b> düzenleyicide şarkı sesi 0–300 % (“Otomatik” ve aşırı yük koruması; fikir için teşekkürler MGS3PLAYER); YARIŞ / ŞEHİR / GARAJ bölümleri — neyin nerede çaldığını görürsün, “+” ile o yer için şarkı seçersin; küçük kutucuklar.<br>Pencereler ve bölümler Unbound tarzı glitch ile değişiyor; yüzlerce şarkıda “Hepsini aç / kapat” artık hata vermiyor.</dd></div><div><dt>1.0.4<small>2026-11-16</small></dt><dd><b>Yeni:</b> “Spotify'dan” — bir şarkının, albümün ya da çalma listesinin linki (100 şarkıya kadar) ya da daha büyük liste için exportify.app'ten .csv dosyası; liste Spotify'dan, şarkılar YT Music'ten gelir.<br>Şarkı editörü: yakınlaştırma, GO ve bitiş 0,1 sn hassasiyetle (ok tuşları) ya da elle yazarak, GO'dan önce yumuşak giriş, bitişte kendi kısılman (fikir için MtheAX'e teşekkürler).<br><b>Düzeltildi:</b> GO erken olduğunda start dinlemesi başa dönebiliyordu.</dd></div><div><dt>1.0.3<small>2026-11-15</small></dt><dd><b>Düzeltme:</b> çok sayıda kendi şarkın olduğunda (yaklaşık 100 ve üstü) polis kovalamacası müziği susuyordu. Artık mod oyunun müzik mantığını olduğu gibi bırakıyor ve yalnızca senin şarkılarını ekliyor; oluştururken kontrol ediliyor.<br>Pencerede: NFS Own Music kutusu (tüm NFS serisinde kendi şarkıların) ve “sayfalarımız” içinde NFSAddons.</dd></div><div><dt>1.0.2<small>2026-11-13</small></dt><dd><b>Yeni:</b> “Garaj” — Yarış ve Şehir’in yanında üçüncü bir anahtar: bir şarkı ya da oyun parçası sadece garajda çalabilir (Low Rider’ın fikri). 1.0.1’deki şarkılar ve profiller garajda eskisi gibi çalar.<br>Fince — artık 14 dil.<br>Yeni görünüm: oyun menüsündeki gibi düz plakalar ve beyaz seçim, geniş başlıklar, koyu arka plan, “nerede çalıyor” simgelerle.<br>Teşekkürler: Low Rider — geri bildirimler ve öneriler için.<br>Düzeltildi: sadece “Garaj” açık bir oyun parçası şarkılarına “kapalı” diye verilebiliyordu; Music klasöründen yeniden içe aktarılan şarkıda LOW kayboluyordu.</dd></div><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>Büyük güncelleme.</b><br><b>Yeni:</b> YouTube / YT Music'ten şarkılar — şarkı, çalma listesi, albüm, çok sayıda bağlantı veya .txt listesi; klip bağlantısı YT Music'teki aynı şarkıyı alır.<br>13 dil (yapay zekâ çevirisi).<br>Tek modda yüzlerce şarkı (277 ile test edildi).<br>Yarış başlangıcı: drop GO'da gelir (17 sn ara sahne + 3,45 sn geri sayım); GO bas vuruşundan bulunur; dropu erken gelen şarkıların önüne sessizlik konur.<br>Her parça için HIGH / LOW; sıralama, filtreler, liste görünümü; sürükle-bırak ve kendi şarkı sıran.<br>Kendi şarkıların için ▶︎; kapaklar: yükle, oluştur veya sil.<br>Her şarkı için oluşturma ilerlemesi ve “Durdur” düğmesi; tarayıcı seçimi; “Nasıl çalışır” yardımı; Visual C++ dahil.<br><b>Düzeltildi:</b> Latin olmayan harfler içeren klasörde mod oluşturma (1.0.0a'da da vardı); Visual C++ olmadan “FrostyHash.dll” hatası; “sadece Yarış” şarkıları garajda çalıyordu; Latin olmayan adlar oyundaki levhada boştu; çok uzun şarkı adları kaydı bozuyordu; oluşturma sırasında pencereyi kapatıp yeniden oluşturma; klasör seçimi, ilk ekranlarda dil, küçük ekranlarda pencere boyutu.<br><b>Güncelleme:</b> 1.0.1'i yeni bir klasöre aç, eski klasörden <b>data</b> ve <b>Music</b>'i kopyala, <b>MOD OLUŞTUR</b>'a yeniden bas.</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>Düzeltme: zip Windows Gezgini ile çıkarıldığında “Mod oluştur” FileLoadException (FrostySdk, 0x80131515) hatası veriyordu. Başka bir şey değişmedi.</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>İlk sürüm.</dd></div></dl>
     </section>
   </div>
 </main>
@@ -634,7 +636,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
   lb.addEventListener("click", function (e) { if (e.target === lb) lb.close(); });
 
   /* 13.11: видео фоном — качаем только после полной загрузки страницы (Ваня: «сначала сайт, потом видео»);
-     телефон, «меньше движения», «экономия трафика» — не качаем вовсе; ушло с экрана — пауза */
+     «меньше движения», «экономия трафика» — не качаем вовсе; ушло с экрана — пауза. 18.11 (Ваня): и на телефоне тоже */
   var bv = document.querySelector(".hero-bg"), net = navigator.connection;
 
   /* 13.11: видео YouTube на первом экране — плеер (youtube-nocookie) только по клику; фон первого экрана больше НЕ ставится на паузу (16.11, Ваня) */
@@ -649,7 +651,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
     yt.replaceChildren(f); yt.classList.add("on");   // 16.11 (Ваня): фон под видео крутится дальше — «он не мешает»
   });
 
-  if (bv && matchMedia("(min-width: 980px)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches && !(net && net.saveData)) {
+  if (bv && !matchMedia("(prefers-reduced-motion: reduce)").matches && !(net && net.saveData)) {
     var play = function () { var p = bv.play(); if (p && p.catch) p.catch(function () {}); };
     var go = function () {
       bv.muted = true;

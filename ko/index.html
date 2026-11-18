@@ -104,7 +104,7 @@
 html, body { margin: 0; overflow-x: clip; }
 html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-body { background: var(--ink); color: var(--paper); font: 400 17px/1.55 var(--font); -webkit-font-smoothing: antialiased; }
+body { font-variant-emoji: text; background: var(--ink); color: var(--paper); font: 400 17px/1.55 var(--font); -webkit-font-smoothing: antialiased; }
 body::before {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background:
@@ -185,7 +185,7 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
 .yt-play span { font-size: 22px; font-style: normal; letter-spacing: 0; }
 .yt-btn:hover .yt-play, .yt-btn:focus-visible .yt-play { transform: translate(calc(-50% - 2px), calc(-50% - 2px)) rotate(-1.5deg); box-shadow: 9px 9px 0 var(--sun); }
 .yt iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-@media (max-width: 560px) { /* телефон: только ▶, справа (слева на обложке «DROP ON GO») */
+@media (max-width: 560px) { /* телефон: только ▶︎, справа (слева на обложке «DROP ON GO») */
   .yt-play { left: auto; right: 4%; font-size: 0; gap: 0; padding: 12px 18px; transform: translateY(-50%) rotate(-1.5deg); }
   .yt-btn:hover .yt-play, .yt-btn:focus-visible .yt-play { transform: translate(-2px, calc(-50% - 2px)) rotate(-1.5deg); }
   .yt-play span { font-size: 22px; } }
@@ -198,6 +198,8 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
   background: linear-gradient(0deg, var(--ink), transparent 22%), linear-gradient(180deg, var(--ink), transparent 12%),
               linear-gradient(90deg, rgba(10,10,10,.9) 0%, rgba(10,10,10,.72) 45%, rgba(10,10,10,.5) 100%); }
 .hero-zone.vid .hero-bg, .hero-zone.vid::before { opacity: 1; }
+@media (max-width: 979px) { /* 18.11 телефон: текст по центру — пленка ровная, без темного края слева */
+  .hero-zone::before { background: linear-gradient(0deg, var(--ink), transparent 14%), linear-gradient(180deg, var(--ink), transparent 8%), rgba(10,10,10,.7); } }
 
 /* ---------- бегущая строка ---------- */
 .ticker { width: 110vw; margin-left: -5vw; background: var(--paper); color: var(--ink); overflow: hidden; white-space: nowrap; transform: rotate(-1.2deg); font-weight: 700; font-size: 14px; letter-spacing: .06em; padding: 8px 0; }
@@ -268,7 +270,7 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
 .steps li::before { content: counter(s); position: absolute; left: 0; top: -12px; font-style: italic; font-weight: 700; font-size: 46px; line-height: 1; color: var(--acid); }
 .steps li:nth-child(even)::before { color: var(--sun); }
 .steps .sub { display: block; color: var(--mute); font-size: 15px; margin-top: 6px; }
-.steps .or { display: block; margin-top: 12px; }   /* 13.11: второй путь шага 3 — ▶ З YT MUSIC */
+.steps .or { display: block; margin-top: 12px; }   /* 13.11: второй путь шага 3 — ▶︎ З YT MUSIC */
 .alerts { display: grid; gap: 18px; }
 @media (min-width: 860px) { .alerts { grid-template-columns: 1fr 1fr; } }
 .alert { border: 1px solid; border-left-width: 6px; padding: 22px 22px 20px; }
@@ -407,7 +409,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
         <button class="yt-btn" type="button" aria-label="영상 보기 (YouTube)">
           <img src="../img/video.jpg" srcset="../img/video-s.jpg 720w, ../img/video.jpg 1280w"
                sizes="(min-width: 980px) 58vw, 100vw" width="1280" height="720" alt="영상 보기" fetchpriority="high">
-          <span class="yt-play"><span>▶</span>영상 보기</span>
+          <span class="yt-play"><span>▶︎</span>영상 보기</span>
         </button>
       </div>
     </section>
@@ -447,7 +449,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
         <div class="card"><h3>GO에 드롭</h3><p>출발: 컷신 17초 + 카운트다운 3.45초, GO에 드롭이 딱 맞습니다. GO는 베이스가 들어오는 지점으로 프로그램이 자동으로 찾고, 마우스로 조정할 수 있습니다. 결승선 뒤의 짧은 구간도 설정합니다.</p></div>
         <div class="card"><h3>레이스 · 도시 · 차고</h3><p>트랙을 레이스, 도시, 차고에서 따로 켜고 끕니다 — 노래를 차고에서만 재생할 수도 있습니다. 음악 세트별 프로필도 만들 수 있습니다. HIGH / LOW로 재생 빈도도 정할 수 있습니다.</p></div>
         <div class="card"><h3>모드 하나</h3><p>Frosty Mod Manager용 모드를 하나 만듭니다. 게임 파일은 바뀌지 않습니다 — 모드를 끄면 원래대로입니다.</p></div>
-        <div class="card"><h3>깨끗한 zip</h3><p>zip에는 음악도 게임 파일도 없습니다. 노래는 당신의 것이고, 커버와 배경은 당신의 게임에서 읽어옵니다. ▶ — 게임 트랙 30초 미리 듣기(인터넷 필요).</p></div>
+        <div class="card"><h3>깨끗한 zip</h3><p>zip에는 음악도 게임 파일도 없습니다. 노래는 당신의 것이고, 커버와 배경은 당신의 게임에서 읽어옵니다. ▶︎ — 게임 트랙 30초 미리 듣기(인터넷 필요).</p></div>
       </div>
     </section>
 
@@ -505,7 +507,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
         <ol class="steps">
           <li>zip <b>전체</b>를 일반 폴더에 압축 해제 — 바탕 화면, 문서, D:\Mods… Program Files에는 넣지 마세요.</li>
           <li><b>Unbound Soundtrack.exe</b>를 실행하고 약관에 동의하세요. 첫 실행 때 게임을 읽습니다 — 몇 분, 딱 한 번.</li>
-          <li><b>+ 노래 추가</b> → 파일 선택 → GO와 결승 설정 → <b>저장</b>.<span class="or">또는 <b>▶ YT Music에서</b> → 링크 붙여 넣기(노래, 재생목록, 앨범). 여러 링크나 .txt 목록도 가능 → <b>다운로드</b>.</span><span class="sub">뮤직비디오 링크면 YT Music의 같은 노래를 인트로와 장면 없이 가져옵니다. 플레이리스트 전에는 곡 수, 이미 있는 곡, 시간과 용량을 보여 주고, 이미 있는 곡은 건너뜁니다. .txt 목록: 제목,아티스트,링크; (라틴 문자로) — 예시 파일은 프로그램에 있습니다.</span><span class="sub">노래는 프로그램 옆의 <b>Music</b> 폴더에, 한 곡씩 번호 폴더로 들어 있습니다: Music\1\, Music\2\… 직접 해도 됩니다: 번호를 붙인 새 폴더에 노래 파일과 이미지를 넣으면 끝.</span></li>
+          <li><b>+ 노래 추가</b> → 파일 선택 → GO와 결승 설정 → <b>저장</b>.<span class="or">또는 <b>▶︎ YT Music에서</b> → 링크 붙여 넣기(노래, 재생목록, 앨범). 여러 링크나 .txt 목록도 가능 → <b>다운로드</b>.</span><span class="sub">뮤직비디오 링크면 YT Music의 같은 노래를 인트로와 장면 없이 가져옵니다. 플레이리스트 전에는 곡 수, 이미 있는 곡, 시간과 용량을 보여 주고, 이미 있는 곡은 건너뜁니다. .txt 목록: 제목,아티스트,링크; (라틴 문자로) — 예시 파일은 프로그램에 있습니다.</span><span class="sub">노래는 프로그램 옆의 <b>Music</b> 폴더에, 한 곡씩 번호 폴더로 들어 있습니다: Music\1\, Music\2\… 직접 해도 됩니다: 번호를 붙인 새 폴더에 노래 파일과 이미지를 넣으면 끝.</span></li>
           <li><b>모드 만들기</b>. 모드가 Frosty Mod Manager 목록에 나타납니다.</li>
           <li>Frosty Mod Manager에서 <b>Unbound Soundtrack</b>을 체크하고, 다른 음악 모드는 끈 뒤 <b>Launch</b>.</li>
         </ol>
@@ -536,7 +538,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
 
     <section class="block" id="changelog">
       <h2 class="h2"><span class="n">06</span><span>업데이트 내역</span></h2>
-      <dl class="log"><div><dt>1.0.5<small>2026-11-18</small></dt><dd><b>수정:</b> 긴 Frosty 키(nfsunbound.key, 16 416바이트) 때문에 모드 만들기가 실패하지 않아요 — mazidpvt93 님 고마워요.<br><b>새 기능:</b> 편집기에서 노래 볼륨 0–300 %(“자동”과 과부하 보호, 아이디어를 준 MGS3PLAYER 님 고마워요); 레이스 / 도시 / 차고 구역 — 어디서 무엇이 재생되는지 보이고 “+”로 그 장소의 노래를 골라요; 작은 타일.<br>창과 구역이 Unbound 스타일 글리치로 바뀌어요. 수백 곡에서 “모두 켜기 / 끄기”가 더 이상 오류를 내지 않아요.</dd></div><div><dt>1.0.4<small>2026-11-16</small></dt><dd><b>새 기능:</b> “Spotify에서” — 노래, 앨범, 재생목록 링크(최대 100곡) 또는 더 큰 재생목록은 exportify.app의 .csv 파일로. 목록은 Spotify에서, 노래는 YT Music에서 가져옵니다.<br>노래 편집기: 확대, GO와 피니시를 0.1초 단위로(방향키) 또는 직접 입력, GO 전 부드러운 페이드인, 피니시 페이드아웃도 원하는 대로(아이디어를 준 MtheAX에게 감사).<br><b>수정:</b> GO가 이른 노래에서 스타트 미리듣기가 처음으로 돌아갈 수 있었습니다.</dd></div><div><dt>1.0.3<small>2026-11-15</small></dt><dd><b>수정:</b> 내 노래가 많을 때(약 100곡 이상) 경찰 추격 음악이 나오지 않았습니다. 이제 모드는 게임의 음악 로직을 그대로 두고 내 노래만 추가합니다. 만들 때 이를 확인합니다.<br>창에 NFS Own Music 타일(NFS 시리즈 전체에 나만의 노래)과 “우리 페이지”의 NFSAddons를 추가했습니다.</dd></div><div><dt>1.0.2<small>2026-11-13</small></dt><dd><b>새 기능:</b> '차고' — 레이스와 도시 옆에 세 번째 스위치: 노래나 게임 트랙을 차고에서만 재생할 수 있습니다(Low Rider의 아이디어). 1.0.1의 노래와 프로필은 이전처럼 차고에서도 재생됩니다.<br>핀란드어 추가 — 이제 14개 언어.<br>새 디자인: 게임 메뉴처럼 반듯한 패널과 흰색 선택 표시, 넓은 제목, 어두운 배경, '재생 위치'는 아이콘으로.<br>감사: Low Rider — 피드백과 제안에 감사드립니다.<br>수정: '차고'만 켠 게임 트랙이 '꺼짐'으로 처리되어 내 노래에 자리를 내줄 수 있던 문제, Music 폴더에서 노래를 다시 가져오면 LOW가 사라지던 문제.</dd></div><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>대규모 업데이트.</b><br><b>새 기능:</b> YouTube / YT Music에서 노래 추가 — 한 곡, 플레이리스트, 앨범, 여러 링크 또는 .txt 목록. 뮤직비디오 링크면 YT Music의 같은 노래를 가져와요.<br>13개 언어(AI 번역).<br>모드 하나에 노래 수백 곡(277곡으로 테스트).<br>출발: GO에 드롭이 터져요(컷신 17초 + 카운트다운 3.45초). GO는 베이스가 들어오는 지점으로 자동으로 찾아요. 드롭이 이른 노래는 앞에 무음을 넣어요.<br>모든 트랙에 HIGH / LOW. 정렬, 필터, 목록 보기. 드래그 앤 드롭과 내 노래 순서.<br>내 노래도 ▶로 듣기. 커버: 업로드, 생성 또는 삭제.<br>노래마다 만들기 진행률과 “중지” 버튼. 브라우저 선택. “사용 방법” 도움말. Visual C++ 포함.<br><b>수정:</b> 라틴 문자가 아닌 글자가 들어간 폴더에서 모드 만들기 실패(1.0.0a에도 있었음). Visual C++가 없을 때 “FrostyHash.dll” 오류. “레이스만” 노래가 차고에서 재생됨. 라틴 문자가 아닌 제목이 게임 안 표시에서 비어 있음. 아주 긴 노래 이름 때문에 저장이 깨짐. 만드는 중에 창을 닫고 다시 만들면 오류. 폴더 선택, 첫 화면의 언어 변경, 작은 화면의 창 크기.<br><b>업데이트:</b> 1.0.1을 새 폴더에 풀고, 예전 폴더에서 <b>data</b>와 <b>Music</b>을 복사한 뒤 <b>모드 만들기</b>를 한 번 더 누르세요.</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>수정: Windows 탐색기로 zip을 풀면 “모드 만들기”가 FileLoadException(FrostySdk, 0x80131515)으로 실패하던 문제. 다른 변경은 없습니다.</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>첫 릴리스.</dd></div></dl>
+      <dl class="log"><div><dt>1.0.5<small>2026-11-18</small></dt><dd><b>수정:</b> 긴 Frosty 키(nfsunbound.key, 16 416바이트) 때문에 모드 만들기가 실패하지 않아요 — mazidpvt93 님 고마워요.<br><b>새 기능:</b> 편집기에서 노래 볼륨 0–300 %(“자동”과 과부하 보호, 아이디어를 준 MGS3PLAYER 님 고마워요); 레이스 / 도시 / 차고 구역 — 어디서 무엇이 재생되는지 보이고 “+”로 그 장소의 노래를 골라요; 작은 타일.<br>창과 구역이 Unbound 스타일 글리치로 바뀌어요. 수백 곡에서 “모두 켜기 / 끄기”가 더 이상 오류를 내지 않아요.</dd></div><div><dt>1.0.4<small>2026-11-16</small></dt><dd><b>새 기능:</b> “Spotify에서” — 노래, 앨범, 재생목록 링크(최대 100곡) 또는 더 큰 재생목록은 exportify.app의 .csv 파일로. 목록은 Spotify에서, 노래는 YT Music에서 가져옵니다.<br>노래 편집기: 확대, GO와 피니시를 0.1초 단위로(방향키) 또는 직접 입력, GO 전 부드러운 페이드인, 피니시 페이드아웃도 원하는 대로(아이디어를 준 MtheAX에게 감사).<br><b>수정:</b> GO가 이른 노래에서 스타트 미리듣기가 처음으로 돌아갈 수 있었습니다.</dd></div><div><dt>1.0.3<small>2026-11-15</small></dt><dd><b>수정:</b> 내 노래가 많을 때(약 100곡 이상) 경찰 추격 음악이 나오지 않았습니다. 이제 모드는 게임의 음악 로직을 그대로 두고 내 노래만 추가합니다. 만들 때 이를 확인합니다.<br>창에 NFS Own Music 타일(NFS 시리즈 전체에 나만의 노래)과 “우리 페이지”의 NFSAddons를 추가했습니다.</dd></div><div><dt>1.0.2<small>2026-11-13</small></dt><dd><b>새 기능:</b> '차고' — 레이스와 도시 옆에 세 번째 스위치: 노래나 게임 트랙을 차고에서만 재생할 수 있습니다(Low Rider의 아이디어). 1.0.1의 노래와 프로필은 이전처럼 차고에서도 재생됩니다.<br>핀란드어 추가 — 이제 14개 언어.<br>새 디자인: 게임 메뉴처럼 반듯한 패널과 흰색 선택 표시, 넓은 제목, 어두운 배경, '재생 위치'는 아이콘으로.<br>감사: Low Rider — 피드백과 제안에 감사드립니다.<br>수정: '차고'만 켠 게임 트랙이 '꺼짐'으로 처리되어 내 노래에 자리를 내줄 수 있던 문제, Music 폴더에서 노래를 다시 가져오면 LOW가 사라지던 문제.</dd></div><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>대규모 업데이트.</b><br><b>새 기능:</b> YouTube / YT Music에서 노래 추가 — 한 곡, 플레이리스트, 앨범, 여러 링크 또는 .txt 목록. 뮤직비디오 링크면 YT Music의 같은 노래를 가져와요.<br>13개 언어(AI 번역).<br>모드 하나에 노래 수백 곡(277곡으로 테스트).<br>출발: GO에 드롭이 터져요(컷신 17초 + 카운트다운 3.45초). GO는 베이스가 들어오는 지점으로 자동으로 찾아요. 드롭이 이른 노래는 앞에 무음을 넣어요.<br>모든 트랙에 HIGH / LOW. 정렬, 필터, 목록 보기. 드래그 앤 드롭과 내 노래 순서.<br>내 노래도 ▶︎로 듣기. 커버: 업로드, 생성 또는 삭제.<br>노래마다 만들기 진행률과 “중지” 버튼. 브라우저 선택. “사용 방법” 도움말. Visual C++ 포함.<br><b>수정:</b> 라틴 문자가 아닌 글자가 들어간 폴더에서 모드 만들기 실패(1.0.0a에도 있었음). Visual C++가 없을 때 “FrostyHash.dll” 오류. “레이스만” 노래가 차고에서 재생됨. 라틴 문자가 아닌 제목이 게임 안 표시에서 비어 있음. 아주 긴 노래 이름 때문에 저장이 깨짐. 만드는 중에 창을 닫고 다시 만들면 오류. 폴더 선택, 첫 화면의 언어 변경, 작은 화면의 창 크기.<br><b>업데이트:</b> 1.0.1을 새 폴더에 풀고, 예전 폴더에서 <b>data</b>와 <b>Music</b>을 복사한 뒤 <b>모드 만들기</b>를 한 번 더 누르세요.</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>수정: Windows 탐색기로 zip을 풀면 “모드 만들기”가 FileLoadException(FrostySdk, 0x80131515)으로 실패하던 문제. 다른 변경은 없습니다.</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>첫 릴리스.</dd></div></dl>
     </section>
   </div>
 </main>
@@ -634,7 +636,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
   lb.addEventListener("click", function (e) { if (e.target === lb) lb.close(); });
 
   /* 13.11: видео фоном — качаем только после полной загрузки страницы (Ваня: «сначала сайт, потом видео»);
-     телефон, «меньше движения», «экономия трафика» — не качаем вовсе; ушло с экрана — пауза */
+     «меньше движения», «экономия трафика» — не качаем вовсе; ушло с экрана — пауза. 18.11 (Ваня): и на телефоне тоже */
   var bv = document.querySelector(".hero-bg"), net = navigator.connection;
 
   /* 13.11: видео YouTube на первом экране — плеер (youtube-nocookie) только по клику; фон первого экрана больше НЕ ставится на паузу (16.11, Ваня) */
@@ -649,7 +651,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
     yt.replaceChildren(f); yt.classList.add("on");   // 16.11 (Ваня): фон под видео крутится дальше — «он не мешает»
   });
 
-  if (bv && matchMedia("(min-width: 980px)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches && !(net && net.saveData)) {
+  if (bv && !matchMedia("(prefers-reduced-motion: reduce)").matches && !(net && net.saveData)) {
     var play = function () { var p = bv.play(); if (p && p.catch) p.catch(function () {}); };
     var go = function () {
       bv.muted = true;

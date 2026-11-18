@@ -104,7 +104,7 @@
 html, body { margin: 0; overflow-x: clip; }
 html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-body { background: var(--ink); color: var(--paper); font: 400 17px/1.55 var(--font); -webkit-font-smoothing: antialiased; }
+body { font-variant-emoji: text; background: var(--ink); color: var(--paper); font: 400 17px/1.55 var(--font); -webkit-font-smoothing: antialiased; }
 body::before {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background:
@@ -185,7 +185,7 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
 .yt-play span { font-size: 22px; font-style: normal; letter-spacing: 0; }
 .yt-btn:hover .yt-play, .yt-btn:focus-visible .yt-play { transform: translate(calc(-50% - 2px), calc(-50% - 2px)) rotate(-1.5deg); box-shadow: 9px 9px 0 var(--sun); }
 .yt iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-@media (max-width: 560px) { /* телефон: только ▶, справа (слева на обложке «DROP ON GO») */
+@media (max-width: 560px) { /* телефон: только ▶︎, справа (слева на обложке «DROP ON GO») */
   .yt-play { left: auto; right: 4%; font-size: 0; gap: 0; padding: 12px 18px; transform: translateY(-50%) rotate(-1.5deg); }
   .yt-btn:hover .yt-play, .yt-btn:focus-visible .yt-play { transform: translate(-2px, calc(-50% - 2px)) rotate(-1.5deg); }
   .yt-play span { font-size: 22px; } }
@@ -198,6 +198,8 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
   background: linear-gradient(0deg, var(--ink), transparent 22%), linear-gradient(180deg, var(--ink), transparent 12%),
               linear-gradient(90deg, rgba(10,10,10,.9) 0%, rgba(10,10,10,.72) 45%, rgba(10,10,10,.5) 100%); }
 .hero-zone.vid .hero-bg, .hero-zone.vid::before { opacity: 1; }
+@media (max-width: 979px) { /* 18.11 телефон: текст по центру — пленка ровная, без темного края слева */
+  .hero-zone::before { background: linear-gradient(0deg, var(--ink), transparent 14%), linear-gradient(180deg, var(--ink), transparent 8%), rgba(10,10,10,.7); } }
 
 /* ---------- бегущая строка ---------- */
 .ticker { width: 110vw; margin-left: -5vw; background: var(--paper); color: var(--ink); overflow: hidden; white-space: nowrap; transform: rotate(-1.2deg); font-weight: 700; font-size: 14px; letter-spacing: .06em; padding: 8px 0; }
@@ -268,7 +270,7 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
 .steps li::before { content: counter(s); position: absolute; left: 0; top: -12px; font-style: italic; font-weight: 700; font-size: 46px; line-height: 1; color: var(--acid); }
 .steps li:nth-child(even)::before { color: var(--sun); }
 .steps .sub { display: block; color: var(--mute); font-size: 15px; margin-top: 6px; }
-.steps .or { display: block; margin-top: 12px; }   /* 13.11: второй путь шага 3 — ▶ З YT MUSIC */
+.steps .or { display: block; margin-top: 12px; }   /* 13.11: второй путь шага 3 — ▶︎ З YT MUSIC */
 .alerts { display: grid; gap: 18px; }
 @media (min-width: 860px) { .alerts { grid-template-columns: 1fr 1fr; } }
 .alert { border: 1px solid; border-left-width: 6px; padding: 22px 22px 20px; }
@@ -407,7 +409,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
         <button class="yt-btn" type="button" aria-label="動画を見る (YouTube)">
           <img src="../img/video.jpg" srcset="../img/video-s.jpg 720w, ../img/video.jpg 1280w"
                sizes="(min-width: 980px) 58vw, 100vw" width="1280" height="720" alt="動画を見る" fetchpriority="high">
-          <span class="yt-play"><span>▶</span>動画を見る</span>
+          <span class="yt-play"><span>▶︎</span>動画を見る</span>
         </button>
       </div>
     </section>
@@ -447,7 +449,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
         <div class="card"><h3>GO でドロップ</h3><p>スタート：17 秒のカットシーン + 3.45 秒のカウントダウン、GO の瞬間にドロップ。GO はベースの入りからプログラムが自動で見つけ、マウスで調整もできます。フィニッシュ用の短いパートも。</p></div>
         <div class="card"><h3>レース · 街 · ガレージ</h3><p>曲をレース・街・ガレージで別々にオン／オフ。ガレージだけで流す曲も作れます。音楽セットごとにプロファイルも作れます。HIGH / LOW で再生頻度も設定できます。</p></div>
         <div class="card"><h3>MOD はひとつ</h3><p>Frosty Mod Manager 用の MOD をひとつ作ります。ゲームファイルは変更しません — MOD をオフにすれば元どおりです。</p></div>
-        <div class="card"><h3>クリーンな zip</h3><p>zip に音楽やゲームファイルは入っていません。曲はあなたのもの、ジャケットや背景はあなたのゲームから読み込みます。▶ — ゲーム内の曲を 30 秒試聴（インターネットが必要）。</p></div>
+        <div class="card"><h3>クリーンな zip</h3><p>zip に音楽やゲームファイルは入っていません。曲はあなたのもの、ジャケットや背景はあなたのゲームから読み込みます。▶︎ — ゲーム内の曲を 30 秒試聴（インターネットが必要）。</p></div>
       </div>
     </section>
 
@@ -505,7 +507,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
         <ol class="steps">
           <li>zip を<b>まるごと</b>普通のフォルダーに展開 — デスクトップ、ドキュメント、D:\Mods… Program Files には入れないでください。</li>
           <li><b>Unbound Soundtrack.exe</b> を起動して規約に同意。初回起動時にゲームを読み込みます — 数分、最初の一回だけです。</li>
-          <li><b>+ 曲を追加</b> → ファイルを選ぶ → GO とフィニッシュを設定 → <b>保存</b>。<span class="or">または <b>▶ YT Music から</b> → リンクを貼り付け（曲、プレイリスト、アルバム）。複数のリンクや .txt リストも可 → <b>ダウンロード</b>。</span><span class="sub">MV のリンクなら、YT Music の同じ曲をイントロや寸劇なしで取得します。プレイリストの前に、曲数・すでにある曲・時間・容量を表示し、すでにある曲はスキップします。.txt リスト：タイトル,アーティスト,リンク;（ラテン文字で）— サンプルファイルはプログラム内にあります。</span><span class="sub">曲はプログラムの隣の <b>Music</b> フォルダーに、1 曲ずつ番号付きフォルダーで入っています：Music\1\、Music\2\… 手動でも OK：番号付きの新しいフォルダーに曲ファイルと画像を入れるだけ。</span></li>
+          <li><b>+ 曲を追加</b> → ファイルを選ぶ → GO とフィニッシュを設定 → <b>保存</b>。<span class="or">または <b>▶︎ YT Music から</b> → リンクを貼り付け（曲、プレイリスト、アルバム）。複数のリンクや .txt リストも可 → <b>ダウンロード</b>。</span><span class="sub">MV のリンクなら、YT Music の同じ曲をイントロや寸劇なしで取得します。プレイリストの前に、曲数・すでにある曲・時間・容量を表示し、すでにある曲はスキップします。.txt リスト：タイトル,アーティスト,リンク;（ラテン文字で）— サンプルファイルはプログラム内にあります。</span><span class="sub">曲はプログラムの隣の <b>Music</b> フォルダーに、1 曲ずつ番号付きフォルダーで入っています：Music\1\、Music\2\… 手動でも OK：番号付きの新しいフォルダーに曲ファイルと画像を入れるだけ。</span></li>
           <li><b>MOD を作成</b>。MOD が Frosty Mod Manager のリストに表示されます。</li>
           <li>Frosty Mod Manager で <b>Unbound Soundtrack</b> にチェック、ほかの音楽 MOD はオフにして <b>Launch</b>。</li>
         </ol>
@@ -536,7 +538,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
 
     <section class="block" id="changelog">
       <h2 class="h2"><span class="n">06</span><span>更新履歴</span></h2>
-      <dl class="log"><div><dt>1.0.5<small>2026-11-18</small></dt><dd><b>修正：</b> 長い Frosty キー（nfsunbound.key、16 416 バイト）で MOD の作成が失敗しなくなりました — mazidpvt93 さん、ありがとう。<br><b>新機能：</b> エディターで曲の音量 0〜300 %（「自動」と過負荷保護つき。アイデアをくれた MGS3PLAYER さん、ありがとう）。「レース / 街 / ガレージ」の区分で、どこで何が流れるかひと目でわかり、「+」でその場所の曲を選べます。小さいタイル表示。<br>ウィンドウと区分の切り替えに Unbound 風のグリッチ。数百曲での「すべてオン / オフ」でエラーが出なくなりました。</dd></div><div><dt>1.0.4<small>2026-11-16</small></dt><dd><b>新機能：</b>「Spotify から」— 曲・アルバム・プレイリストのリンク（最大 100 曲）、もっと大きいプレイリストは exportify.app の .csv ファイルで。リストは Spotify から、曲は YT Music から。<br>曲エディター：ズーム、GO とゴールを 0.1 秒単位で（矢印キー）または手入力、GO 前のなめらかなフェードイン、ゴールのフェードアウトも自由に（アイデアをくれた MtheAX に感謝）。<br><b>修正：</b> GO が早い曲で、スタートの試聴が最初に戻ってしまうことがありました。</dd></div><div><dt>1.0.3<small>2026-11-15</small></dt><dd><b>修正：</b> 自分の曲が多いとき（約 100 曲以上）、追跡中の音楽が鳴らなくなっていました。MOD はゲームの音楽ロジックをそのまま残し、あなたの曲だけを追加するようになりました（作成時に確認します）。<br>ウィンドウに NFS Own Music のタイル（NFS シリーズ全体に自分の曲を）、「私たちのページ」に NFSAddons を追加。</dd></div><div><dt>1.0.2<small>2026-11-13</small></dt><dd><b>新機能：</b>「ガレージ」— レースと街の横に3つ目のスイッチ。曲やゲームの曲をガレージだけで流せます（Low Rider さんのアイデア）。1.0.1 の曲とプロファイルはこれまでどおりガレージでも流れます。<br>フィンランド語を追加 — 14言語に。<br>新デザイン：ゲームのメニューのような真っすぐなパネルと白い選択表示、幅広の見出し、暗い背景、「流れる場所」はアイコンに。<br>感謝：Low Rider さん — フィードバックと提案をありがとう。<br>修正：「ガレージ」だけオンのゲームの曲が「オフ」として自分の曲に回されることがあった問題、Music フォルダーから曲を再インポートすると LOW が消える問題。</dd></div><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>大型アップデート。</b><br><b>新機能：</b>YouTube / YT Music から曲を追加——1 曲、プレイリスト、アルバム、複数のリンク、.txt リスト。MV のリンクなら YT Music の同じ曲を取得します。<br>13 言語（AI 翻訳）。<br>1 つの MOD に数百曲（277 曲でテスト済み）。<br>スタート：GO の瞬間にドロップ（17 秒のカットシーン + 3.45 秒のカウントダウン）。GO はベースの入りで自動検出。ドロップが早い曲は前に無音を入れます。<br>すべての曲に HIGH / LOW。並べ替え、フィルター、リスト表示。ドラッグ＆ドロップと自分の曲順。<br>自分の曲も ▶ で試聴。ジャケット：アップロード、生成、削除。<br>曲ごとの作成の進行状況と「停止」ボタン。ブラウザーの選択。「使い方」ヘルプ。Visual C++ 同梱。<br><b>修正：</b>ラテン文字以外を含むフォルダーで MOD を作成できない問題（1.0.0a にもありました）。Visual C++ がない環境での「FrostyHash.dll」エラー。「レースのみ」の曲がガレージで流れる問題。ラテン文字以外の曲名がゲーム内の表示で空になる問題。長すぎる曲名で保存が壊れる問題。作成中にウィンドウを閉じて再作成するとエラーになる問題。フォルダー選択、最初の画面での言語切り替え、小さい画面でのウィンドウサイズ。<br><b>アップデート方法：</b>1.0.1 を新しいフォルダーに展開し、古いフォルダーから <b>data</b> と <b>Music</b> をコピーして、もう一度 <b>MOD を作成</b> を押してください。</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>修正：zip を Windows エクスプローラーで展開すると「MOD を作成」が FileLoadException（FrostySdk、0x80131515）で失敗していました。ほかの変更はありません。</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>最初のリリース。</dd></div></dl>
+      <dl class="log"><div><dt>1.0.5<small>2026-11-18</small></dt><dd><b>修正：</b> 長い Frosty キー（nfsunbound.key、16 416 バイト）で MOD の作成が失敗しなくなりました — mazidpvt93 さん、ありがとう。<br><b>新機能：</b> エディターで曲の音量 0〜300 %（「自動」と過負荷保護つき。アイデアをくれた MGS3PLAYER さん、ありがとう）。「レース / 街 / ガレージ」の区分で、どこで何が流れるかひと目でわかり、「+」でその場所の曲を選べます。小さいタイル表示。<br>ウィンドウと区分の切り替えに Unbound 風のグリッチ。数百曲での「すべてオン / オフ」でエラーが出なくなりました。</dd></div><div><dt>1.0.4<small>2026-11-16</small></dt><dd><b>新機能：</b>「Spotify から」— 曲・アルバム・プレイリストのリンク（最大 100 曲）、もっと大きいプレイリストは exportify.app の .csv ファイルで。リストは Spotify から、曲は YT Music から。<br>曲エディター：ズーム、GO とゴールを 0.1 秒単位で（矢印キー）または手入力、GO 前のなめらかなフェードイン、ゴールのフェードアウトも自由に（アイデアをくれた MtheAX に感謝）。<br><b>修正：</b> GO が早い曲で、スタートの試聴が最初に戻ってしまうことがありました。</dd></div><div><dt>1.0.3<small>2026-11-15</small></dt><dd><b>修正：</b> 自分の曲が多いとき（約 100 曲以上）、追跡中の音楽が鳴らなくなっていました。MOD はゲームの音楽ロジックをそのまま残し、あなたの曲だけを追加するようになりました（作成時に確認します）。<br>ウィンドウに NFS Own Music のタイル（NFS シリーズ全体に自分の曲を）、「私たちのページ」に NFSAddons を追加。</dd></div><div><dt>1.0.2<small>2026-11-13</small></dt><dd><b>新機能：</b>「ガレージ」— レースと街の横に3つ目のスイッチ。曲やゲームの曲をガレージだけで流せます（Low Rider さんのアイデア）。1.0.1 の曲とプロファイルはこれまでどおりガレージでも流れます。<br>フィンランド語を追加 — 14言語に。<br>新デザイン：ゲームのメニューのような真っすぐなパネルと白い選択表示、幅広の見出し、暗い背景、「流れる場所」はアイコンに。<br>感謝：Low Rider さん — フィードバックと提案をありがとう。<br>修正：「ガレージ」だけオンのゲームの曲が「オフ」として自分の曲に回されることがあった問題、Music フォルダーから曲を再インポートすると LOW が消える問題。</dd></div><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>大型アップデート。</b><br><b>新機能：</b>YouTube / YT Music から曲を追加——1 曲、プレイリスト、アルバム、複数のリンク、.txt リスト。MV のリンクなら YT Music の同じ曲を取得します。<br>13 言語（AI 翻訳）。<br>1 つの MOD に数百曲（277 曲でテスト済み）。<br>スタート：GO の瞬間にドロップ（17 秒のカットシーン + 3.45 秒のカウントダウン）。GO はベースの入りで自動検出。ドロップが早い曲は前に無音を入れます。<br>すべての曲に HIGH / LOW。並べ替え、フィルター、リスト表示。ドラッグ＆ドロップと自分の曲順。<br>自分の曲も ▶︎ で試聴。ジャケット：アップロード、生成、削除。<br>曲ごとの作成の進行状況と「停止」ボタン。ブラウザーの選択。「使い方」ヘルプ。Visual C++ 同梱。<br><b>修正：</b>ラテン文字以外を含むフォルダーで MOD を作成できない問題（1.0.0a にもありました）。Visual C++ がない環境での「FrostyHash.dll」エラー。「レースのみ」の曲がガレージで流れる問題。ラテン文字以外の曲名がゲーム内の表示で空になる問題。長すぎる曲名で保存が壊れる問題。作成中にウィンドウを閉じて再作成するとエラーになる問題。フォルダー選択、最初の画面での言語切り替え、小さい画面でのウィンドウサイズ。<br><b>アップデート方法：</b>1.0.1 を新しいフォルダーに展開し、古いフォルダーから <b>data</b> と <b>Music</b> をコピーして、もう一度 <b>MOD を作成</b> を押してください。</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>修正：zip を Windows エクスプローラーで展開すると「MOD を作成」が FileLoadException（FrostySdk、0x80131515）で失敗していました。ほかの変更はありません。</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>最初のリリース。</dd></div></dl>
     </section>
   </div>
 </main>
@@ -634,7 +636,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
   lb.addEventListener("click", function (e) { if (e.target === lb) lb.close(); });
 
   /* 13.11: видео фоном — качаем только после полной загрузки страницы (Ваня: «сначала сайт, потом видео»);
-     телефон, «меньше движения», «экономия трафика» — не качаем вовсе; ушло с экрана — пауза */
+     «меньше движения», «экономия трафика» — не качаем вовсе; ушло с экрана — пауза. 18.11 (Ваня): и на телефоне тоже */
   var bv = document.querySelector(".hero-bg"), net = navigator.connection;
 
   /* 13.11: видео YouTube на первом экране — плеер (youtube-nocookie) только по клику; фон первого экрана больше НЕ ставится на паузу (16.11, Ваня) */
@@ -649,7 +651,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
     yt.replaceChildren(f); yt.classList.add("on");   // 16.11 (Ваня): фон под видео крутится дальше — «он не мешает»
   });
 
-  if (bv && matchMedia("(min-width: 980px)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches && !(net && net.saveData)) {
+  if (bv && !matchMedia("(prefers-reduced-motion: reduce)").matches && !(net && net.saveData)) {
     var play = function () { var p = bv.play(); if (p && p.catch) p.catch(function () {}); };
     var go = function () {
       bv.muted = true;

@@ -104,7 +104,7 @@
 html, body { margin: 0; overflow-x: clip; }
 html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-body { background: var(--ink); color: var(--paper); font: 400 17px/1.55 var(--font); -webkit-font-smoothing: antialiased; }
+body { font-variant-emoji: text; background: var(--ink); color: var(--paper); font: 400 17px/1.55 var(--font); -webkit-font-smoothing: antialiased; }
 body::before {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background:
@@ -185,7 +185,7 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
 .yt-play span { font-size: 22px; font-style: normal; letter-spacing: 0; }
 .yt-btn:hover .yt-play, .yt-btn:focus-visible .yt-play { transform: translate(calc(-50% - 2px), calc(-50% - 2px)) rotate(-1.5deg); box-shadow: 9px 9px 0 var(--sun); }
 .yt iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-@media (max-width: 560px) { /* телефон: только ▶, справа (слева на обложке «DROP ON GO») */
+@media (max-width: 560px) { /* телефон: только ▶︎, справа (слева на обложке «DROP ON GO») */
   .yt-play { left: auto; right: 4%; font-size: 0; gap: 0; padding: 12px 18px; transform: translateY(-50%) rotate(-1.5deg); }
   .yt-btn:hover .yt-play, .yt-btn:focus-visible .yt-play { transform: translate(-2px, calc(-50% - 2px)) rotate(-1.5deg); }
   .yt-play span { font-size: 22px; } }
@@ -198,6 +198,8 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
   background: linear-gradient(0deg, var(--ink), transparent 22%), linear-gradient(180deg, var(--ink), transparent 12%),
               linear-gradient(90deg, rgba(10,10,10,.9) 0%, rgba(10,10,10,.72) 45%, rgba(10,10,10,.5) 100%); }
 .hero-zone.vid .hero-bg, .hero-zone.vid::before { opacity: 1; }
+@media (max-width: 979px) { /* 18.11 телефон: текст по центру — пленка ровная, без темного края слева */
+  .hero-zone::before { background: linear-gradient(0deg, var(--ink), transparent 14%), linear-gradient(180deg, var(--ink), transparent 8%), rgba(10,10,10,.7); } }
 
 /* ---------- бегущая строка ---------- */
 .ticker { width: 110vw; margin-left: -5vw; background: var(--paper); color: var(--ink); overflow: hidden; white-space: nowrap; transform: rotate(-1.2deg); font-weight: 700; font-size: 14px; letter-spacing: .06em; padding: 8px 0; }
@@ -268,7 +270,7 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
 .steps li::before { content: counter(s); position: absolute; left: 0; top: -12px; font-style: italic; font-weight: 700; font-size: 46px; line-height: 1; color: var(--acid); }
 .steps li:nth-child(even)::before { color: var(--sun); }
 .steps .sub { display: block; color: var(--mute); font-size: 15px; margin-top: 6px; }
-.steps .or { display: block; margin-top: 12px; }   /* 13.11: второй путь шага 3 — ▶ З YT MUSIC */
+.steps .or { display: block; margin-top: 12px; }   /* 13.11: второй путь шага 3 — ▶︎ З YT MUSIC */
 .alerts { display: grid; gap: 18px; }
 @media (min-width: 860px) { .alerts { grid-template-columns: 1fr 1fr; } }
 .alert { border: 1px solid; border-left-width: 6px; padding: 22px 22px 20px; }
@@ -407,7 +409,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
         <button class="yt-btn" type="button" aria-label="Katso video (YouTube)">
           <img src="../img/video.jpg" srcset="../img/video-s.jpg 720w, ../img/video.jpg 1280w"
                sizes="(min-width: 980px) 58vw, 100vw" width="1280" height="720" alt="Katso video" fetchpriority="high">
-          <span class="yt-play"><span>▶</span>Katso video</span>
+          <span class="yt-play"><span>▶︎</span>Katso video</span>
         </button>
       </div>
     </section>
@@ -447,7 +449,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
         <div class="card"><h3>Drop osuu GO:hon</h3><p>Kisan lähtö: 17 s välivideo + 3,45 s lähtölaskenta — drop iskee kohdassa GO. Ohjelma löytää GO:n bassodropin perusteella, voit siirtää sitä hiirellä. Lisäksi lyhyt pätkä maaliin.</p></div>
         <div class="card"><h3>Kisat · Kaupunki · Talli</h3><p>Kytke kappaleet päälle ja pois erikseen kisoihin, kaupunkiin ja talliin — biisi voi soida vaikka vain tallissa. Profiilit eri musiikkivalikoimille. HIGH / LOW — kuinka usein kappale soi.</p></div>
         <div class="card"><h3>Yksi modi</h3><p>Rakentaa yhden modin Frosty Mod Manageriin. Pelin tiedostoja ei muuteta — kytke modi pois, ja peli on kuten ennenkin.</p></div>
-        <div class="card"><h3>Puhdas zip</h3><p>Zipissä ei ole musiikkia eikä pelin tiedostoja: biisit ovat sinun, kansikuvat ja taustat luetaan omasta pelistäsi. ▶ — 30 sekunnin näyte mistä tahansa pelin kappaleesta (tarvitaan internet).</p></div>
+        <div class="card"><h3>Puhdas zip</h3><p>Zipissä ei ole musiikkia eikä pelin tiedostoja: biisit ovat sinun, kansikuvat ja taustat luetaan omasta pelistäsi. ▶︎ — 30 sekunnin näyte mistä tahansa pelin kappaleesta (tarvitaan internet).</p></div>
       </div>
     </section>
 
@@ -505,7 +507,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
         <ol class="steps">
           <li>Pura <b>koko</b> zip tavalliseen kansioon — Työpöytä, Tiedostot, D:\Mods… Ei Program Filesiin.</li>
           <li>Käynnistä <b>Unbound Soundtrack.exe</b> ja hyväksy ehdot. Ensimmäinen käynnistys lukee pelin — muutama minuutti, vain kerran.</li>
-          <li><b>+ LISÄÄ BIISI</b> → valitse tiedosto → aseta GO ja maali → <b>Tallenna</b>.<span class="or">Tai <b>▶ YT MUSICISTA</b> → liitä linkki (biisi, soittolista, albumi), monta linkkiä tai .txt-lista → <b>Lataa</b>.</span><span class="sub">Musiikkivideon linkki — ohjelma ottaa saman biisin YT Musicista, ilman introa ja sketsejä. Ennen soittolistaa se näyttää, montako biisiä siinä on, montako sinulla jo on, ajan ja koon; jo olemassa olevat biisit ohitetaan. .txt-lista: Nimi,Esittäjä,Linkki; (latinalaisin kirjaimin) — ohjelma näyttää esimerkkitiedoston.</span><span class="sub">Biisit ovat ohjelman vieressä olevassa <b>Music</b>-kansiossa, jokaisella biisillä oma numeroitu kansio: Music\1\, Music\2\… Käsinkin onnistuu: uusi numeroitu kansio, jossa on biisin tiedosto ja kuva.</span></li>
+          <li><b>+ LISÄÄ BIISI</b> → valitse tiedosto → aseta GO ja maali → <b>Tallenna</b>.<span class="or">Tai <b>▶︎ YT MUSICISTA</b> → liitä linkki (biisi, soittolista, albumi), monta linkkiä tai .txt-lista → <b>Lataa</b>.</span><span class="sub">Musiikkivideon linkki — ohjelma ottaa saman biisin YT Musicista, ilman introa ja sketsejä. Ennen soittolistaa se näyttää, montako biisiä siinä on, montako sinulla jo on, ajan ja koon; jo olemassa olevat biisit ohitetaan. .txt-lista: Nimi,Esittäjä,Linkki; (latinalaisin kirjaimin) — ohjelma näyttää esimerkkitiedoston.</span><span class="sub">Biisit ovat ohjelman vieressä olevassa <b>Music</b>-kansiossa, jokaisella biisillä oma numeroitu kansio: Music\1\, Music\2\… Käsinkin onnistuu: uusi numeroitu kansio, jossa on biisin tiedosto ja kuva.</span></li>
           <li><b>RAKENNA MODI</b>. Modi ilmestyy Frosty Mod Managerin listaan.</li>
           <li>Frosty Mod Managerissa: rastita <b>Unbound Soundtrack</b>, kytke muut musiikkimodit pois, paina <b>Launch</b>.</li>
         </ol>
@@ -536,7 +538,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
 
     <section class="block" id="changelog">
       <h2 class="h2"><span class="n">06</span><span>Muutokset</span></h2>
-      <dl class="log"><div><dt>1.0.5<small>2026-11-18</small></dt><dd><b>Korjaus:</b> pitkä Frosty-avain (nfsunbound.key, 16 416 tavua) ei enää kaada modin kokoamista — kiitos mazidpvt93.<br><b>Uutta:</b> biisin äänenvoimakkuus editorissa 0–300 % (”Auto” ja ylikuormitussuoja; kiitos ideasta MGS3PLAYER); osiot KISAT / KAUPUNKI / TALLI — näet, mikä soi missä, ja ”+” valitsee biisit paikkaan; pienet ruudut.<br>Ikkunat ja osiot vaihtuvat Unbound-tyylisellä glitchillä; ”Kaikki päälle / pois” sadoilla biiseillä ei enää heitä virheitä.</dd></div><div><dt>1.0.4<small>2026-11-16</small></dt><dd><b>Uutta:</b> ”Spotifysta” — linkki biisiin, albumiin tai soittolistaan (enintään 100 biisiä) tai .csv-tiedosto exportify.appista isommalle soittolistalle; lista tulee Spotifysta, biisit YT Musicista.<br>Biisieditori: zoomaus, GO ja maali 0,1 s tarkkuudella (nuolinäppäimet) tai käsin kirjoittaen, pehmeä nousu ennen GO:ta, oma häivytys maalissa (kiitos MtheAX:lle ideasta).<br><b>Korjattu:</b> lähdön esikuuntelu saattoi hypätä alkuun, kun GO oli aikaisin.</dd></div><div><dt>1.0.3<small>2026-11-15</small></dt><dd><b>Korjaus:</b> kun omia kappaleita oli paljon (noin 100 tai enemmän), poliisitakaa-ajon musiikki mykistyi. Nyt modi jättää pelin musiikkilogiikan ennalleen ja vain lisää siihen kappaleesi; tämä tarkistetaan rakennettaessa.<br>Ikkunassa: NFS Own Music -ruutu (omat kappaleet koko NFS-sarjaan) ja NFSAddons kohdassa ”sivumme”.</dd></div><div><dt>1.0.2<small>2026-11-13</small></dt><dd><b>Uutta:</b> ”Talli” — kolmas kytkin Kisojen ja Kaupungin viereen: biisi tai pelin kappale voi soida vain tallissa (Low Riderin idea). Version 1.0.1 biisit ja profiilit soivat tallissa kuten ennenkin.<br>Suomi — nyt 14 kieltä.<br>Uusi ilme: suorat laatat ja valkoinen valinta kuten pelin valikossa, leveät otsikot, tumma tausta, ”missä soi” kuvakkeina.<br>Kiitos: Low Rider — palautteesta ja ehdotuksista.<br>Korjattu: pelin kappale, jossa vain ”Talli” oli päällä, saatettiin antaa biiseillesi pois päältä olevana; LOW katosi, kun biisi tuotiin uudelleen Music-kansiosta.</dd></div><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>Iso päivitys.</b><br><b>Uutta:</b> biisit YouTubesta / YT Musicista — biisi, soittolista, albumi, monta linkkiä tai .txt-lista; musiikkivideon linkistä otetaan sama biisi YT Musicista.<br>13 kieltä (käännetty tekoälyllä).<br>Satoja biisejä yhdessä modissa (testattu 277 biisillä).<br>Kisan lähtö: drop iskee kohdassa GO (17 s välivideo + 3,45 s lähtölaskenta); GO löydetään bassodropin perusteella; biiseihin, joissa drop tulee aikaisin, lisätään hiljaisuutta alkuun.<br>HIGH / LOW jokaiselle kappaleelle; järjestys, suodattimet, listanäkymä; vedä ja pudota sekä oma biisijärjestys.<br>▶ omille biiseille; kansikuvat: lataa, luo tai poista.<br>Rakentamisen edistyminen jokaiselle biisille ja ”Lopeta”-painike; selaimen valinta; ”Näin se toimii” -ohje; Visual C++ mukana.<br><b>Korjattu:</b> rakentaminen kansiossa, jonka nimessä on ei-latinalaisia kirjaimia (oli myös 1.0.0a:ssa); ”FrostyHash.dll”-virhe ilman Visual C++ -pakettia; ”Vain KISAT” -biisit soivat tallissa; ei-latinalaiset nimet olivat tyhjiä pelin nimikyltissä; pitkät biisien nimet rikkoivat tallennuksen; uusi rakentaminen sen jälkeen, kun ikkuna oli suljettu kesken rakentamisen; kansion valinta, kieli ensimmäisillä näytöillä, ikkunan koko pienillä näytöillä.<br><b>Päivitys:</b> pura 1.0.1 uuteen kansioon, kopioi <b>data</b> ja <b>Music</b> vanhasta, paina taas <b>RAKENNA MODI</b>.</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>Korjaus: ”Rakenna modi” kaatui virheeseen FileLoadException (FrostySdk, 0x80131515), kun zip oli purettu Windowsin Resurssienhallinnalla. Muuta ei muuttunut.</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>Ensimmäinen julkaisu.</dd></div></dl>
+      <dl class="log"><div><dt>1.0.5<small>2026-11-18</small></dt><dd><b>Korjaus:</b> pitkä Frosty-avain (nfsunbound.key, 16 416 tavua) ei enää kaada modin kokoamista — kiitos mazidpvt93.<br><b>Uutta:</b> biisin äänenvoimakkuus editorissa 0–300 % (”Auto” ja ylikuormitussuoja; kiitos ideasta MGS3PLAYER); osiot KISAT / KAUPUNKI / TALLI — näet, mikä soi missä, ja ”+” valitsee biisit paikkaan; pienet ruudut.<br>Ikkunat ja osiot vaihtuvat Unbound-tyylisellä glitchillä; ”Kaikki päälle / pois” sadoilla biiseillä ei enää heitä virheitä.</dd></div><div><dt>1.0.4<small>2026-11-16</small></dt><dd><b>Uutta:</b> ”Spotifysta” — linkki biisiin, albumiin tai soittolistaan (enintään 100 biisiä) tai .csv-tiedosto exportify.appista isommalle soittolistalle; lista tulee Spotifysta, biisit YT Musicista.<br>Biisieditori: zoomaus, GO ja maali 0,1 s tarkkuudella (nuolinäppäimet) tai käsin kirjoittaen, pehmeä nousu ennen GO:ta, oma häivytys maalissa (kiitos MtheAX:lle ideasta).<br><b>Korjattu:</b> lähdön esikuuntelu saattoi hypätä alkuun, kun GO oli aikaisin.</dd></div><div><dt>1.0.3<small>2026-11-15</small></dt><dd><b>Korjaus:</b> kun omia kappaleita oli paljon (noin 100 tai enemmän), poliisitakaa-ajon musiikki mykistyi. Nyt modi jättää pelin musiikkilogiikan ennalleen ja vain lisää siihen kappaleesi; tämä tarkistetaan rakennettaessa.<br>Ikkunassa: NFS Own Music -ruutu (omat kappaleet koko NFS-sarjaan) ja NFSAddons kohdassa ”sivumme”.</dd></div><div><dt>1.0.2<small>2026-11-13</small></dt><dd><b>Uutta:</b> ”Talli” — kolmas kytkin Kisojen ja Kaupungin viereen: biisi tai pelin kappale voi soida vain tallissa (Low Riderin idea). Version 1.0.1 biisit ja profiilit soivat tallissa kuten ennenkin.<br>Suomi — nyt 14 kieltä.<br>Uusi ilme: suorat laatat ja valkoinen valinta kuten pelin valikossa, leveät otsikot, tumma tausta, ”missä soi” kuvakkeina.<br>Kiitos: Low Rider — palautteesta ja ehdotuksista.<br>Korjattu: pelin kappale, jossa vain ”Talli” oli päällä, saatettiin antaa biiseillesi pois päältä olevana; LOW katosi, kun biisi tuotiin uudelleen Music-kansiosta.</dd></div><div><dt>1.0.1<small>2026-11-13</small></dt><dd><b>Iso päivitys.</b><br><b>Uutta:</b> biisit YouTubesta / YT Musicista — biisi, soittolista, albumi, monta linkkiä tai .txt-lista; musiikkivideon linkistä otetaan sama biisi YT Musicista.<br>13 kieltä (käännetty tekoälyllä).<br>Satoja biisejä yhdessä modissa (testattu 277 biisillä).<br>Kisan lähtö: drop iskee kohdassa GO (17 s välivideo + 3,45 s lähtölaskenta); GO löydetään bassodropin perusteella; biiseihin, joissa drop tulee aikaisin, lisätään hiljaisuutta alkuun.<br>HIGH / LOW jokaiselle kappaleelle; järjestys, suodattimet, listanäkymä; vedä ja pudota sekä oma biisijärjestys.<br>▶︎ omille biiseille; kansikuvat: lataa, luo tai poista.<br>Rakentamisen edistyminen jokaiselle biisille ja ”Lopeta”-painike; selaimen valinta; ”Näin se toimii” -ohje; Visual C++ mukana.<br><b>Korjattu:</b> rakentaminen kansiossa, jonka nimessä on ei-latinalaisia kirjaimia (oli myös 1.0.0a:ssa); ”FrostyHash.dll”-virhe ilman Visual C++ -pakettia; ”Vain KISAT” -biisit soivat tallissa; ei-latinalaiset nimet olivat tyhjiä pelin nimikyltissä; pitkät biisien nimet rikkoivat tallennuksen; uusi rakentaminen sen jälkeen, kun ikkuna oli suljettu kesken rakentamisen; kansion valinta, kieli ensimmäisillä näytöillä, ikkunan koko pienillä näytöillä.<br><b>Päivitys:</b> pura 1.0.1 uuteen kansioon, kopioi <b>data</b> ja <b>Music</b> vanhasta, paina taas <b>RAKENNA MODI</b>.</dd></div><div><dt>1.0.0a<small>2026-11-11</small></dt><dd>Korjaus: ”Rakenna modi” kaatui virheeseen FileLoadException (FrostySdk, 0x80131515), kun zip oli purettu Windowsin Resurssienhallinnalla. Muuta ei muuttunut.</dd></div><div><dt>1.0<small>2026-11-10</small></dt><dd>Ensimmäinen julkaisu.</dd></div></dl>
     </section>
   </div>
 </main>
@@ -634,7 +636,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
   lb.addEventListener("click", function (e) { if (e.target === lb) lb.close(); });
 
   /* 13.11: видео фоном — качаем только после полной загрузки страницы (Ваня: «сначала сайт, потом видео»);
-     телефон, «меньше движения», «экономия трафика» — не качаем вовсе; ушло с экрана — пауза */
+     «меньше движения», «экономия трафика» — не качаем вовсе; ушло с экрана — пауза. 18.11 (Ваня): и на телефоне тоже */
   var bv = document.querySelector(".hero-bg"), net = navigator.connection;
 
   /* 13.11: видео YouTube на первом экране — плеер (youtube-nocookie) только по клику; фон первого экрана больше НЕ ставится на паузу (16.11, Ваня) */
@@ -649,7 +651,7 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
     yt.replaceChildren(f); yt.classList.add("on");   // 16.11 (Ваня): фон под видео крутится дальше — «он не мешает»
   });
 
-  if (bv && matchMedia("(min-width: 980px)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches && !(net && net.saveData)) {
+  if (bv && !matchMedia("(prefers-reduced-motion: reduce)").matches && !(net && net.saveData)) {
     var play = function () { var p = bv.play(); if (p && p.catch) p.catch(function () {}); };
     var go = function () {
       bv.muted = true;
