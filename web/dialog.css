@@ -17,9 +17,22 @@
   position: relative; width: 100%; overflow: hidden;
   background: #141518; color: #f2f0f5;
   box-shadow: 0 0 0 1px #000, 0 30px 80px rgba(0, 0, 0, .6);
-  transform: translateY(14px); transition: transform .22s cubic-bezier(.2, .8, .2, 1);
 }
-.dlg-back.show .dlg { transform: none; }
+/* 18.11 открытие / закрытие — глитч (dialog.js glitch, Ваня: «без выезда снизу и оба варианта мне очень нравятся»): окно встает сразу, без въезда;
+   поверх 0,37–0,4 с глитча по айдентике Unbound. Кнопка в фокусе разгорается после глитча (как в игре: серая → белая), только при открытии (класс intro). */
+.dlg-back.show.intro .dlg-btn.focus { animation: dlg-btn-on .14s ease-out .36s both; }
+@keyframes dlg-btn-on { from { background: #5c5d63; color: #1a1a1d; } }
+.dlg-back.show.intro .dlg-btn.focus .key, .dlg-back.show.intro .dlg-btn.focus .swoosh { animation: dlg-fade .14s ease-out .42s both; }
+@keyframes dlg-fade { from { opacity: 0; } }
+/* глитч: копии окна (полосы со сдвигом / растяжкой, крупный обрез, призрак) и canvas с линиями поверх; серый кадр — фильтр на окне */
+.dlg-gh { position: absolute; inset: 0; background: inherit; display: inherit; flex-direction: inherit; overflow: hidden; pointer-events: none; visibility: hidden; z-index: 2; transition: none; }
+.dlg-gl { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3; }
+.gl-paper { filter: invert(1) grayscale(1) brightness(.62) contrast(1.2); }
+/* глитч области страницы (сетка после смены раздела, редактор песни): слой поверх по месту на экране, копии видимых плиток / блоков */
+.gl-ov { position: fixed; overflow: hidden; pointer-events: none; }
+.gl-ov > .gl-agh { position: absolute !important; inset: 0 !important; width: auto !important; height: auto !important; margin: 0 !important; padding: 0 !important;
+  border: 0 !important; box-shadow: none !important; display: block !important; overflow: hidden !important; transition: none !important;
+  background: #0b0b0c; pointer-events: none; visibility: hidden; z-index: 2; }
 
 /* лента */
 .dlg-ribbon {
@@ -98,6 +111,7 @@
 @media (prefers-reduced-motion: reduce) {
   .dlg-ribbon span { animation: none; }
   .dlg-back, .dlg { transition: none; }
+  .dlg-back.show.intro .dlg-btn.focus, .dlg-back.show.intro .dlg-btn.focus .key, .dlg-back.show.intro .dlg-btn.focus .swoosh { animation: none; }
 }
 
 /* выбор папки внутри окна */
@@ -112,6 +126,11 @@
 .fp-list::-webkit-scrollbar { width: 6px; } .fp-list::-webkit-scrollbar-thumb { background: #3a3a42; }
 .fp-st { margin-top: 8px; font-size: .8em; min-height: 1.3em; }
 .fp-st.ok { color: #58ff3c; } .fp-st.no { color: #ffd84a; }
+/* 18.11 (песочница): длинный список (C:\Windows) + подсказка + путь не влезали в 46vh текста окна — строка статуса уезжала под край.
+   Окно выбора папки — колонка: сжимается только список, подсказка / путь / статус видны всегда */
+.dlg-text:has(> .fp-list) { display: flex; flex-direction: column; overflow-y: hidden; }
+.dlg-text:has(> .fp-list) > * { flex-shrink: 0; }
+.dlg-text:has(> .fp-list) > .fp-list { flex-shrink: 1; min-height: 3.5em; }
 
 /* окно «Пісні з YouTube»: список ссылок — каждая строка отдельной плашкой: картинка, имя, под ним исполнитель / длина / ссылка, «✕ Прибрати» */
 .yt-list { max-height: 40vh; overflow-y: auto; margin: 4px 0 6px; padding-right: 6px; display: flex; flex-direction: column; gap: 6px; }

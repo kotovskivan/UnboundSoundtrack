@@ -13,7 +13,7 @@ using System.Web.Script.Serialization;
 
 static class App
 {
-    public const string Version = "1.0.4";
+    public const string Version = "1.0.5";
     public const string Profile = "NeedForSpeedUnbound";
     public static string Root, AppDir, WebDir, FrostyDir, EncDir, DataDir, SongsDir, UiDir, LogPath, MusicDir;
     public static readonly JavaScriptSerializer Json = new JavaScriptSerializer { MaxJsonLength = int.MaxValue, RecursionLimit = 64 };
@@ -118,6 +118,8 @@ class Song
     public double bFade;         // 16.11 (Ваня): нарастание в начале «Старта гонки» — секунды от начала музыки до ручки в окне; 0 = сразу на полную; не дальше GO
     public double cFade = 3, cLevel = 1;   // 16.11 (Ваня): затухание финиша, с (было всегда 3) и громкость в точке желтой ручки — зеркально нарастанию старта
     public double bLevel = 1;    // громкость в точке ручки (0…1): 1 — от ручки уже полная; ниже — от ручки до GO дорастает до полной («нарастание более флекс»)
+    public double vol = 1;       // 17.11 (Ваня): громкость всей песни 0…3 (0–300 %); 1 — как есть, звук не трогаем; выше 1 — мягкий лимитер (Limiter.cs)
+    public bool lim = true;      // защита от перегруза (лимитер) выше 100 %; false — громче как есть, пики срезаются (трещит — окно предупреждает)
     public bool race = true, city = true, draft = true, cover;
     public bool low;             // приоритет в игре: false — High (по умолчанию), true — Low (играет редко: движок сначала ищет High)
     public bool? garage;         // гараж (IsGarageTrack) — своя галочка с 1.0.2; null = песня сохранена до 1.0.2 → как city (тогда «Місто» = город + гараж)

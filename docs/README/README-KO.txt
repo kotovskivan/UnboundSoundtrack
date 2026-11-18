@@ -1,4 +1,4 @@
-﻿UNBOUND SOUNDTRACK  v1.0.4
+﻿UNBOUND SOUNDTRACK  v1.0.5
 Need for Speed Unbound에 내 노래를 — 내 커버를 씌운 새 트랙으로.
 Kitivski + Claude가 만든 무료 팬 메이드 도구예요. Electronic Arts나 Criterion Games와는 아무 관련이 없어요.
 웹사이트: https://kotovskivan.github.io/UnboundSoundtrack/

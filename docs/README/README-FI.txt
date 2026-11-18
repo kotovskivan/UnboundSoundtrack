@@ -1,4 +1,4 @@
-﻿UNBOUND SOUNDTRACK  v1.0.4
+﻿UNBOUND SOUNDTRACK  v1.0.5
 Omat biisisi Need for Speed Unboundiin — uusina kappaleina omilla kansikuvilla.
 Ilmainen fanityökalu, tekijät Kitivski + Claude. EI yhteydessä Electronic Artsiin tai Criterion Gamesiin.
 Verkkosivu: https://kotovskivan.github.io/UnboundSoundtrack/

@@ -323,7 +323,7 @@ static class Ui
     static Dictionary<string, object> SongView(Song s)
     {
         return new Dictionary<string, object> {
-            { "id", s.id }, { "title", s.title }, { "artist", s.artist }, { "file", s.file }, { "dur", s.dur }, { "drop", s.drop }, { "outro", s.outro }, { "cDur", s.cDur }, { "bFade", s.bFade }, { "bLevel", s.bLevel }, { "cFade", s.cFade }, { "cLevel", s.cLevel },
+            { "id", s.id }, { "title", s.title }, { "artist", s.artist }, { "file", s.file }, { "dur", s.dur }, { "drop", s.drop }, { "outro", s.outro }, { "cDur", s.cDur }, { "bFade", s.bFade }, { "bLevel", s.bLevel }, { "cFade", s.cFade }, { "cLevel", s.cLevel }, { "vol", s.vol }, { "lim", s.lim },
             { "race", s.race }, { "city", s.city }, { "garage", s.Gar() }, { "low", s.low }, { "added", s.added }, { "audio", "/songs/" + s.id + "/song.wav" }, { "src", s.src },
             { "cover", s.cover ? "/songs/" + s.id + "/cover.png?v=" + s.added : null } };
     }
@@ -505,7 +505,8 @@ static class Ui
             {
                 // вид главного окна (P2-07) — в settings.json: localStorage окна каждый запуск новый (порт другой)
                 var b = r.JsonBody(); var v = new Dictionary<string, string>();
-                foreach (string k in new[] { "sort", "art", "where", "view" }) { object o; if (b.TryGetValue(k, out o) && o != null) v[k] = Music.Cut(Convert.ToString(o), 200); }
+                // fold — свернутые разделы (18.11, из Heat): «mine,m:race,game»…
+                foreach (string k in new[] { "sort", "art", "where", "view", "fold" }) { object o; if (b.TryGetValue(k, out o) && o != null) v[k] = Music.Cut(Convert.ToString(o), 200); }
                 Settings.Edit(s => s.view = v); w.Json(OK); return;
             }
             case "/api/browser":
@@ -674,6 +675,8 @@ static class Ui
                     if (b.ContainsKey("bLevel")) s.bLevel = Math.Round(Math.Max(0, Math.Min(1, Convert.ToDouble(b["bLevel"]))), 2);
                     if (b.ContainsKey("cFade")) s.cFade = Math.Round(Math.Max(0, Math.Min(s.cDur, Convert.ToDouble(b["cFade"]))), 2);   // затухание финиша (16.11)
                     if (b.ContainsKey("cLevel")) s.cLevel = Math.Round(Math.Max(0, Math.Min(1, Convert.ToDouble(b["cLevel"]))), 2);
+                    if (b.ContainsKey("vol")) s.vol = Math.Round(Math.Max(0, Math.Min(3, Convert.ToDouble(b["vol"]))), 2);   // громкость песни (17.11): 0–300 %
+                    if (b.ContainsKey("lim")) s.lim = Convert.ToBoolean(b["lim"]);
                     if (s.title == "") s.title = Music.Cut(Path.GetFileNameWithoutExtension(s.file), Music.MaxTitle);
                     s.draft = false;
                 });
@@ -686,6 +689,21 @@ static class Ui
                 Settings.Edit(x => { var s = x.songs.FirstOrDefault(y => y.id == id); if (s != null) { s.race = Convert.ToBoolean(b["race"]); s.city = Convert.ToBoolean(b["city"]);
                     if (b.ContainsKey("garage")) s.garage = Convert.ToBoolean(b["garage"]);
                     if (b.ContainsKey("low")) s.low = Convert.ToBoolean(b["low"]); } });
+                w.Json(OK); return;
+            }
+            case "/api/song/flagsMany":
+            {
+                // 18.11: окно «+» у раздела места (из Heat) — все изменения одним запросом и одной записью settings.json
+                // (в Heat — по запросу на песню: на 286 песнях «Увімкнути всі» = 286 запросов подряд)
+                var list = ((System.Collections.ArrayList)r.JsonBody()["list"]).Cast<Dictionary<string, object>>().ToList();
+                Settings.Edit(x =>
+                {
+                    foreach (var b in list)
+                    {
+                        string id = (string)b["id"]; var s = x.songs.FirstOrDefault(y => y.id == id); if (s == null) continue;
+                        s.race = Convert.ToBoolean(b["race"]); s.city = Convert.ToBoolean(b["city"]); s.garage = Convert.ToBoolean(b["garage"]);
+                    }
+                });
                 w.Json(OK); return;
             }
             case "/api/music/order":

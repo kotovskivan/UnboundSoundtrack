@@ -1,4 +1,4 @@
-﻿UNBOUND SOUNDTRACK  v1.0.4
+﻿UNBOUND SOUNDTRACK  v1.0.5
 Le tue canzoni in Need for Speed Unbound — come brani nuovi, con le tue copertine.
 Programma gratuito fatto da fan: Kitivski + Claude. NON affiliato con Electronic Arts o Criterion Games.
 Sito: https://kotovskivan.github.io/UnboundSoundtrack/

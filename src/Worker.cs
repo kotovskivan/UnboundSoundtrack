@@ -155,8 +155,14 @@ static class Worker
         var lg = new WLog();
         ProfilesLibrary.Initialize(new List<Profile>());
         if (!ProfilesLibrary.SelectProfile(App.Profile)) throw new Exception("profile " + App.Profile + " not selected");
-        byte[] key = File.ReadAllBytes(keyPath);
-        KeyManager.Instance.AddKey("Key1", key); KeyManager.Instance.AddKey("Key2", key); KeyManager.Instance.AddKey("Key3", key);
+        // 17.11 баг-репорт Nexus (CryptographicException в LoadInitfs): файл ключа бывает длинный (16 416 Б = Key1 16 + Key2 16 + Key3 16384, как ключ Heat).
+        // Frosty Mod Manager берет Key1 = первые 16 байт (SplashWindow.Window_Loaded), мы отдавали в AES весь файл. Теперь как Frosty; 16 Б — один ключ на все три, как было
+        byte[] raw = File.ReadAllBytes(keyPath);
+        if (raw.Length < 16) throw new UserError("noKey", fmm);
+        byte[] key = raw.Take(16).ToArray();
+        KeyManager.Instance.AddKey("Key1", key);
+        if (raw.Length >= 32 + 0x4000) { KeyManager.Instance.AddKey("Key2", raw.Skip(16).Take(16).ToArray()); KeyManager.Instance.AddKey("Key3", raw.Skip(32).Take(0x4000).ToArray()); }
+        else { KeyManager.Instance.AddKey("Key2", key); KeyManager.Instance.AddKey("Key3", key); }
         TypeLibrary.Initialize();
         var fs = new FileSystemManager(game.TrimEnd('\\') + "\\");
         foreach (FileSystemSource s in ProfilesLibrary.Sources) fs.AddSource(s.Path, s.SubDirs);

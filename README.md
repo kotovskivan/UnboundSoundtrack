@@ -64,6 +64,15 @@ Output: `out\Unbound Soundtrack\` — the same layout as the release zip.
 
 ## Changelog
 
+- **1.0.5**
+  - Fixed: a long `nfsunbound.key` (16 416 bytes = Key1 16 + Key2 16 + Key3 16384) went whole into AES → `CryptographicException` in `LoadInitfs`.
+    Now the first 16 bytes are used, as Frosty does (`Worker.Load`); shorter than 16 bytes → the `noKey` message. Reported by MGS3PLAYER.
+  - Song volume 0–300 % (`Song.vol` / `Song.lim`): gain before cutting, soft limiter at −1 dBFS with 10 ms look-ahead / 300 ms release (`src/Limiter.cs`),
+    hard clip without protection. Auto = −8 LUFS (BS.1770 in the window), never below 100 %. Cache keys change only for songs with non-default values.
+  - RACES / CITY / GARAGE sections in My songs and Game tracks (copies of the cards), + per section (`/api/song/flagsMany` — one request), fold state in `settings.json`.
+  - Small tiles; Unbound-style glitch on windows, section switches and the song editor (`web/dialog.js`).
+  - Fixed: Enable all / Disable all sent one request per song in parallel — on hundreds of songs the browser dropped requests (error windows, partial save).
+  - Help text, folder picker status line, delete dialog text.
 - **1.0.4**
   - New: **From Spotify** — a link to a song, an album or a playlist (`src/Spotify.cs`). The list is read from Spotify's public embed page
     (`open.spotify.com/embed/...`, no login, no API key; it gives up to 100 songs), bigger playlists — a .csv from exportify.app (parsed in the window).

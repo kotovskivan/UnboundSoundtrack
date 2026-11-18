@@ -150,6 +150,8 @@ static class Music
             if (s.bFade > 0 && s.bLevel < 1) j["bLevel"] = s.bLevel; else j.Remove("bLevel");
             if (s.cFade != 3) j["cFade"] = s.cFade; else j.Remove("cFade");   // затухание финиша (16.11) — только если не обычные 3 с
             if (s.cLevel < 1) j["cLevel"] = s.cLevel; else j.Remove("cLevel");
+            if (s.vol != 1) j["vol"] = s.vol; else j.Remove("vol");   // громкость песни (17.11) — только если не 100 %
+            if (!s.lim) j["lim"] = false; else j.Remove("lim");
             App.WriteJson(pj, j);
         }
         catch (Exception e) { App.Log("song.json " + s.src + ": " + e.Message); }

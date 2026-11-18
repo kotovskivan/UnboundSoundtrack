@@ -108,12 +108,14 @@ static class Audio
         if (!File.Exists(wav)) throw new UserError("songMissing", s.title);
         var wi = new FileInfo(wav);
         string w = wi.Length + "|" + wi.LastWriteTimeUtc.Ticks;
+        // vol — громкость песни (17.11): только если не 100 % — у остальных песен ключи прежние, перекодировать не нужно; меняет все три куска
+        string V = s.vol != 1 ? "|vol" + s.vol.ToString("0.00") + (s.vol > 1 && !s.lim ? "|nolim" : "") : "";
         var keys = new Dictionary<string, string> {
-            { "A", w + "|v1" },
+            { "A", w + V + "|v1" },
             // pad — тишина перед ранним GO (12.11); fi — нарастание (16.11): только если задано — у остальных песен ключ прежний, перекодировать не нужно
-            { "B", w + "|" + s.drop.ToString("0.00") + "|" + B_INTRO.ToString("0.00") + (s.drop < B_INTRO ? "|pad" : "") + (s.bFade > 0 ? "|fi" + s.bFade.ToString("0.00") + (s.bLevel < 1 ? "@" + s.bLevel.ToString("0.00") : "") : "") + "|v1" },
+            { "B", w + "|" + s.drop.ToString("0.00") + "|" + B_INTRO.ToString("0.00") + (s.drop < B_INTRO ? "|pad" : "") + (s.bFade > 0 ? "|fi" + s.bFade.ToString("0.00") + (s.bLevel < 1 ? "@" + s.bLevel.ToString("0.00") : "") : "") + V + "|v1" },
             // fo — затухание финиша (16.11): только если не обычные 3 с / ручка опущена — у остальных песен ключ прежний
-            { "C", w + "|" + s.outro.ToString("0.00") + "|" + s.cDur.ToString("0.00") + (s.cFade != 3 || s.cLevel < 1 ? "|fo" + s.cFade.ToString("0.00") + "@" + s.cLevel.ToString("0.00") : "") + "|v1" } };
+            { "C", w + "|" + s.outro.ToString("0.00") + "|" + s.cDur.ToString("0.00") + (s.cFade != 3 || s.cLevel < 1 ? "|fo" + s.cFade.ToString("0.00") + "@" + s.cLevel.ToString("0.00") : "") + V + "|v1" } };
         // кэш до 12.11 (один key.txt на три куска, B — с 17 с): A и C из него годятся, B — перекодировать
         string oldFile = Path.Combine(enc, "key.txt");
         string oldKey = string.Join("|", wi.Length, wi.LastWriteTimeUtc.Ticks, s.drop.ToString("0.00"), s.outro.ToString("0.00"), s.cDur.ToString("0.00"), "v1");
@@ -132,6 +134,7 @@ static class Audio
         if (todo.Count == 0) return enc;
 
         byte[] pcm = ReadPcm(wav);
+        if (s.vol != 1) Limiter.Apply(pcm, Math.Max(0, Math.Min(3, s.vol)), SR, s.lim);   // громкость — до нарезки: нарастание / затухание кусков считаются уже от нее
         double dur = pcm.Length / 4.0 / SR;
         double b0 = Math.Max(0, s.drop - B_INTRO);
         double cLen = Math.Min(s.cDur, dur), c0 = Math.Max(0, Math.Min(s.outro, dur - cLen));

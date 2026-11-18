@@ -49,6 +49,7 @@ def render(size):
 sizes = [16, 20, 24, 32, 40, 48, 64, 128, 256]
 imgs = {s: render(s) for s in sizes}
 imgs[256].save("res/app.ico", format="ICO", sizes=[(s, s) for s in sizes], append_images=[imgs[s] for s in sizes if s != 256])
+imgs[256].save("web/img/app.ico", format="ICO", sizes=[(s, s) for s in sizes], append_images=[imgs[s] for s in sizes if s != 256])   # 18.11: значок окна (src/WinIcon.cs)
 for s in (16, 32, 48, 192, 256):
     (imgs[s] if s in imgs else render(s)).save(f"web/img/icon-{s}.png")
 bg = Image.new("RGBA", (128, 128), (11, 11, 12, 255)); bg.alpha_composite(render(112), (8, 8))

@@ -1,4 +1,4 @@
-﻿UNBOUND SOUNDTRACK  v1.0.4
+﻿UNBOUND SOUNDTRACK  v1.0.5
 Need for Speed Unbound oyununda kendi şarkıların — kendi kapaklarınla, yeni parçalar olarak.
 Kitivski + Claude tarafından yapılmış ücretsiz bir hayran aracı. Electronic Arts veya Criterion Games ile bağlantılı DEĞİLDİR.
 Web sitesi: https://kotovskivan.github.io/UnboundSoundtrack/

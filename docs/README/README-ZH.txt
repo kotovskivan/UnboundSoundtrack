@@ -1,4 +1,4 @@
-﻿UNBOUND SOUNDTRACK  v1.0.4
+﻿UNBOUND SOUNDTRACK  v1.0.5
 把你自己的歌曲放进 Need for Speed Unbound —— 作为新曲目，配上你自己的封面。
 由 Kitivski + Claude 制作的免费粉丝工具。与 Electronic Arts 或 Criterion Games 没有任何关系。
 网站：https://kotovskivan.github.io/UnboundSoundtrack/

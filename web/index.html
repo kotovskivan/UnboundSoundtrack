@@ -104,6 +104,46 @@ body { font-variation-settings: "wdth" 85, "wght" 500; }
 .sep .mbtn { order: 3; font: inherit; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; padding: 4px 10px; border: 1px solid var(--line); color: var(--mute); background: rgba(0,0,0,.5); cursor: pointer; transform: skewX(-10deg); font-variation-settings: "wdth" 100, "wght" 700; }
 .sep .mbtn:hover { color: var(--ink); background: var(--acid); border-color: var(--acid); }
 .sep.game::after { background: linear-gradient(90deg, rgba(244,244,240,.4), rgba(255,255,255,.04)); }
+/* 18.11 (из Heat, финал Вани 17.11): свернуть раздел — клик по заголовку; стрелка нарисована (SVG), первой; › свернут, ˅ развернут.
+   Под «Мої пісні» — разделы мест: черная плашка-ярлык [▌› значок ИМЯ ▇N▇ | +], рамка .1px цветом места (= 1 пиксель экрана), слева 3px;
+   черный задник — текст не сливается с машиной на фоне (Ваня в Heat). «+» — выбрать песни для этого места */
+.sep[data-fold] { cursor: pointer; user-select: none; }
+.sep.ctx { margin: 6px 0 -2px; gap: 0; }
+.sep.ctx svg { height: 16px; width: auto; flex: none; fill: var(--cc); }
+.sep .fold { flex: none; display: inline-flex; width: 12px; font-size: 0; color: var(--cc, var(--paper)); opacity: .8; }
+.sep .fold svg { display: block; width: 12px; height: 12px; fill: none; transform: rotate(90deg); transition: transform .15s; }
+.sep.folded .fold svg { transform: none; }
+.sep[data-fold]:hover .fold { opacity: 1; }
+.sep:not(.ctx) b .fold { vertical-align: 2px; margin-right: 12px; color: var(--paper); opacity: .85; }   /* «Мої пісні» / «Треки гри»: стрелка первой внутри b */
+.sep.ctx .pl { display: inline-flex; align-items: center; gap: 10px; height: 34px; padding-left: 10px; background: rgba(0,0,0,.85);
+  border: .1px solid var(--cc); border-left: 3px solid var(--cc); transition: background .12s; }
+.sep.ctx .pl:not(:has(.madd)) { padding-right: 14px; }
+.sep.ctx[data-fold]:hover:not(:has(.mbtn:hover)) .pl { background: color-mix(in srgb, var(--cc) 14%, rgba(0,0,0,.85)); }
+.sep.ctx b { font-size: 18px; color: var(--cc); padding: 0; background: none; border: 0; }
+.sep.ctx i { background: var(--cc); border: 0; color: #000; }   /* счетчик — залитый бейдж цвета места */
+.sep.ctx::after { background: linear-gradient(90deg, color-mix(in srgb, var(--cc) 55%, transparent), rgba(255,255,255,.04)); }
+.sep .mbtn.madd { order: 0; align-self: stretch; display: inline-flex; align-items: center; margin-left: 4px; padding: 0 14px; font-size: 20px; line-height: 1; font-style: normal; letter-spacing: 0;
+  color: var(--cc); background: none; border: 0; border-left: .1px solid var(--cc); }
+.sep .mbtn.madd:hover { color: var(--ink); background: var(--cc); border-color: var(--cc); }
+/* окно «+»: все свои песни строками, галочка = играет в этом месте */
+.dlg-pick .dlg-text { max-height: none; overflow: visible; padding-right: 0; }
+.dlg-pick .pk-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 2px 0 10px; }
+.dlg-pick .pk-q { flex: 1; min-width: 200px; max-width: 560px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.18); color: var(--paper); font: inherit; font-size: .8em; padding: 8px 10px; outline: none; }
+.dlg-pick .pk-q:focus { border-color: var(--acid); }
+.dlg-pick .pk-all { background: rgba(0,0,0,.6); color: var(--paper); border: 1px solid var(--line); font: inherit; font-size: .72em; padding: 8px 14px; cursor: pointer; text-transform: uppercase; letter-spacing: .1em; }
+.dlg-pick .pk-all:hover { background: #fff; color: #000; border-color: #fff; }
+.dlg-pick .pk-n { margin-left: 4px; color: var(--mute); font-size: .72em; }
+.dlg-pick .pk-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 6px; max-height: 50vh; overflow-y: auto; padding-right: 6px; }
+.dlg-pick .pk-list::-webkit-scrollbar { width: 6px; } .dlg-pick .pk-list::-webkit-scrollbar-thumb { background: #3a3a3a; }
+.dlg-pick .pk-row { display: flex; align-items: center; gap: 10px; padding: 6px 10px; background: rgba(0,0,0,.6); border-left: 3px solid transparent; cursor: pointer; }
+.dlg-pick .pk-row:hover { background: rgba(255,255,255,.08); }
+.dlg-pick .pk-row:has(input:checked) { border-left-color: var(--acid); background: rgba(182,255,26,.07); }
+.dlg-pick .pk-row[hidden] { display: none; }
+.dlg-pick .pk-row input { flex: none; width: 20px; height: 20px; margin: 0; accent-color: var(--acid); cursor: pointer; }
+.dlg-pick .pk-row img, .dlg-pick .pk-na { flex: none; width: 40px; height: 40px; object-fit: cover; background: #1c1c1c; display: grid; place-items: center; color: var(--acid); }
+.dlg-pick .pk-m { min-width: 0; line-height: 1.2; }
+.dlg-pick .pk-m b { display: block; font-size: .78em; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dlg-pick .pk-m i { display: block; font-style: normal; font-size: .6em; color: var(--mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* ---------- авторы (низ левой колонки) ---------- */
 .credits { margin-top: auto; padding-top: 24px; width: 270px; }
@@ -138,6 +178,12 @@ button.frosty { padding: 0; margin: 0; line-height: inherit; }
 /* ---------- правая часть ---------- */
 .main { display: flex; flex-direction: column; min-width: 0; min-height: 0; height: 100vh; padding: 44px 34px 0 10px; }
 .tools { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+/* 18.11 (из Heat): «Додати пісню / З YT Music / Зі Spotify» — кнопками в панели, всегда своей строкой (были 3 карточки в начале сетки) */
+.tools .addrow { flex-basis: 100%; display: flex; gap: 12px; flex-wrap: wrap; }
+.btn.addb { display: inline-flex; align-items: center; gap: 9px; }
+.btn.addb i { font-style: normal; color: var(--acid); font-size: 17px; line-height: 1; }
+.btn.addb:hover i { color: inherit; }
+.btn.addb.dragto { border-color: var(--acid); background: rgba(182,255,26,.15); }
 .search { flex: 0 1 360px; position: relative; transform: skewX(-10deg); }
 .search input { width: 100%; background: rgba(0,0,0,.55); border: 1px solid var(--line); color: var(--paper); font: inherit; font-size: 16px; padding: 10px 14px; outline: none; letter-spacing: .04em; }
 .search input:focus { border-color: var(--acid); }
@@ -176,7 +222,7 @@ button.frosty { padding: 0; margin: 0; line-height: inherit; }
 .pill:hover { border-color: var(--paper); }
 /* где играет (1.0.2): ГОНКИ (флаг) · МІСТО (дома) · ГАРАЖ (ворота) — значки как в Heat Soundtrack, форма (косая плашка) и цвета Unbound.
    Вкл — залита цветом места, выкл — серый контур. На плитке — только значок (подпись в title), в списке и в панели песни — значок + слово */
-.c-race { --cc: var(--acid); } .c-city { --cc: var(--sun); } .c-garage { --cc: var(--garage); }
+.c-race { --cc: var(--acid); } .c-city { --cc: var(--sun); } .c-garage { --cc: var(--garage); } .c-off { --cc: var(--mute); }   /* 18.11: раздел «Вимкнені» у треков игры */
 .cx { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 25px; padding: 0 6px; border: 1px solid rgba(255,255,255,.25); color: var(--mute);
   transform: skewX(-12deg); user-select: none; cursor: pointer; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-variation-settings: "wdth" 100, "wght" 700; white-space: nowrap; }
 .cx svg { height: 14px; width: auto; flex: none; fill: currentColor; transform: skewX(12deg); }
@@ -246,6 +292,23 @@ button.frosty { padding: 0; margin: 0; line-height: inherit; }
 .grid.list .card.add .plus { font-size: 30px; }
 .grid.list .card.add.ytadd .plus { font-size: 22px; padding: 0; }
 .grid.list .card.add b { font-size: 18px; }
+/* 18.11 (из Heat): мелкие плитки — третья кнопка вида (Ваня: «200+ песен листать долго, уменьшить иконки, чтоб не ломало интерфейс»).
+   У Unbound на плитке еще HIGH/LOW — делаем его мельче, а не прячем: переключать можно и тут */
+.grid.small { grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 10px; }
+.grid.small .card .meta { padding: 5px 6px 4px; }
+.grid.small .card .t { font-size: 13px; }
+.grid.small .card .a { display: none; }
+.grid.small .card .sw { gap: 2px; padding: 0 5px 6px; }
+.grid.small .cx { height: 20px; padding: 0 2px; gap: 3px; }
+.grid.small .cx svg { height: 11px; }
+.grid.small .card .sw .pill.pr { min-width: 0; font-size: 9px; letter-spacing: .02em; padding: 2px 3px 1px; }
+.grid.small .mine-tag, .grid.small .yt { display: none; }
+.grid.small .ed { width: 24px; height: 24px; right: 4px; top: 4px; }
+.grid.small .ed svg { width: 12px; height: 12px; }
+.grid.small .pv { width: 28px; height: 28px; left: 5px; bottom: 5px; font-size: 11px; }
+.grid.small .card .art .noart { font-size: 13px; padding: 6px; }
+.grid.small .card.off .art::before { font-size: 17px; padding: 1px 7px; }
+.grid.small .card.half .art::before { width: 8px; height: 8px; right: 5px; top: 5px; }
 /* свои песни мышкой — новый порядок */
 .card.mine[draggable="true"] { cursor: grab; }
 .card.dragging { opacity: .35; }
@@ -296,7 +359,7 @@ body.booting .lang > :not(#lang) { visibility: hidden; }
 .rp-dim { position: fixed; inset: 0; z-index: 6; background: rgba(0,0,0,.55); opacity: 0; pointer-events: none; transition: opacity .2s; }
 .rp-dim.show { opacity: 1; pointer-events: auto; }
 .rpan { position: fixed; z-index: 7; top: 0; right: 0; bottom: 0; width: min(680px, 100vw); background: #0b0b0b; border-left: 3px solid var(--acid);
-  transform: translateX(105%); transition: transform .25s; display: flex; flex-direction: column; }
+  transform: translateX(105%); display: flex; flex-direction: column; }   /* 18.11 без выезда (было transition .25s): встает сразу, глитч — dialog.js glitchArea */
 .rpan.show { transform: none; }
 .rp-in { flex: 1; overflow-y: auto; padding: 30px 34px 20px; }
 .rp-in::-webkit-scrollbar { width: 6px; } .rp-in::-webkit-scrollbar-thumb { background: rgba(255,255,255,.18); }
@@ -330,6 +393,23 @@ body.booting .lang > :not(#lang) { visibility: hidden; }
 .rp-where { display: flex; gap: 8px; align-items: center; margin-top: 2px; }
 .rp-where small { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin-right: 4px; }
 .rp-where .cx { flex: 0 0 auto; height: 29px; padding: 0 14px; }
+/* 17.11 громкость песни (Ваня: под волной, над кусками): ручка + «авто», ниже — галочка «защита» (пустой квадрат / зеленый с галочкой) */
+.rp-vol { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin-top: 16px; }
+.rp-vol > small { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin-right: 4px; }
+.rp-vol input[type=range] { flex: 1 1 160px; min-width: 120px; height: 29px; margin: 0; accent-color: var(--acid); cursor: pointer; }
+.rp-vol .vv { min-width: 54px; text-align: right; font-variant-numeric: tabular-nums; font-size: 15px; font-weight: normal; }
+.rp-vol .vv.hot { color: var(--sun); }
+.rp-vol .btn.sm { padding: 7px 12px; }
+.rp-vol .ck { flex-basis: 100%; }   /* галочка — своей строкой, как на превью */
+.ck { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+.ck input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.ck i { flex: 0 0 auto; width: 18px; height: 18px; box-sizing: border-box; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.4); background: rgba(255,255,255,.05); }
+.ck input:checked + i { background: var(--acid); border-color: var(--acid); }
+.ck input:checked + i::after { content: ""; width: 9px; height: 4px; border: 2px solid var(--ink); border-top: 0; border-right: 0; transform: translateY(-1px) rotate(-45deg); }
+.ck input:focus-visible + i { outline: 1px solid var(--acid); outline-offset: 2px; }
+.ck span { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--paper); }
+.rp-warn { margin: 8px 0 0; font-size: 12px; line-height: 1.4; color: var(--sun); }
+.rp-warn:empty { display: none; }
 .wave { position: relative; margin-top: 22px; height: 130px; background: rgba(255,255,255,.03); border: 1px solid var(--line); cursor: crosshair; user-select: none; }
 .wave canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .wv-b { position: absolute; top: 0; bottom: 0; background: rgba(182,255,26,.16); border-left: 1px dashed rgba(182,255,26,.6); pointer-events: none; }
@@ -453,7 +533,7 @@ body.wv-drag, body.wv-drag * { cursor: grabbing !important; }   /* тянут GO
 <body>
 <div class="bg" id="bg"><div class="photo"></div><div class="leak"></div><div class="shade"></div><div class="logo"></div><div class="halftone"></div><div class="grunge"></div><div class="dots"></div><div class="noise"></div><div class="vig"></div></div>
 <div class="ghost"><span class="f">Soundtrack Soundtrack Soundtrack</span><span class="o">Soundtrack Soundtrack Soundtrack</span><span class="f">Soundtrack Soundtrack Soundtrack</span><span class="o">Soundtrack Soundtrack Soundtrack</span><span class="f">Soundtrack Soundtrack Soundtrack</span><span class="o">Soundtrack Soundtrack Soundtrack</span><span class="f">Soundtrack Soundtrack Soundtrack</span></div>
-<div class="lang" id="langBar"><a class="beta" href="https://forms.gle/StNa4GFZRHckFVpi8" data-i18n="betaNote"></a><span id="lang" style="display:contents"></span><button id="foldersBtn" data-i18n="folders"></button><button id="browserBtn" data-i18n="menuBrowser" style="margin-left:4px"></button><button id="aboutBtn" data-i18n="about" style="margin-left:4px"></button></div>
+<div class="lang" id="langBar"><a class="beta" href="https://forms.gle/StNa4GFZRHckFVpi8" data-i18n="betaNote"></a><span id="lang" style="display:contents"></span><button id="foldersBtn" data-i18n="folders"></button><button id="browserBtn" data-i18n="menuBrowser" style="margin-left:4px"></button><button id="aboutBtn" data-i18n="about" style="margin-left:4px"></button><button id="helpBtn" data-i18n="helpBtn" style="margin-left:4px"></button></div>
 <div class="app">
   <aside class="side">
     <div class="brand" translate="no"><b>UNBOUND</b><i>Soundtrack</i></div>
@@ -519,13 +599,19 @@ body.wv-drag, body.wv-drag * { cursor: grabbing !important; }   /* тянут GO
       <div class="search"><input id="q" data-i18n-ph="search" autocomplete="off"></div>
       <button class="btn" id="allOn" data-i18n="enableAll"></button>
       <button class="btn" id="allOff" data-i18n="disableAll"></button>
-      <button class="btn" id="helpBtn" data-i18n="helpBtn"></button>
+      <!-- 18.11 (из Heat): «Як це працює» (helpBtn) — в верхней строке (#langBar), рядом с «Подяки»; «Додати / YT / Spotify» — кнопками здесь, своей строкой
+           (были 3 карточки в начале сетки; Ваня в Heat: «добавить музыку выше — мешает списку»); подписи — в подсказке -->
+      <div class="addrow">
+      <button class="btn addb" id="addCard" data-i18n-title="addSongSub"><i>+</i><span data-i18n="addSong"></span></button>
+      <button class="btn addb" id="ytCard" data-i18n-title="ytAddSub"><i>▶</i><span data-i18n="ytAdd"></span></button>
+      <button class="btn addb" id="spCard" data-i18n-title="spAddSub"><i>♫</i><span data-i18n="spAdd"></span></button>
+      </div>
       <!-- кнопки «Зібрати мод» вверху больше нет (Ваня 12.11: не нужна, мешает) — сборка из пункта меню слева -->
     </div>
     <!-- подсказки (legend, legendPv) — в окне «Як це працює», кнопка helpBtn -->
     <div class="vbar">
       <select id="sortSel" data-i18n-title="sortT"></select><select id="artSel" data-i18n-title="artT"></select><select id="whereSel" data-i18n-title="whereSelT"></select>
-      <span class="vt"><button id="vTiles" data-i18n-title="viewTiles"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 1h6v6H1zM9 1h6v6H9zM1 9h6v6H1zM9 9h6v6H9z"/></svg></button><button id="vList" data-i18n-title="viewList"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 2h3v3H1zM6 2h9v3H6zM1 7h3v3H1zM6 7h9v3H6zM1 12h3v3H1zM6 12h9v3H6z"/></svg></button></span>
+      <span class="vt"><button id="vTiles" data-i18n-title="viewTiles"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 1h6v6H1zM9 1h6v6H9zM1 9h6v6H1zM9 9h6v6H9z"/></svg></button><button id="vSmall" data-i18n-title="viewSmall"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 1h4v4H1zM6 1h4v4H6zM11 1h4v4h-4zM1 6h4v4H1zM6 6h4v4H6zM11 6h4v4h-4zM1 11h4v4H1zM6 11h4v4H6zM11 11h4v4h-4z"/></svg></button><button id="vList" data-i18n-title="viewList"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 2h3v3H1zM6 2h9v3H6zM1 7h3v3H1zM6 7h9v3H6zM1 12h3v3H1zM6 12h9v3H6z"/></svg></button></span>
     </div>
     <div class="grid" id="grid"></div>
   </main>
@@ -565,6 +651,12 @@ body.wv-drag, body.wv-drag * { cursor: grabbing !important; }   /* тянут GO
         <div class="wv-bar"><div class="wv-ov" id="wvO"><canvas id="wvOc"></canvas><div class="wv-of" id="wvOf"></div></div>
           <button class="cb" id="zOut" data-i18n-title="zoomOut"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8M7.5 10.5h6"/></svg></button><button class="cb" id="zIn" data-i18n-title="zoomIn"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8M7.5 10.5h6M10.5 7.5v6"/></svg></button><button class="cb" id="zAll" data-i18n-title="zoomAll"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button></div>
         <p class="wv-hint" data-i18n="wvHint"></p></div>
+      <!-- 17.11 громкость песни (Ваня выбрал из двух на превью: ручка + «авто» + галочка «защита»; место — под волной, над кусками) -->
+      <div class="rp-vol" id="rpVol"><small data-i18n="volF"></small>
+        <input type="range" id="volR" min="0" max="300" step="5" value="100"><b class="vv" id="volV">100 %</b>
+        <button type="button" class="btn sm" id="volAutoBtn" data-i18n="volAuto" data-i18n-title="volAutoTip"></button>
+        <label class="ck" data-i18n-title="volLimTip"><input type="checkbox" id="volLim"><i></i><span data-i18n="volLim"></span></label></div>
+      <p class="rp-warn" id="volWarn"></p>
       <div class="parts">
         <!-- 16.11 Ваня: «переделай, чтоб было по нормальному» — справа у всех трех кусков одна колонка: подписи | поля одной ширины, под ними «от → до» -->
         <div class="part" data-p="A"><button class="pp">▶</button><div><b data-i18n="partA"></b><span data-i18n="partAsub"></span></div><div class="tt"><em id="tA"></em></div></div>
@@ -646,7 +738,7 @@ async function boot() {
     setLang(I18N[v] ? v : win);
     await api("/api/lang", { lang: LANG }).catch(() => {});
   }
-  if (S.view) { if (S.view.sort) vs.sort = S.view.sort; if (S.view.view) vs.view = S.view.view; }   // вид и сортировка — из settings.json (P2-07)
+  if (S.view) { if (S.view.sort) vs.sort = S.view.sort; if (S.view.view) vs.view = S.view.view; if (S.view.fold) fold = new Set(String(S.view.fold).split(",").filter(Boolean)); }   // вид и сортировка — из settings.json (P2-07)
   document.body.classList.add("booting");   // язык в шапке — поверх первых окон (R1-05); show() убирает
   if (!S.agreed) {
     if (!await ask(() => ({ title: t("agreeT"), html: t("agreeHtml"), yes: t("agreeYes"), no: t("agreeNo") }))) return quit();
@@ -802,7 +894,12 @@ function show() {
 // ---------- вид, сортировка, фильтры (Ваня 12.11); запоминает программа (settings.json, P2-07) — localStorage окна каждый запуск новый ----------
 const vs = { sort: "order", art: "", where: "", view: "tiles" };
 // помним вид и сортировку; фильтры (исполнитель, «где играет») — нет: после перезапуска все песни видны
-const saveVs = () => api("/api/view", { sort: vs.sort, view: vs.view }).catch(() => {});
+const saveVs = () => api("/api/view", { sort: vs.sort, view: vs.view, fold: [...fold].join(",") }).catch(() => {});
+// 18.11 (из Heat; Ваня там: «сворачивать списки, 200+ песен листать долго») — клик по заголовку раздела; свернутый раздел карточки не рисует.
+// Ключи: mine / game — «Мої пісні» / «Треки гри», m:race / m:city / m:garage — разделы мест под «Мої пісні»
+let fold = new Set();
+const foldAttr = k => `${fold.has(k) ? " folded" : ""}" data-fold="${k}" title="${esc(t("foldTip"))}`;   // вставка в class="…": закрывает class и добавляет data-fold, title
+const FCH = '<span class="fold" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M4 1.8 8.6 6 4 10.2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" stroke-linejoin="miter"/></svg></span>';   // › — свернут; развернут — повернута вниз
 // «A & B, C feat. D» -> [A, B, C, D]
 const splitArt = a => String(a || "").split(/\s*(?:,|&|\bx\b|\bfeat\.?|\bft\.?|\bwith\b)\s*/i).map(s => s.trim()).filter(Boolean);
 const isLow = x => x.mine ? !!x.low : !!(x.on && x.on[2]);
@@ -827,8 +924,8 @@ function fillBars() {
   const arts = [...cnt.entries()].sort((a, b) => a[1].name.localeCompare(b[1].name));
   $("artSel").innerHTML = opt("", t("artAll"), vs.art) + arts.map(([k, c]) => opt(k, c.name + " · " + c.n, vs.art)).join("");
   $("whereSel").innerHTML = [["", "whereAll"], ["race", "whereRace"], ["city", "whereCity"], ["garage", "whereGarage"], ["low", "whereLow"]].map(([v, k]) => opt(v, t(k), vs.where)).join("");
-  $("vTiles").classList.toggle("on", vs.view !== "list"); $("vList").classList.toggle("on", vs.view === "list");
-  $("grid").classList.toggle("list", vs.view === "list");
+  $("vTiles").classList.toggle("on", vs.view !== "list" && vs.view !== "small"); $("vSmall").classList.toggle("on", vs.view === "small"); $("vList").classList.toggle("on", vs.view === "list");
+  $("grid").classList.toggle("list", vs.view === "list"); $("grid").classList.toggle("small", vs.view === "small");
 }
 
 function visible() {
@@ -853,11 +950,17 @@ function visible() {
 const onOf = x => x.mine ? [!!x.race, !!x.city, !!x.garage] : [!!x.on[0], !!x.on[1], !!(x.on.length > 3 ? x.on[3] : x.on[1])];
 const anyOn = x => onOf(x).some(Boolean);
 function cardClass(x) { const o = onOf(x); return "card" + (!anyOn(x) ? " off" : (!o.every(Boolean) ? " half" : "")) + (x.mine ? " mine" : ""); }
+// 18.11 (из Heat): под «Мої пісні» — разделы по местам (песня в 2 местах — в обоих), «+» — выбрать песни для этого места.
+// 18.11 Ваня: «люди могут добавить музыку только для гаража (как Low Rider) — удобно смотреть, что играет в гараже» → «Треки гри» тоже по местам:
+// Гонки / Місто / Гараж — что играет там сейчас (трек в 2 местах — в обоих), + «Вимкнені» — не играет нигде (иначе выключенный трек негде найти).
+// kind: m — свои песни, g — треки игры; ключ свертки m:race / g:garage…
+const placeHead = (kind, c, n) => `<div class="sep ctx mctx c-${c}${foldAttr(kind + ":" + c)}"><span class="pl">${FCH}${CX_ICON[c]}<b>${esc(ctxName(c))}</b><i>${n}</i><button class="mbtn madd" data-madd="${c}" data-kind="${kind}" title="${esc(t("addToTip"))}">+</button></span></div>`;
+const offHead = n => `<div class="sep ctx mctx c-off${foldAttr("g:off")}"><span class="pl">${FCH}<b>${esc(t("off"))}</b><i>${n}</i></span></div>`;
 
-function card(x) {
+function card(x, copy) {   // copy — копия своей песни в разделе места: не таскается, порядок меняют в «Мої пісні»
   const o = onOf(x), key = x.mine ? "s:" + x.id : "t:" + x.slot;
   const art = x.cover ? `<img src="${esc(x.cover)}" loading="lazy" alt="">` : `<div class="noart"${dataLang()}>${esc(x.title)}</div>`;
-  return `<div class="${cardClass(x)}" data-k="${esc(key)}"${x.mine && orderOk && numbered(x) ? ' draggable="true"' : ""}>
+  return `<div class="${cardClass(x)}" data-k="${esc(key)}"${x.mine && !copy && orderOk && numbered(x) ? ' draggable="true"' : ""}>
     <div class="art" data-off="${esc(t("offStamp"))}">${art}
       ${x.mine ? `<span class="mine-tag">${t("yours")}</span><button class="pv ${playing === x.id ? "on" : ""}" data-pv="1" title="${esc(t("listenTip"))}">${playing === x.id ? "❚❚" : "▶"}</button><div class="pbar"><i id="pb-${esc(x.id)}"></i></div><button class="ed" data-ed="1" title="${esc(t("editTip"))}"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm17.71-10.21a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>` : (x.preview ? `<button class="pv ${playing === x.slot ? "on" : ""}" data-pv="1" title="${esc(t("pvTip"))}">${playing === x.slot ? "❚❚" : "▶"}</button><div class="pbar"><i id="pb-${esc(x.slot)}"></i></div>` : "") + `<button class="yt" data-yt="1" title="${esc(t("ytTip"))}">YouTube ↗</button>`}</div>
     <div class="meta"${dataLang()}><div class="t" title="${esc(x.title)}">${esc(x.title)}</div><div class="a" title="${esc(x.artist)}">${esc(x.artist)}</div></div>
@@ -872,27 +975,27 @@ function render() {
   if (cmp) { mineV.sort(cmp); if (vs.sort !== "new") gameV.sort(cmp); }
   orderOk = vs.sort === "order" && !vs.art && !vs.where && !$("q").value.trim() && (filter === "all" || filter === "mine");
   const withAdd = filter === "all" || filter === "mine";
-  const sep = (cls, key, n) => `<div class="sep ${cls}"><b>${t(key)}</b><i>${n}</i></div>`;
+  const sep = (cls, key, n) => `<div class="sep ${cls}${foldAttr(cls)}"><b>${FCH}${t(key)}</b><i>${n}</i></div>`;   // cls = mine / game — он же ключ свертки
   let h = "";
   if (withAdd || mineV.length) h += sep("mine", "secMine", mineV.length).replace("</div>", `<button class="mbtn" id="musicHelp" title="${esc(t("musicT"))}">?</button><button class="mbtn" id="musicBtn">${t("musicBtn")}</button></div>`)
-    + (withAdd ? `<div class="card add" id="addCard" tabindex="0"><div class="plus">+</div><b>${t("addSong")}</b><span>${t("addSongSub")}</span></div>`
-      + `<div class="card add ytadd" id="ytCard" tabindex="0"><div class="plus">▶</div><b>${t("ytAdd")}</b><span>${t("ytAddSub")}</span></div>`
-      + `<div class="card add ytadd" id="spCard" tabindex="0"><div class="plus">♫</div><b>${t("spAdd")}</b><span>${t("spAddSub")}</span></div>` : "")   // Ваня 16.11: «Спотифай лучше отдельно», рядом с YT Music
-    + mineV.map(card).join("");
-  if (gameV.length && filter !== "mine") h += sep("game", "secGame", gameV.length) + gameV.map(card).join("");
+    + (fold.has("mine") ? "" : mineV.map(x => card(x)).join(""));   // «Додати / YT / Spotify» — с 18.11 кнопками в панели сверху (.tools), не карточками здесь
+  if (withAdd && songs.length && !vs.where) CTX.forEach((c, i) => { const g = mineV.filter(x => onOf(x)[i]); h += placeHead("m", c, g.length) + (fold.has("m:" + c) ? "" : g.map(x => card(x, true)).join("")); });
+  if (gameV.length && filter !== "mine") {
+    h += sep("game", "secGame", gameV.length);
+    if (fold.has("game")) {}
+    else if (vs.where) h += gameV.map(x => card(x)).join("");   // выбран фильтр «где играет» — плоским списком, как раньше
+    else {
+      if (filter !== "off") CTX.forEach((c, i) => { const g = gameV.filter(x => onOf(x)[i]); h += placeHead("g", c, g.length) + (fold.has("g:" + c) ? "" : g.map(x => card(x, true)).join("")); });
+      const off = gameV.filter(x => !anyOn(x)); if (off.length) h += offHead(off.length) + (fold.has("g:off") ? "" : off.map(x => card(x)).join(""));
+    }
+  }
   $("grid").innerHTML = h;
   if ($("musicBtn")) $("musicBtn").onclick = () => api("/api/open", { what: "music" }).catch(showError);
   if ($("musicHelp")) $("musicHelp").onclick = musicInfo;
-  const ac = $("addCard");
-  if (ac) {
-    ac.onclick = () => openSong(null);
-    ac.onkeydown = e => { if (e.key === "Enter") openSong(null); };
-  }
-  const yc = $("ytCard");
-  if (yc) { yc.onclick = () => ytAsk(); yc.onkeydown = e => { if (e.key === "Enter") ytAsk(); }; }
-  const sc = $("spCard");
-  if (sc) { sc.onclick = () => spAsk(); sc.onkeydown = e => { if (e.key === "Enter") spAsk(); }; }
+  document.querySelectorAll("[data-madd]").forEach(b => b.onclick = () => pickFor(b.dataset.madd, b.dataset.kind === "g"));
 }
+// 18.11: кнопки в панели сверху (были карточки в сетке); Enter у кнопки — это и так click
+$("addCard").onclick = () => openSong(null); $("ytCard").onclick = () => ytAsk(); $("spCard").onclick = () => spAsk();
 // ---------- превью 30 с (Deezer / iTunes) прямо в окне ----------
 let playing = null;
 function pvMarks() {
@@ -911,7 +1014,8 @@ async function play(x) {
   } catch (e) { if (playing === k) { playing = null; pvMarks(); } note(esc(t(x.mine ? "err_crash" : "err_noPreview"))); }
 }
 function stopPreview() { $("au").pause(); playing = null; pvMarks(); }
-$("au").addEventListener("timeupdate", () => { const au = $("au"), el = playing && document.getElementById("pb-" + playing); if (el && au.duration) el.style.width = (100 * au.currentTime / au.duration) + "%"; });
+$("au").addEventListener("timeupdate", () => { const au = $("au"); if (!playing || !au.duration) return; const w = (100 * au.currentTime / au.duration) + "%";
+  document.querySelectorAll(".card .pbar i").forEach(i => { if (i.id === "pb-" + playing) i.style.width = w; }); });   // песня может быть и в «Мої пісні», и в разделах мест (18.11)
 $("au").addEventListener("ended", stopPreview);
 const itemByKey = k => k.startsWith("s:") ? songs.find(s => s.id === k.slice(2)) : tracks.find(x => x.slot === k.slice(2));
 
@@ -967,18 +1071,63 @@ function saveChoice() {
   saveT = setTimeout(() => api("/api/choice", { choice: Object.fromEntries(tracks.map(x => [x.slot, x.on])) }).catch(showError), 400);
 }
 // o = [гонки, город, гараж]
-function setOn(x, o) {
-  if (x.mine) { x.race = o[0]; x.city = o[1]; x.garage = o[2]; api("/api/song/flags", { id: x.id, race: o[0], city: o[1], garage: o[2] }).catch(showError); }
-  else { x.on = [o[0], o[1], isLow(x), o[2]]; saveChoice(); }   // трек игры: [гонки, город, low, гараж]
+// 17.11 (Ваня «делай»): трек выключили целиком и включили обложкой / «Увімкнути всі» — возвращаются прежние места ГОНКИ / МІСТО / ГАРАЖ, а не все три
+// (окно помнит их в x._last, пока программа открыта; запоминаем, когда выключены все места — обложкой, «Вимкнути всі» или значками)
+// 18.11 баг (нашла сессия Heat на 286 песнях Вани): «Увімкнути / Вимкнути всі» слали /api/song/flags на КАЖДУЮ свою песню сразу и параллельно —
+// 8 щелчков = 2288 запросов, каждый перезаписывает settings.json; браузер часть отбрасывал → стопка окон «Немає зв'язку з програмою»,
+// а в settings.json оставалось не то, что видно (запросы приходили вразнобой). Теперь: массовое — одним /api/song/flagsMany (batch),
+// и все сохранения флагов своих песен — по очереди (flagsQ): последний щелчок сохраняется последним; ошибка — одно окно на запрос, не сотня
+let flagsQ = Promise.resolve();
+const flagsSave = (path, body) => (flagsQ = flagsQ.then(() => api(path, body)).catch(showError));
+const saveFlagsMany = list => list.length ? flagsSave("/api/song/flagsMany", { list: list.map(s => ({ id: s.id, race: !!s.race, city: !!s.city, garage: !!s.garage })) }) : flagsQ;
+function setOn(x, o, batch) {   // batch — массив: своя песня копится туда, сохранит вызывающий одним запросом
+  const was = onOf(x);
+  if (o.every(Boolean) && !was.some(Boolean) && x._last) o = x._last.slice();
+  else if (was.some(Boolean) && !o.some(Boolean)) x._last = was;
+  if (x.mine) { x.race = o[0]; x.city = o[1]; x.garage = o[2]; if (batch) batch.push(x); else flagsSave("/api/song/flags", { id: x.id, race: o[0], city: o[1], garage: o[2] }); }
+  else { x.on = [o[0], o[1], isLow(x), o[2]]; saveChoice(); }   // трек игры: [гонки, город, low, гараж] — /api/choice и так один запрос (через 400 мс)
 }
 // приоритет в игре: HIGH (по умолчанию) / LOW
 function setLow(x, v) {
-  if (x.mine) { x.low = v; api("/api/song/flags", { id: x.id, race: x.race, city: x.city, garage: x.garage, low: v }).catch(showError); }
+  if (x.mine) { x.low = v; flagsSave("/api/song/flags", { id: x.id, race: x.race, city: x.city, garage: x.garage, low: v }); }
   else { const o = onOf(x); x.on = [o[0], o[1], v, o[2]]; saveChoice(); }
 }
 function changed() { render(); stats(); }
+// 18.11 (из Heat): «+» у раздела места — список всех своих песен; галочка = играет здесь, снял — убрал отсюда.
+// Сохраняем одним запросом (/api/song/flagsMany) — в Heat шло по запросу на песню, на сотнях песен долго
+// game — «+» у раздела «Треки гри» (18.11): список треков игры, сохраняется обычным /api/choice (и так один запрос)
+async function pickFor(c, game) {
+  const ci = CTX.indexOf(c), list = (game ? tracks : songs).slice(), kid = s => game ? s.slot : s.id, want = new Map(list.map(s => [kid(s), onOf(s)[ci]]));
+  const rows = list.map(s => `<label class="pk-row" data-q="${esc((s.title + " " + s.artist).toLowerCase())}"><input type="checkbox" data-id="${esc(kid(s))}"${onOf(s)[ci] ? " checked" : ""}>`
+    + (s.cover ? `<img src="${esc(s.cover)}" loading="lazy" alt="">` : `<span class="pk-na">♪</span>`)
+    + `<span class="pk-m"${dataLang()}><b>${esc(s.title)}</b><i>${esc(s.artist)}</i></span></label>`).join("");
+  const ok = await askYesNo({ title: t("addToT", { c: ctxName(c) }), yes: t("save"), no: t("cancel"), tall: true, cls: "dlg-pick",
+    html: `<div class="pk-bar"><input class="pk-q" type="text" placeholder="${esc(t("search"))}"><button class="pk-all" data-v="1">${esc(t("enableAll"))}</button>`
+      + `<button class="pk-all" data-v="0">${esc(t("disableAll"))}</button><span class="pk-n"></span></div><div class="pk-list">${rows}</div>`,
+    onOpen: box => {
+      const q = box.querySelector(".pk-q"), n = box.querySelector(".pk-n");
+      const cnt = () => { n.textContent = [...want.values()].filter(Boolean).length + " / " + list.length; };
+      q.oninput = () => { const v = q.value.trim().toLowerCase(); box.querySelectorAll(".pk-row").forEach(r => r.hidden = !!v && !r.dataset.q.includes(v)); };
+      box.querySelectorAll(".pk-all").forEach(b => b.onclick = e => { e.preventDefault();
+        box.querySelectorAll(".pk-row:not([hidden]) input").forEach(i => { i.checked = b.dataset.v === "1"; want.set(i.dataset.id, i.checked); }); cnt(); });
+      box.addEventListener("change", e => { const i = e.target.closest("input[data-id]"); if (i) { want.set(i.dataset.id, i.checked); cnt(); } });
+      cnt(); setTimeout(() => q.focus(), 60);
+    } });
+  if (!ok) return;
+  const ch = list.filter(s => want.get(kid(s)) !== onOf(s)[ci]); if (!ch.length) return;
+  for (const s of ch) {
+    const was = onOf(s), o = was.slice(); o[ci] = want.get(kid(s));
+    if (was.some(Boolean) && !o.some(Boolean)) s._last = was;   // как setOn: выключили все места — помним прежние
+    if (game) s.on = [o[0], o[1], isLow(s), o[2]];   // трек игры: [гонки, город, low, гараж]
+    else { s.race = o[0]; s.city = o[1]; s.garage = o[2]; }
+  }
+  if (game) saveChoice(); else saveFlagsMany(ch);   // своя очередь сохранений (flagsQ) — после щелчков, что были раньше
+  changed();
+}
 
 $("grid").addEventListener("click", e => {
+  const fh = e.target.closest(".sep[data-fold]");
+  if (fh && !e.target.closest("button")) { const k = fh.dataset.fold; if (fold.has(k)) fold.delete(k); else fold.add(k); saveVs(); render(); return; }
   const card = e.target.closest(".card[data-k]"); if (!card) return;
   const x = itemByKey(card.dataset.k); if (!x) return;
   if (e.target.closest("[data-pv]")) { play(x); return; }
@@ -986,7 +1135,7 @@ $("grid").addEventListener("click", e => {
   if (e.target.closest("[data-yt]")) { openUrl("https://www.youtube.com/results?search_query=" + encodeURIComponent((x.artist + " " + x.title).trim())); return; }
   if (e.target.closest("[data-pr]")) {
     setLow(x, !isLow(x)); const b = card.querySelector("[data-pr]"); b.classList.toggle("low", isLow(x)); b.textContent = isLow(x) ? "LOW" : "HIGH";
-    if (vs.where === "low") render();
+    render();   // трек есть в нескольких разделах мест (копии, 18.11) — перерисовать все
     return;
   }
   const pill = e.target.closest(".cx[data-p]");
@@ -994,17 +1143,18 @@ $("grid").addEventListener("click", e => {
   if (pill) { o[+pill.dataset.p] = !o[+pill.dataset.p]; setOn(x, o); }
   else { const v = !anyOn(x); setOn(x, [v, v, v]); }   // клик по обложке — вкл/выкл и у своих песен; редактор — только карандаш (Ваня 13.11)
   const el = card; el.className = cardClass(x); el.querySelectorAll(".cx[data-p]").forEach(p => p.classList.toggle("on", onOf(x)[+p.dataset.p]));
-  if (filter === "on" || filter === "off") render();
+  render();   // разделы мест (и у своих, и у треков игры, 18.11) перестраиваются: трек переходит в другое место / в «Вимкнені»
   stats();
 });
-$("allOn").onclick = () => { visible().forEach(x => setOn(x, [true, true, true])); changed(); };
-$("allOff").onclick = () => { visible().forEach(x => setOn(x, [false, false, false])); changed(); };
+$("allOn").onclick = () => { const b = []; visible().forEach(x => setOn(x, [true, true, true], b)); saveFlagsMany(b); changed(); };   // свои — одним запросом (18.11)
+$("allOff").onclick = () => { const b = []; visible().forEach(x => setOn(x, [false, false, false], b)); saveFlagsMany(b); changed(); };
 $("q").oninput = () => render();
 $("sortSel").onchange = () => { vs.sort = $("sortSel").value; saveVs(); render(); };
 $("artSel").onchange = () => { vs.art = $("artSel").value; saveVs(); render(); };
 $("whereSel").onchange = () => { vs.where = $("whereSel").value; saveVs(); render(); };
 $("vTiles").onclick = () => { vs.view = "tiles"; saveVs(); render(); };
 $("vList").onclick = () => { vs.view = "list"; saveVs(); render(); };
+$("vSmall").onclick = () => { vs.view = "small"; saveVs(); render(); };   // 18.11 (из Heat): мелкие плитки
 
 // ---------- свои песни мышкой: новый порядок (папки Music перенумеруются — Music.Reorder) ----------
 let dragId = null;
@@ -1085,7 +1235,9 @@ async function addFiles(list) {
 const items = [...document.querySelectorAll("#menu li")];
 function pickMenu(li) {
   if (li.dataset.f === "build") { build(); return; }
+  const was = filter;
   items.forEach(x => x.classList.toggle("on", x === li)); filter = li.dataset.f; render();
+  if (filter !== was) glitchArea($("grid"), "in", null, "grid");   // 18.11 смена раздела — глитч новой сетки, по очереди xp / swap (dialog.js)
 }
 items.forEach(li => li.onclick = () => pickMenu(li));
 document.addEventListener("keydown", e => {
@@ -1181,7 +1333,7 @@ function showThanks() {
 }
 
 // ---------- своя песня: окно «гонка» (волна, GO, финиш), обложка ----------
-const rp = { open: false, song: null, id: null, file: "", fileObj: null, dur: 0, drop: 0, outro: 0, cDur: C_DUR, peaks: null, audio: null, img: null, imgChanged: false, race: true, city: true, garage: true, zv: null, sel: "go", bFade: 0, bLevel: 1, cFade: 3, cLevel: 1 };
+const rp = { open: false, song: null, id: null, file: "", fileObj: null, dur: 0, drop: 0, outro: 0, cDur: C_DUR, peaks: null, audio: null, img: null, imgChanged: false, race: true, city: true, garage: true, zv: null, sel: "go", bFade: 0, bLevel: 1, cFade: 3, cLevel: 1, vol: 1, lim: true, lufs: null };
 const fmt = s => { s = Math.max(0, s || 0); return Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0"); };
 // время с долями секунды: 1:23,45 (d — знаков после запятой; en/zh/ja/ko — точка, как в размере сборки)
 const dsep = () => ["en", "zh", "ja", "ko"].includes(LANG) ? "." : ",";
@@ -1193,24 +1345,30 @@ function openSong(song, file) {
   stopPanel(); if (playing) stopPreview();
   Object.assign(rp, { open: true, song, id: song ? song.id : null, file: song ? song.file : "", fileObj: null, dur: song ? song.dur : 0, drop: song ? song.drop : 0,
     outro: song ? song.outro : 0, cDur: song ? song.cDur || C_DUR : C_DUR, bFade: song ? song.bFade || 0 : 0, bLevel: song && song.bLevel != null ? song.bLevel : 1, cFade: song && song.cFade != null ? song.cFade : 3, cLevel: song && song.cLevel != null ? song.cLevel : 1, peaks: null, zv: null, sel: "go", audio: song ? song.audio : null, img: null, imgChanged: false, covMode: song && song.cover ? "img" : "gen",
-    race: song ? song.race : true, city: song ? song.city : true, garage: song ? song.garage : true });
+    race: song ? song.race : true, city: song ? song.city : true, garage: song ? song.garage : true,
+    vol: song && song.vol != null ? song.vol : 1, lim: !(song && song.lim === false), lufs: null });
   $("rpH").textContent = t(song ? "panelEdit" : "panelNew");
   $("rpArtist").value = song ? song.artist : ""; $("rpTitle").value = song ? song.title : "";
   $("rpDel").style.display = song ? "" : "none";
-  pillsRp(); showBody(); wvMsg("");
+  pillsRp(); volUi(); showBody(); wvMsg("");
   rp.snap = rpSnap();   // что было при открытии — закрытие сверяет: поменяли → «Вийти без збереження?»
-  $("rpan").classList.add("show"); $("rpDim").classList.add("show");
+  $("rpan").style.pointerEvents = ""; $("rpan").classList.add("show"); $("rpDim").classList.add("show");
+  requestAnimationFrame(() => rp.open && glitchArea($("rpan"), "in", null, "rpan"));   // 18.11: встает сразу (без выезда справа) + глитч, по очереди xp / swap (dialog.js)
   if (song && song.cover) { const im = new Image(); im.onload = () => { if (rp.song === song) { rp.img = im; drawCover(); showBody(); } }; im.src = song.cover; }
   drawCover();
   if (file) takeFile(file);
   else if (song) {
     layout(); wvMsg(t("decoding"));
-    fetch(song.audio).then(r => r.arrayBuffer()).then(b => decode(b)).then(a => { if (rp.song !== song) return; peaksFrom(a); wvMsg(""); layout(); }).catch(() => wvMsg(t("badFile")));
+    fetch(song.audio).then(r => r.arrayBuffer()).then(b => decode(b)).then(a => { if (rp.song !== song) return; peaksFrom(a); rp.lufs = lufs(a); volUi(); wvMsg(""); layout(); }).catch(() => wvMsg(t("badFile")));
   }
 }
-function closeSong() { stopPanel(); rp.open = false; $("rpan").classList.remove("show"); $("rpDim").classList.remove("show"); }
+function closeSong() {
+  stopPanel(); rp.open = false; $("rpDim").classList.remove("show");
+  const p = $("rpan"); p.style.pointerEvents = "none";   // 18.11: уходит глитчем, потом прячется (если за это время не открыли снова)
+  glitchArea(p, "out", () => { p.style.pointerEvents = ""; if (!rp.open) p.classList.remove("show"); }, "rpan");
+}
 // всё, что сохраняет кнопка «Зберегти»: имя, звук (id/файл), GO, финиш, где играет, обложка
-const rpSnap = () => JSON.stringify([$("rpArtist").value, $("rpTitle").value, rp.id, rp.file, +(rp.drop || 0).toFixed(2), +(rp.outro || 0).toFixed(2), rp.cDur, +(rp.bFade || 0).toFixed(2), +(rp.bLevel ?? 1).toFixed(2), +(rp.cFade ?? 3).toFixed(2), +(rp.cLevel ?? 1).toFixed(2), rp.race, rp.city, rp.garage, rp.covMode, rp.imgChanged]);
+const rpSnap = () => JSON.stringify([$("rpArtist").value, $("rpTitle").value, rp.id, rp.file, +(rp.drop || 0).toFixed(2), +(rp.outro || 0).toFixed(2), rp.cDur, +(rp.bFade || 0).toFixed(2), +(rp.bLevel ?? 1).toFixed(2), +(rp.cFade ?? 3).toFixed(2), +(rp.cLevel ?? 1).toFixed(2), rp.race, rp.city, rp.garage, rp.covMode, rp.imgChanged, +(rp.vol ?? 1).toFixed(2), rp.lim !== false]);
 // закрыть руками (✕, клик мимо, Esc): есть несохраненное — спросить; после «Зберегти» / «Видалити» закрывается без вопроса (closeSong)
 async function tryCloseSong() {
   if (!rp.open) return;
@@ -1220,6 +1378,49 @@ async function tryCloseSong() {
 // где играет — те же значки, что на плитке, со словом (перерисовка при каждом открытии — подписи на текущем языке)
 function pillsRp() { const o = [rp.race, rp.city, rp.garage]; $("rpWhere").querySelectorAll(".cx[data-p]").forEach(e => e.outerHTML = cxChip(+e.dataset.p, !!o[+e.dataset.p])); }
 $("rpWhere").onclick = e => { const c = e.target.closest(".cx[data-p]"); if (!c) return; const k = CTX[+c.dataset.p]; rp[k] = !rp[k]; pillsRp(); };
+
+// ---------- громкость песни (17.11, Ваня; отзыв MGS3PLAYER на Nexus: его песни ~−15 дБ, в игре «почти не слышно») ----------
+// rp.vol 0…3 (0–300 %), 1 — звук как есть. Выше 100 % с галочкой «защита» (rp.lim, по умолчанию стоит) сборка ставит мягкий лимитер
+// (src/Limiter.cs: потолок −1 dBFS, 10 / 300 мс — тест в игре 17.11, AUTO S); сняли галочку — громче как есть, трещит (Ваня: «предупреждение»).
+// Кнопка «авто» — тихую песню подтянуть к обычной громкости: VOL_T −8 LUFS (как AUTO S: FINE LINE −11,7 → +3,7 дБ), громкую не трогаем (не ниже 100 %).
+// Из двух вариантов на превью 17.11 Ваня выбрал этот (второй был — галочка «авто»).
+const VOL_T = -8;
+// integrated loudness (BS.1770, как ffmpeg ebur128) для AudioBuffer 48 кГц: K-фильтр, блоки 400 мс с шагом 100 мс, пороги −70 LUFS и −10 LU.
+// Сверено 17.11 с ffmpeg на 4 песнях — до сотых (FINE LINE −11,69, AMBULANCE −7,39)
+function lufs(a) {
+  const n = a.length, ch = Math.min(2, a.numberOfChannels), blk = 19200, hop = 4800;
+  const nb = Math.max(0, Math.floor((n - blk) / hop) + 1), pw = new Float64Array(Math.ceil(n / hop) + 1);
+  for (let c = 0; c < ch; c++) {
+    const x = a.getChannelData(c);
+    let s1x1 = 0, s1x2 = 0, s1y1 = 0, s1y2 = 0, s2x1 = 0, s2x2 = 0, s2y1 = 0, s2y2 = 0;
+    for (let i = 0; i < n; i++) {   // полка +4 дБ (1,68 кГц) + срез низа 38 Гц — коэффициенты BS.1770 для 48 кГц
+      const v = x[i];
+      const y1 = 1.53512485958697 * v - 2.69169618940638 * s1x1 + 1.19839281085285 * s1x2 + 1.69065929318241 * s1y1 - 0.73248077421585 * s1y2;
+      s1x2 = s1x1; s1x1 = v; s1y2 = s1y1; s1y1 = y1;
+      const y2 = y1 - 2 * s2x1 + s2x2 + 1.99004745483398 * s2y1 - 0.99007225036621 * s2y2;
+      s2x2 = s2x1; s2x1 = y1; s2y2 = s2y1; s2y1 = y2;
+      pw[(i / hop) | 0] += y2 * y2;
+    }
+  }
+  const z = [];
+  for (let b = 0; b < nb; b++) { let s = 0; for (let k = 0; k < 4; k++) s += pw[b + k]; z.push(s / blk); }
+  const L = p => -0.691 + 10 * Math.log10(p);
+  let g = z.filter(p => L(p) > -70); if (!g.length) return -70;
+  const rel = L(g.reduce((s, p) => s + p, 0) / g.length) - 10;
+  g = g.filter(p => L(p) > rel); return g.length ? L(g.reduce((s, p) => s + p, 0) / g.length) : -70;
+}
+const autoVol = () => rp.lufs == null ? null : Math.max(1, Math.min(3, Math.round(10 ** ((VOL_T - rp.lufs) / 20) * 20) / 20));
+function volUi() {
+  $("volLim").checked = rp.lim !== false;
+  $("volR").value = Math.round(rp.vol * 100);
+  $("volAutoBtn").disabled = rp.lufs == null;   // громкость песни еще считается (сразу после открытия)
+  $("volV").textContent = Math.round(rp.vol * 100) + " %";
+  $("volV").classList.toggle("hot", rp.vol > 1);
+  $("volWarn").textContent = rp.vol > 1 && rp.lim === false ? t("volWarn") : "";
+}
+$("volR").oninput = () => { rp.vol = +$("volR").value / 100; volUi(); };
+$("volLim").onchange = () => { rp.lim = $("volLim").checked; volUi(); };
+$("volAutoBtn").onclick = () => { const a = autoVol(); if (a != null) { rp.vol = a; volUi(); } };
 function showBody() {
   const ok = !!rp.audio;
   $("rpBody").style.display = ok ? "" : "none";
@@ -1243,7 +1444,7 @@ async function takeFile(f) {
   const ext = (f.name.match(/\.[^.]+$/) || [""])[0].toLowerCase();
   if (!AUDIO_EXT.includes(ext) && !(f.type || "").startsWith("audio/")) { note(esc(t("badFile")) + ": " + esc(f.name)); return; }
   stopPanel();
-  Object.assign(rp, { audio: null, file: f.name, fileObj: f, dur: 0, peaks: null, zv: null });
+  Object.assign(rp, { audio: null, file: f.name, fileObj: f, dur: 0, peaks: null, zv: null, lufs: null }); volUi();
   showBody(); $("rpBody").style.display = ""; $("rpOk").disabled = true; layout(); wvMsg(t("decoding"));
   try {
     const buf = await f.arrayBuffer(), tg = id3(buf), a = await decode(buf);
@@ -1251,7 +1452,7 @@ async function takeFile(f) {
     const res = await api("/api/song/upload?name=" + encodeURIComponent(f.name), toPcm(a).buffer, true);
     if (!rp.open) return;
     rp.id = res.id; rp.audio = res.audio; rp.dur = a.duration;
-    peaksFrom(a);
+    peaksFrom(a); rp.lufs = lufs(a); volUi();
     rp.drop = guessDrop(a); rp.outro = Math.max(0, rp.dur - rp.cDur);
     if (!rp.song) { const [ar, ti] = tg.title ? [tg.artist || "", tg.title] : parseName(f.name); if (!$("rpArtist").value) $("rpArtist").value = ar; if (!$("rpTitle").value) $("rpTitle").value = ti; }
     wvMsg(""); showBody(); layout(); drawCover();
@@ -1641,7 +1842,8 @@ function pplay(mode, from) {
   // 16.11 Ваня: GO раньше 20,45 с — в игре старт начинается с тишины (сборка ставит ее перед песней), а в программе слушаем сразу, без нее.
   // Раньше тут ждали эту тишину отложенным запуском, и старые запуски потом перематывали в начало («3 раза играет начало»).
   const me = pp = { mode, end };   // этот запуск: отложенный go старого запуска видит, что pp уже другой, и молчит
-  const go = () => { if (pp !== me) return; au2.currentTime = start; au2.volume = volAt(mode, start); au2.play().catch(() => {}); };
+  volChain();   // WebAudio — здесь, в клике (позже браузер может не дать включить звук)
+  const go = () => { if (pp !== me) return; au2.currentTime = start; setGain(mode, start); au2.play().catch(() => {}); };
   if (au2.dataset.src !== src) { au2.dataset.src = src; au2.src = src; au2.addEventListener("loadedmetadata", go, { once: true }); }
   else if (au2.readyState < 1) au2.addEventListener("loadedmetadata", go, { once: true });
   else go();
@@ -1673,13 +1875,33 @@ function volAt(mode, ct) {
   if (mode === "C") return fadeOutGain(ct - rp.outro);
   return 1;
 }
+// громкость песни в прослушке (17.11): au2 → громкость rp.vol → [выше 100 % и защита — компрессор как лимитер сборки] → нарастание / затухание кусков.
+// Без защиты сигнал выше 0 дБ браузер режет — трещит так же, как будет в игре. Звук сборки делает src/Limiter.cs, тут — как он звучит.
+let vch = null;
+function volChain() {
+  if (vch !== null) { if (vch && vch.ctx.state === "suspended") vch.ctx.resume().catch(() => {}); return vch; }
+  try {
+    const ctx = new AudioContext(), src = ctx.createMediaElementSource(au2), gv = ctx.createGain(), c = ctx.createDynamicsCompressor(), gf = ctx.createGain();
+    c.threshold.value = -1; c.knee.value = 0; c.ratio.value = 20; c.attack.value = 0.003; c.release.value = 0.3;
+    src.connect(gv); gf.connect(ctx.destination);
+    vch = { ctx, gv, c, gf, lim: null };
+  } catch (e) { vch = false; }
+  return vch;
+}
+function setGain(mode, ct) {
+  const f = volAt(mode, ct), v = vch;
+  if (!v) { au2.volume = Math.max(0, Math.min(1, f * (rp.vol ?? 1))); return; }
+  const lim = rp.lim !== false && rp.vol > 1;
+  if (v.lim !== lim) { v.gv.disconnect(); v.c.disconnect(); if (lim) { v.gv.connect(v.c); v.c.connect(v.gf); } else v.gv.connect(v.gf); v.lim = lim; }
+  au2.volume = 1; v.gv.gain.value = rp.vol ?? 1; v.gf.gain.value = f;
+}
 function stopPanel() { au2.pause(); pp = null; marks(); $("wvPh").style.display = "none"; $("wvCd").textContent = ""; }
 function marks() { document.querySelectorAll(".part").forEach(p => { const b = p.querySelector(".pp"), on = pp && pp.mode === p.dataset.p; b.classList.toggle("on", !!on); b.textContent = on ? "❚❚" : "▶"; }); }
 function tick() {
   if (!pp) { ticking = false; return; }
   const ct = au2.currentTime;
   if (pp.end != null && ct >= pp.end) { stopPanel(); ticking = false; return; }
-  au2.volume = volAt(pp.mode, ct);   // финиш — затухание в конце, старт — нарастание в начале: как соберет программа (src/Audio.cs Piece)
+  setGain(pp.mode, ct);   // финиш — затухание в конце, старт — нарастание в начале: как соберет программа (src/Audio.cs Piece); громкость песни — тоже
   if (rp.dur) { const x = xp(ct); $("wvPh").style.display = x >= 0 && x <= 100 ? "block" : "none"; $("wvPh").style.left = x + "%"; }   // в зуме — только когда в видимом куске
   const left = rp.drop - ct;
   $("wvCd").textContent = pp.mode === "B" && left > -1 && left <= Math.min(3, B_COUNT) ? (left > 0 ? Math.ceil(left) : "GO") : "";   // цифры — только 3-2-1, как в игре (старт 3,45 с)
@@ -1790,7 +2012,8 @@ async function importMusic(x) {
     const cDur = num(inf.cDur) ?? C_DUR, drop = num(inf.drop) ?? guessDrop(a), outro = num(inf.outro) ?? Math.max(0, a.duration - cDur), bFade = num(inf.bFade) ?? 0, bLevel = num(inf.bLevel) ?? 1, cFade = num(inf.cFade) ?? 3, cLevel = num(inf.cLevel) ?? 1;   // нарастание старта (16.11) — из song.json
     const res = await api("/api/song/upload?name=" + encodeURIComponent(x.src.split("\\").pop()), toPcm(a).buffer, true);
     await api("/api/song/cover?id=" + encodeURIComponent(res.id), await coverPng(img, title, artist), true);
-    await api("/api/song/save", { id: res.id, title, artist, drop: +drop.toFixed(2), outro: +outro.toFixed(2), cDur, bFade, bLevel, cFade, cLevel, race: true, city: true, garage: true });
+    const vol = num(inf.vol) ?? 1, lim = inf.lim !== false;   // громкость (17.11) — из song.json, если там есть
+    await api("/api/song/save", { id: res.id, title, artist, drop: +drop.toFixed(2), outro: +outro.toFixed(2), cDur, bFade, bLevel, cFade, cLevel, race: true, city: true, garage: true, vol, lim });
     x.newId = res.id;
   }
   await api("/api/music/done", { id: x.newId || x.id, src: x.src, asig: x.asig, isig: x.isig, replace: x.kind === "new" ? x.id : null });
@@ -2270,7 +2493,7 @@ $("rpOk").onclick = async () => {
       const blob = await new Promise(r => $("covC").toBlob(r, "image/png"));
       await api("/api/song/cover?id=" + encodeURIComponent(rp.id) + (rp.song ? "&tofolder=1" : ""), blob, true);
     }
-    await api("/api/song/save", { id: rp.id, title: $("rpTitle").value, artist: $("rpArtist").value, drop: +rp.drop.toFixed(2), outro: +rp.outro.toFixed(2), cDur: rp.cDur, bFade: +(rp.bFade || 0).toFixed(2), bLevel: +(rp.bLevel ?? 1).toFixed(2), cFade: +(rp.cFade ?? 3).toFixed(2), cLevel: +(rp.cLevel ?? 1).toFixed(2), race: rp.race, city: rp.city, garage: rp.garage });
+    await api("/api/song/save", { id: rp.id, title: $("rpTitle").value, artist: $("rpArtist").value, drop: +rp.drop.toFixed(2), outro: +rp.outro.toFixed(2), cDur: rp.cDur, bFade: +(rp.bFade || 0).toFixed(2), bLevel: +(rp.bLevel ?? 1).toFixed(2), cFade: +(rp.cFade ?? 3).toFixed(2), cLevel: +(rp.cLevel ?? 1).toFixed(2), race: rp.race, city: rp.city, garage: rp.garage, vol: +(rp.vol ?? 1).toFixed(2), lim: rp.lim !== false });
     if (!rp.song && rp.fileObj) await api("/api/music/put?id=" + encodeURIComponent(rp.id) + "&name=" + encodeURIComponent(rp.fileObj.name), rp.fileObj, true).catch(e => note(esc(errText(e))));
     S = await api("/api/state"); songs = S.songs;
     closeSong(); render(); stats();
@@ -2280,7 +2503,7 @@ $("rpOk").onclick = async () => {
 };
 $("rpDel").onclick = async () => {
   const s = rp.song; if (!s) return;
-  if (!await askYesNo({ title: t("delT"), html: t("delHtml", { t: esc(s.title) }) + (s.src ? t("delMusic") : ""), yes: t("yes"), no: t("no") })) return;
+  if (!await askYesNo({ title: t("delT"), html: t("delHtml", { t: esc(s.title) }) + (s.src ? t("delMusic") : ""), yes: t("yes"), no: t("no") })) return;   // 18.11: delMusic без повтора «файлы остаются» (это уже в delHtml)
   try { await api("/api/song/delete", { id: s.id }); songs = songs.filter(x => x.id !== s.id); closeSong(); render(); stats(); } catch (e) { await showError(e); }
 };
 
@@ -2292,13 +2515,14 @@ $("rpX").onclick = tryCloseSong; $("rpDim").onclick = tryCloseSong;
 // файлы мышкой: на «Добавить песню» — новая песня; в панель — взять файл (картинка — в обложку)
 addEventListener("dragover", e => e.preventDefault());
 addEventListener("drop", e => { e.preventDefault(); if (!e._done) dropAny(e); });   // файлы / ссылку бросили мимо карточек — dropAny
-$("grid").addEventListener("dragover", e => { const c = e.target.closest(".card.add"); document.querySelectorAll(".card.add").forEach(x => x.classList.toggle("dragto", x === c)); });
-$("grid").addEventListener("drop", e => {
-  document.querySelectorAll(".card.dragto").forEach(x => x.classList.remove("dragto"));
+// 18.11 (из Heat): «Додати / YT / Spotify» — кнопки .addb в панели сверху (не в сетке) → слушаем всю .main
+document.querySelector(".main").addEventListener("dragover", e => { const c = e.target.closest(".addb"); document.querySelectorAll(".addb").forEach(x => x.classList.toggle("dragto", x === c)); });
+document.querySelector(".main").addEventListener("drop", e => {
+  document.querySelectorAll(".addb.dragto").forEach(x => x.classList.remove("dragto"));
   if (e.target.closest("#spCard") && !e.dataTransfer.files.length) { const u = e.dataTransfer.getData("text/uri-list") || e.dataTransfer.getData("text/plain") || ""; if (u) { e._done = true; spAsk(u); return; } }
   if (e.target.closest("#ytCard") && !e.dataTransfer.files.length) { const u = e.dataTransfer.getData("text/uri-list") || e.dataTransfer.getData("text/plain") || ""; if (u) { e._done = true; ytAsk(u); return; } }   // ссылку перетащили из браузера — окно со ссылкой в списке
   const f = e.dataTransfer.files[0]; if (!f || /\.(txt|csv|tsv)$/i.test(f.name)) return;   // .txt со ссылками — dropAny (окно YouTube)
-  if (e.target.closest(".card.add")) { e._done = true; openSong(null, f); }
+  if (e.target.closest(".addb")) { e._done = true; openSong(null, f); }
 });
 $("rpan").addEventListener("dragover", () => { if (!rp.audio) $("rpDrop").classList.add("over"); });
 $("rpan").addEventListener("dragleave", e => { if (!$("rpan").contains(e.relatedTarget)) $("rpDrop").classList.remove("over"); });
