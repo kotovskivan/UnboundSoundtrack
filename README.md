@@ -66,9 +66,9 @@ Output: `out\Unbound Soundtrack\` — the same layout as the release zip.
 
 - **1.0.5**
   - Fixed: a long `nfsunbound.key` (16 416 bytes = Key1 16 + Key2 16 + Key3 16384) went whole into AES → `CryptographicException` in `LoadInitfs`.
-    Now the first 16 bytes are used, as Frosty does (`Worker.Load`); shorter than 16 bytes → the `noKey` message. Reported by MGS3PLAYER.
+    Now the first 16 bytes are used, as Frosty does (`Worker.Load`); shorter than 16 bytes → the `noKey` message. Reported by mazidpvt93.
   - Song volume 0–300 % (`Song.vol` / `Song.lim`): gain before cutting, soft limiter at −1 dBFS with 10 ms look-ahead / 300 ms release (`src/Limiter.cs`),
-    hard clip without protection. Auto = −8 LUFS (BS.1770 in the window), never below 100 %. Cache keys change only for songs with non-default values.
+    hard clip without protection. Auto = −8 LUFS (BS.1770 in the window), never below 100 %. Cache keys change only for songs with non-default values. Idea by MGS3PLAYER.
   - RACES / CITY / GARAGE sections in My songs and Game tracks (copies of the cards), + per section (`/api/song/flagsMany` — one request), fold state in `settings.json`.
   - Small tiles; Unbound-style glitch on windows, section switches and the song editor (`web/dialog.js`).
   - Fixed: Enable all / Disable all sent one request per song in parallel — on hundreds of songs the browser dropped requests (error windows, partial save).
@@ -135,5 +135,7 @@ Third-party parts keep their own licenses — see `docs/THIRD-PARTY.txt`.
   [vgmstream](https://github.com/vgmstream/vgmstream) — we learned from them how the game's music works.
 - [Low Rider](https://steamcommunity.com/profiles/76561198421221810) — feedback and suggestions about the game.
 - [MtheAX](https://steamcommunity.com/profiles/76561199074624815) — the idea to zoom the waveform and set GO to 0.1 s.
+- [MGS3PLAYER](https://www.nexusmods.com/profile/MGS3PLAYER) — the idea of a volume control for every song.
+- [mazidpvt93](https://www.nexusmods.com/profile/mazidpvt93) — the bug report about the long Frosty key.
 
 Need for Speed and NFS Unbound are trademarks of Electronic Arts Inc.
