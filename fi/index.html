@@ -226,6 +226,8 @@ h1 .sig { display: block; font: 400 clamp(44px, 5.4vw, 74px)/1 "Sedgwick UB", va
 .btn.hubx-go:hover { color: #1a0800; border-color: var(--hub); transform: rotate(-1.5deg) translate(-2px,-2px); box-shadow: 8px 8px 0 var(--paper); }
 .hubx-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 .hubx-card { position: relative; display: block; aspect-ratio: 16 / 10; overflow: hidden; background: #000; border: 1px solid var(--line); color: var(--paper); text-decoration: none; }
+.hubx-card.wide { grid-column: span 2; aspect-ratio: 32 / 10; } /* 21.11: третья карточка (HP) — на всю ширину */
+@media (max-width: 560px) { .hubx-card.wide { aspect-ratio: 2 / 1; } }
 .hubx-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
 .hubx-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; z-index: 2; }
 .hubx-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 45%, rgba(10,10,10,.9) 100%); }
@@ -434,6 +436,10 @@ dialog#dl::backdrop { background: rgba(0,0,0,.78); }
         <a class="hubx-card ready" href="https://kotovskivan.github.io/HeatSoundtrack/fi/" target="_blank" rel="noopener">
           <img src="../img/hub-heat.jpg" alt="Need for Speed Heat" width="1200" height="600" loading="lazy">
           <span class="st">Saatavilla</span><span class="hubx-meta"><b translate="no">Heat</b><small>2019</small></span>
+        </a>
+        <a class="hubx-card soon wide" href="https://kotovskivan.github.io/HotPursuitSoundtrack/fi/" target="_blank" rel="noopener"><!-- 21.11: Hot Pursuit (2010 + Remastered) — «Скоро»; ПРИ ВЫПУСКЕ HP: class soon -> ready, hubSoon -> hubReady -->
+          <img src="../img/hub-hp.jpg" alt="Need for Speed Hot Pursuit" width="1200" height="600" loading="lazy">
+          <span class="st">Tulossa pian</span><span class="hubx-meta"><b translate="no">Hot Pursuit</b><small>2010 · Remastered 2020</small></span>
         </a>
       </div>
     </div>
